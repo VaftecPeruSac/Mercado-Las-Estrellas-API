@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Puesto;
 use App\Http\Requests\StorePuestoRequest;
 use App\Http\Requests\UpdatePuestoRequest;
+use App\Http\Resources\PuestoCollection;
 
 class PuestoController extends Controller
 {
@@ -14,6 +15,8 @@ class PuestoController extends Controller
     public function index()
     {
         //
+        $puestos = Puesto::all();
+        return new PuestoCollection($puestos);
     }
 
     /**

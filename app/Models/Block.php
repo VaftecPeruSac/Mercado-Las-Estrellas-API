@@ -5,19 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Puesto extends Model
-{
+class Block extends Model
+{    
     use HasFactory;
     protected $fiillable = [
 
     ];
-    public function Socio()
-    {
-        return $this->belongsTo( Socio::class);
-    }
 
-    public function Block()
+    public function Puesto()
     {
-        return $this->hasOne(Block::class);
+        return $this->hasOne(Puesto::class);
     }
 }

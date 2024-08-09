@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\PersonaCollection;
-use App\Models\Persona;
-use App\Http\Requests\StorePersonaRequest;
-use App\Http\Requests\UpdatePersonaRequest;
+use App\Models\GiroNegocio;
+use App\Http\Requests\StoreGiroNegocioRequest;
+use App\Http\Requests\UpdateGiroNegocioRequest;
+use App\Http\Resources\GiroNegocioCollection;
 
-class PersonaController extends Controller
+class GiroNegocioController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,10 +15,8 @@ class PersonaController extends Controller
     public function index()
     {
         //
-        // return Persona::all();
-        // $personas = Persona::paginate();
-        $personas = Persona::all();
-        return new PersonaCollection($personas);
+        $giros = GiroNegocio::all();
+        return new GiroNegocioCollection($giros);
     }
 
     /**
@@ -32,7 +30,7 @@ class PersonaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorePersonaRequest $request)
+    public function store(StoreGiroNegocioRequest $request)
     {
         //
     }
@@ -40,7 +38,7 @@ class PersonaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Persona $persona)
+    public function show(GiroNegocio $giroNegocio)
     {
         //
     }
@@ -48,7 +46,7 @@ class PersonaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Persona $persona)
+    public function edit(GiroNegocio $giroNegocio)
     {
         //
     }
@@ -56,7 +54,7 @@ class PersonaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePersonaRequest $request, Persona $persona)
+    public function update(UpdateGiroNegocioRequest $request, GiroNegocio $giroNegocio)
     {
         //
     }
@@ -64,7 +62,7 @@ class PersonaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Persona $persona)
+    public function destroy(GiroNegocio $giroNegocio)
     {
         //
     }

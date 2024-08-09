@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\PersonaCollection;
-use App\Models\Persona;
-use App\Http\Requests\StorePersonaRequest;
-use App\Http\Requests\UpdatePersonaRequest;
+use App\Models\Block;
+use App\Http\Requests\StoreBlockRequest;
+use App\Http\Requests\UpdateBlockRequest;
+use App\Http\Resources\BlockCollection;
 
-class PersonaController extends Controller
+class BlockController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,10 +15,8 @@ class PersonaController extends Controller
     public function index()
     {
         //
-        // return Persona::all();
-        // $personas = Persona::paginate();
-        $personas = Persona::all();
-        return new PersonaCollection($personas);
+        $blocks = Block::all();
+        return new BlockCollection($blocks);
     }
 
     /**
@@ -32,7 +30,7 @@ class PersonaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorePersonaRequest $request)
+    public function store(StoreBlockRequest $request)
     {
         //
     }
@@ -40,7 +38,7 @@ class PersonaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Persona $persona)
+    public function show(Block $block)
     {
         //
     }
@@ -48,7 +46,7 @@ class PersonaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Persona $persona)
+    public function edit(Block $block)
     {
         //
     }
@@ -56,7 +54,7 @@ class PersonaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePersonaRequest $request, Persona $persona)
+    public function update(UpdateBlockRequest $request, Block $block)
     {
         //
     }
@@ -64,7 +62,7 @@ class PersonaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Persona $persona)
+    public function destroy(Block $block)
     {
         //
     }
