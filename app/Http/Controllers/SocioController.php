@@ -2,21 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\SociosFilter;
 use App\Models\Socio;
 use App\Http\Requests\StoreSocioRequest;
 use App\Http\Requests\UpdateSocioRequest;
 use App\Http\Resources\SocioCollection;
+use Illuminate\Http\Request;
 
 class SocioController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $socios = Socio::all();
-        return new SocioCollection($socios);
+        $filter = new SociosFilter();
+        $queryItems = $filter->transform($request);
+        // $socios = Socio::all();
+        if (count($queryItems) == 0) {
+            return new SocioCollection(Socio::paginate());
+
+        }else{
+            $socios = Socio::where($queryItems)->paginate();
+            return new SocioCollection($socios->appends($request->query())); 
+        }
+        
     }
 
     /**

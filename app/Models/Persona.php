@@ -14,7 +14,6 @@ class Persona extends Model
     ];
      public function Socio()
      {
-        return $this->hasOne(Socio::class);
+        return $this->hasOne(Socio::class,'id_persona','id');
      }
-     
 }

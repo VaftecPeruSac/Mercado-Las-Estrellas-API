@@ -2,23 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\PersonaFilter;
 use App\Http\Resources\PersonaCollection;
 use App\Models\Persona;
 use App\Http\Requests\StorePersonaRequest;
 use App\Http\Requests\UpdatePersonaRequest;
+use Illuminate\Http\Request;
 
 class PersonaController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-        // return Persona::all();
-        // $personas = Persona::paginate();
-        $personas = Persona::all();
-        return new PersonaCollection($personas);
+        $filter = new PersonaFilter();
+        $queryItems = $filter->transform($request);
+        $includeSocios = $request->query("socio");
+        $personas = Persona::where($queryItems)->paginate();
+        if ($includeSocios){
+            // $personas = $personas->with('socio');
+            $personas = Persona::with("socio")->where($queryItems)->paginate();
+
+        }
+        return new PersonaCollection($personas->appends($request->query()));
+
+        // return response()->json($personas);
     }
 
     /**
@@ -42,7 +51,12 @@ class PersonaController extends Controller
      */
     public function show(Persona $persona)
     {
-        //
+    //     $includeSocios = request()->query('id_socio');
+    //     if ($includeSocios) {
+    //         return new PersonaResource($persona->loadMissing('socio'));
+    //         # code...
+    //     }
+    //    return new PersonaResource($persona);
     }
 
     /**

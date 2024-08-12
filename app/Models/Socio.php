@@ -9,13 +9,13 @@ class Socio extends Model
 {
     use HasFactory;
 
-    protected $fiillable = [
+    protected $fiillable = [    
 
     ];
 
     public function Persona()
     {
-        return $this->hasOne(Persona::class);
+        return $this->hasOne(Persona::class,'id_persona','id'); //belong to se coloca en la tabla que lleva la fk
     }
 
     public function Puesto()

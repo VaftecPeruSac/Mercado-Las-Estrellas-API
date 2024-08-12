@@ -24,7 +24,7 @@ class SocioFactory extends Factory
             'correo'=>$this->faker->correo(),
             'telefono'=>$this->faker->telefono(),
             'estado'=>$this->faker->estado(),
-            'idPersona'=> Persona::factory(),
+            'id_persona'=> Persona::factory(),
         ];
     }
 }
