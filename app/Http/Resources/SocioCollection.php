@@ -12,8 +12,29 @@ class SocioCollection extends ResourceCollection
      *
      * @return array<int|string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'data' => $this->collection->transform(function ($socio) {
+
+                return [
+                    'id' => $socio->id,
+                    'estado' => $socio->estado,
+                    'telefono' => $socio->telefono, 
+                    'correo' => $socio->correo,
+                    'id_gironegocio' => $socio->id_gironegocio,
+                    // 'id_persona' => $socio->id_persona,
+                    'persona' => new PersonaResource($socio->persona), // Si estás incluyendo socios
+                    'puestos' => new PuestoResource($socio->puestos), // Si estás incluyendo socios
+                ];
+            }),
+            'links' => [
+                'self' => url('/socios'),
+            ],
+            'meta' => [
+                'total' => $this->collection->count(),
+            ],
+        ];
     }
+
 }

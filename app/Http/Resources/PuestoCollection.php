@@ -12,8 +12,28 @@ class PuestoCollection extends ResourceCollection
      *
      * @return array<int|string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'data' => $this->collection->transform(function ($puesto) {
+
+                return [
+                    'id' => $puesto->id,
+                    'nombre' => $puesto->nombre,
+                    'id_socio' => $puesto->id_socio,
+                    'id_block' => $puesto->id_block,
+                    'area' => $puesto->area,
+                    'estado' => $puesto->estado,
+                    'socio' => new SocioResource($puesto->socio), // Si estás incluyendo socios
+                    'persona' => new PersonaResource($puesto->socio->persona),
+                ];
+            }),
+            'links' => [
+                'self' => url('/puestos'),
+            ],
+            'meta' => [
+                'total' => $this->collection->count(),
+            ],
+        ];
     }
 }

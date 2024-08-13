@@ -6,17 +6,28 @@ use App\Models\Puesto;
 use App\Http\Requests\StorePuestoRequest;
 use App\Http\Requests\UpdatePuestoRequest;
 use App\Http\Resources\PuestoCollection;
+use App\Filters\PuestoFilter;
+use Illuminate\Http\Request;
 
 class PuestoController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $puestos = Puesto::all();
-        return new PuestoCollection($puestos);
+        $filter = new PuestoFilter();
+        $queryItems = $filter->transform($request);
+        // $socios = Socio::all();
+        if (count($queryItems) == 0) {
+            return new PuestoCollection(Puesto::paginate());
+
+        }else{
+            $socios = Puesto::where($queryItems)->paginate();
+            return new PuestoCollection($socios->appends($request->query())); 
+        }
+        
     }
 
     /**

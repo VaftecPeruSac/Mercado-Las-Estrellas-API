@@ -14,16 +14,15 @@ class PersonaResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        // $nombre_completo = $this->nombre+' '+$this->apellidoP+' '+ $this->apellidoM; 
         return [
             'id'  => $this->id,
             'nombre'=>$this->nombre,
-            // 'nombre_completo'=>$nombre_completo,
+            // 'nombre_completo'=>$this->nombre+' '+$this->apellidoP+" "+$this->apellidoM,
             'apellidoP'=>$this->apellidoP,
             'apellidoM'=>$this->apellidoM,
             'dni'=>$this->dni,
             'estado'=>$this->estado,
-            'socio' => SocioResource::collection($this->whenLoaded('socio')) 
+            // 'socio' => SocioResource::collection($this->whenLoaded('socio')) 
         ];
     }
 }

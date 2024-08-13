@@ -15,12 +15,17 @@ class Socio extends Model
 
     public function Persona()
     {
-        return $this->hasOne(Persona::class,'id_persona','id'); //belong to se coloca en la tabla que lleva la fk
+        return $this->hasOne(Persona::class,'id','id_persona'); //belong to se coloca en la tabla que lleva la fk
     }
 
-    public function Puesto()
+    // public function Puesto()
+    // {
+    //     return $this->hasMany(Puesto::class,'id_socio','id');
+    // }
+
+    public function Puestos()
     {
-        return $this->hasMany(Puesto::class);
+        return $this->hasOne(Puesto::class,'id_socio','id');
     }
     
     public function GiroNegocio()

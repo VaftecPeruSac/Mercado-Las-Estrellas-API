@@ -14,25 +14,25 @@ class PersonaCollection extends ResourceCollection
      */
    public function toArray($request)
 {
-    return [
-        'data' => $this->collection->transform(function ($persona) {
-            
-            return [
-                'id' => $persona->id,
-                'nombre' => $persona->nombre,
-                'apellidoP' => $persona->apellidoP,
-                'apellidoM' => $persona->apellidoM,
-                'dni' => $persona->dni,
-                'estado' => $persona->estado,
-                'socio' => new SocioResource($persona->socio), // Si estás incluyendo socios
-            ];
-        }),
-        'links' => [
-            'self' => url('/personas'),
-        ],
-        'meta' => [
-            'total' => $this->collection->count(),
-        ],
-    ];
-}
+        return [
+            'data' => $this->collection->transform(function ($persona) {
+                
+                return [
+                    'id' => $persona->id,
+                    'nombre' => $persona->nombre,
+                    'apellidoP' => $persona->apellidoP,
+                    'apellidoM' => $persona->apellidoM,
+                    'dni' => $persona->dni,
+                    'estado' => $persona->estado,
+                    // 'socio' => new SocioResource($persona->socio), // Si estás incluyendo socios
+                ];
+            }),
+            'links' => [
+                'self' => url('/personas'),
+            ],
+            'meta' => [
+                'total' => $this->collection->count(),
+            ],
+        ];
+    }
 }

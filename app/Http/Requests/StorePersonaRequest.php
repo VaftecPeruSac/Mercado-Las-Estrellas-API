@@ -11,7 +11,7 @@ class StorePersonaRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,6 +23,16 @@ class StorePersonaRequest extends FormRequest
     {
         return [
             //
+            'nombre' => ['required'],
+            'apellidoP' => ['required'],
+            'apellidoM' => ['required'],
+            'dni' => ['required'],
+            'estado' => ['required'],
         ];
+    }
+    protected function prepareForValidation(){
+        $this->merge([
+            'dni'  => $this->dni
+        ]);
     }
 }

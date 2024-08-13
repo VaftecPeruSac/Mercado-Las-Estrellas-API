@@ -14,6 +14,13 @@ class PuestoResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id'=> $this->id,
+            'nombre'=>$this->nombre,
+            // 'id_socio'=>$this->id_socio,
+            // 'id_block'=>$this->id_block,
+            'area'=>$this->area,
+            'estado'=>$this->estado,
+        ];
     }
 }

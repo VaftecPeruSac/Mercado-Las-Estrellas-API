@@ -23,7 +23,7 @@ class PuestoFactory extends Factory
             //
             'nombre'=>$this->faker->nombre(),
             'id_socio'=> Socio::factory(),
-            'id_bloque'=> Block::factory(),
+            'id_block'=> Block::factory(),
             'area'=>$this->faker->area(),
             'estado'=>$this->faker->estado(),
             // 'fecha_registro'=>$this->faker->dateTimeThisDecade()

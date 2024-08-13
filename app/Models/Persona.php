@@ -10,10 +10,15 @@ class Persona extends Model
 {
     use HasFactory;
     protected $fillable = [
+      'nombre',
+      'apellidoP',
+      'apellidoM',
+      'dni',
+      'estado',
 
     ];
      public function Socio()
      {
-        return $this->hasOne(Socio::class,'id_persona','id');
+        return $this->hasOne(Socio::class,'id','id_persona');
      }
 }

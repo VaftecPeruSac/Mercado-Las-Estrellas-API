@@ -11,11 +11,15 @@ class Puesto extends Model
     protected $fiillable = [
 
     ];
+    // public function Socio()
+    // {
+    //     return $this->belongsTo( Socio::class,'id_socio','id');
+    // }
+
     public function Socio()
     {
-        return $this->belongsTo( Socio::class);
+        return $this->belongsTo(Socio::class,'id_socio','id');
     }
-
     public function Block()
     {
         return $this->hasOne(Block::class);

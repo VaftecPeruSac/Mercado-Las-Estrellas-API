@@ -16,10 +16,10 @@ class SocioController extends Controller
      */
     public function index(Request $request)
     {
-        //
+        //opcion 1
+        
         $filter = new SociosFilter();
         $queryItems = $filter->transform($request);
-        // $socios = Socio::all();
         if (count($queryItems) == 0) {
             return new SocioCollection(Socio::paginate());
 
@@ -27,6 +27,15 @@ class SocioController extends Controller
             $socios = Socio::where($queryItems)->paginate();
             return new SocioCollection($socios->appends($request->query())); 
         }
+        //opcion 2
+        // $filter = new SociosFilter();
+        // $queryItems = $filter->transform($request);
+        // $includepuestos = $request->query("puesto");
+        // $socios = Socio::where($queryItems)->paginate();
+        // if ($includepuestos){
+        //     $socios = Socio::with("puesto")->where($queryItems)->paginate();
+        // }
+        // return new SocioCollection($socios->appends($request->query()));
         
     }
 

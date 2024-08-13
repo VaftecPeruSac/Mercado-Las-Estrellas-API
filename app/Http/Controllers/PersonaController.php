@@ -7,6 +7,7 @@ use App\Http\Resources\PersonaCollection;
 use App\Models\Persona;
 use App\Http\Requests\StorePersonaRequest;
 use App\Http\Requests\UpdatePersonaRequest;
+use App\Http\Resources\PersonaResource;
 use Illuminate\Http\Request;
 
 class PersonaController extends Controller
@@ -21,15 +22,11 @@ class PersonaController extends Controller
         $includeSocios = $request->query("socio");
         $personas = Persona::where($queryItems)->paginate();
         if ($includeSocios){
-            // $personas = $personas->with('socio');
             $personas = Persona::with("socio")->where($queryItems)->paginate();
-
         }
         return new PersonaCollection($personas->appends($request->query()));
-
-        // return response()->json($personas);
     }
-
+    
     /**
      * Show the form for creating a new resource.
      */
@@ -44,6 +41,7 @@ class PersonaController extends Controller
     public function store(StorePersonaRequest $request)
     {
         //
+        return new PersonaResource(Persona::create($request->all()));
     }
 
     /**
@@ -51,12 +49,12 @@ class PersonaController extends Controller
      */
     public function show(Persona $persona)
     {
-    //     $includeSocios = request()->query('id_socio');
-    //     if ($includeSocios) {
-    //         return new PersonaResource($persona->loadMissing('socio'));
-    //         # code...
-    //     }
-    //    return new PersonaResource($persona);
+        $includeSocios = request()->query('socio');
+        if ($includeSocios) {
+            return new PersonaResource($persona->loadMissing('socio'));
+            # code...
+        }
+       return new PersonaResource($persona);
     }
 
     /**
