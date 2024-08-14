@@ -7,6 +7,7 @@ use App\Models\Socio;
 use App\Http\Requests\StoreSocioRequest;
 use App\Http\Requests\UpdateSocioRequest;
 use App\Http\Resources\SocioCollection;
+use App\Http\Resources\SocioResource;
 use Illuminate\Http\Request;
 
 class SocioController extends Controller
@@ -52,7 +53,8 @@ class SocioController extends Controller
      */
     public function store(StoreSocioRequest $request)
     {
-        //
+       
+        return new SocioResource(Socio::create($request->all()));
     }
 
     /**

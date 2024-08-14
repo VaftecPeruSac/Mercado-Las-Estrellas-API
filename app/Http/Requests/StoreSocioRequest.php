@@ -23,6 +23,11 @@ class StoreSocioRequest extends FormRequest
     {
         return [
             //
+            'correo' => ['required'],
+            'telefono' => ['required'],
+            'id_gironegocio' => ['required'],
+            'id_persona' => ['required'],
+            'estado' => ['required'],
         ];
     }
 }
