@@ -11,8 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cuotas', function (Blueprint $table) {
-            $table->id();
+        Schema::create('cuota', function (Blueprint $table) {
+            $table->id('id_cuota');
+            $table->unsignedBigInteger('id_servicio');
+            $table->string('precio');
+            $table->string('id_usuarioregistro');
+            $table->dateTime('fecha_registro');
+            $table->foreign('id_servicio')
+            ->references('id_servicio')
+            ->on('servicio');
             $table->timestamps();
         });
     }

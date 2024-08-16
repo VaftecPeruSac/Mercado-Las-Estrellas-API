@@ -11,19 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('socios', function (Blueprint $table) {
-            $table->id();
+        Schema::create('socio', function (Blueprint $table) {
+            $table->id('id_socio');
             $table->string('correo');
             $table->string('telefono');
             $table->string('estado');
+            $table->integer('id_usuarioregistro');
+            $table->dateTime('fecha_registro');
             $table->unsignedBigInteger('id_persona');
             $table->unsignedBigInteger('id_gironegocio');  
             $table->foreign('id_gironegocio')
-            ->references('id')
-            ->on('giro_negocios');
+            ->references('id_gironegocio')
+            ->on('giro_negocio');
             $table->foreign('id_persona')
-			->references('id')
-            ->on('personas');
+			->references('id_persona')
+            ->on('persona');
             $table->timestamps();
         });
     }

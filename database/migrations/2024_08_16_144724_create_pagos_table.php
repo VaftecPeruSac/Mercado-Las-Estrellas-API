@@ -11,8 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pagos', function (Blueprint $table) {
-            $table->id();
+        Schema::create('pago', function (Blueprint $table) {
+            $table->id('id_pago');
+            $table->unsignedBigInteger('id_socio');  
+            $table->unsignedBigInteger('id_documento');
+            $table->integer('total');
+            $table->dateTime('fecha_registro');
+            $table->integer('id_usuarioregistro');
+            $table->foreign('id_socio')
+            ->references('id_socio')
+            ->on('socio');
+            $table->foreign('id_documento')
+            ->references('id_documento')
+            ->on('documento');
+            
             $table->timestamps();
         });
     }

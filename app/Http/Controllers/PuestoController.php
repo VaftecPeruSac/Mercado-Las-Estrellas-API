@@ -22,7 +22,6 @@ class PuestoController extends Controller
         // $socios = Socio::all();
         if (count($queryItems) == 0) {
             return new PuestoCollection(Puesto::paginate());
-
         }else{
             $socios = Puesto::where($queryItems)->paginate();
             return new PuestoCollection($socios->appends($request->query())); 

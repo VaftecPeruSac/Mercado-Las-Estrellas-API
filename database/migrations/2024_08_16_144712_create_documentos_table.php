@@ -11,8 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('documentos', function (Blueprint $table) {
-            $table->id();
+        Schema::create('documento', function (Blueprint $table) {
+            $table->id('id_documento');
+            $table->string('nombre');
+            $table->string('numero');
+            $table->string('serie');
+            $table->string('estado');
+            $table->dateTime('fecha_registro');
+            $table->integer('id_usuarioregistro');
             $table->timestamps();
         });
     }

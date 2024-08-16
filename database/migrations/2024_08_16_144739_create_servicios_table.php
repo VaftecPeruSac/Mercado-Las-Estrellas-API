@@ -11,8 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('servicios', function (Blueprint $table) {
-            $table->id();
+        Schema::create('servicio', function (Blueprint $table) {
+            $table->id('id_servicio');
+            $table->string('descripcion');
+            $table->integer('costo_unitario');
+            $table->integer('id_tiposervicio');
+            $table->dateTime('fecha_registro');
+            $table->integer('id_usuarioregistro');
+            $table->string('estado');
+
             $table->timestamps();
         });
     }
