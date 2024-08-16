@@ -18,3 +18,8 @@ Route::group(['prefix' =>'v1', 'namespace'=>'App\Http\Controllers'], function(){
     Route::apiResource('giro-negocios',GiroNegocioController::class);
     Route::apiResource('blocks',BlockController::class);
 });
+Route::get('/csrf-token', function () {
+    return response()->json([
+        'token' => csrf_token()
+    ]);
+});
