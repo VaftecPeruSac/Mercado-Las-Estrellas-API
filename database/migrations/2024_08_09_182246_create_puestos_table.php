@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('puesto', function (Blueprint $table) {
+        Schema::create('puestos', function (Blueprint $table) {
             $table->id('id_puesto');
             $table->string('nombre');
             $table->unsignedBigInteger('id_socio');
@@ -23,14 +23,14 @@ return new class extends Migration
             $table->dateTime('fecha_registro');
             $table->foreign('id_socio')
             ->references('id_socio')
-            ->on('socio');
+            ->on('socios');
             $table->foreign('id_block')
             ->references('id_block')
-            ->on('block');
+            ->on('blocks');
             $table->foreign('id_inquilino')
             ->references('id_persona')
-            ->on('persona');
-            $table->timestamps();
+            ->on('personas');
+            //$table->timestamps();
         });
     }
 

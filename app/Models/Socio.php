@@ -15,7 +15,7 @@ class Socio extends Model
 
     public function Persona()
     {
-        return $this->hasOne(Persona::class,'id','id_persona'); //belong to se coloca en la tabla que lleva la fk
+        return $this->hasOne(Persona::class,'id_persona','id_persona'); //belong to se coloca en la tabla que lleva la fk
     }
 
     // public function Puesto()
@@ -25,7 +25,7 @@ class Socio extends Model
 
     public function Puestos()
     {
-        return $this->hasOne(Puesto::class,'id_socio','id');
+        return $this->hasOne(Puesto::class,'id_socio','id_socio');
     }
     
     public function GiroNegocio()

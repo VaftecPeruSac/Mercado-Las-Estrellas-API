@@ -18,6 +18,11 @@ class Persona extends Model
     ];
      public function Socio()
      {
-        return $this->hasOne(Socio::class,'id','id_persona');
+        return $this->hasOne(Socio::class,'id_persona','id_persona');
+     }
+
+     public function Puesto()//para inquilino
+     {
+         return $this->hasOne(Persona::class,'id_inquilino','id_persona');
      }
 }

@@ -18,7 +18,7 @@ class PuestoCollection extends ResourceCollection
             'data' => $this->collection->transform(function ($puesto) {
 
                 return [
-                    'id' => $puesto->id,
+                    'id_puesto' => $puesto->id_puesto,
                     'nombre' => $puesto->nombre,
                     'id_socio' => $puesto->id_socio,
                     'id_block' => $puesto->id_block,
@@ -26,6 +26,8 @@ class PuestoCollection extends ResourceCollection
                     'estado' => $puesto->estado,
                     'socio' => new SocioResource($puesto->socio),
                     'persona' => new PersonaResource($puesto->socio->persona),
+                    'block' => new BlockResource($puesto->block),
+                    'inquilino' => new PersonaResource($puesto->inquilino),
                 ];
             }),
             'links' => [

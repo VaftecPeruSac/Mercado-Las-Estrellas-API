@@ -18,7 +18,7 @@ class PersonaCollection extends ResourceCollection
             'data' => $this->collection->transform(function ($persona) {
                 
                 return [
-                    'id' => $persona->id,
+                    'id_persona' => $persona->id_persona,
                     'nombre' => $persona->nombre,
                     'apellidoP' => $persona->apellidoP,
                     'apellidoM' => $persona->apellidoM,

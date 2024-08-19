@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cuota', function (Blueprint $table) {
+        Schema::create('cuotas', function (Blueprint $table) {
             $table->id('id_cuota');
             $table->unsignedBigInteger('id_servicio');
             $table->string('precio');
@@ -19,8 +19,8 @@ return new class extends Migration
             $table->dateTime('fecha_registro');
             $table->foreign('id_servicio')
             ->references('id_servicio')
-            ->on('servicio');
-            $table->timestamps();
+            ->on('servicios');
+            //$table->timestamps();
         });
     }
 

@@ -15,7 +15,7 @@ class PuestoResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'=> $this->id,
+            'id_puesto'=> $this->id_puesto,
             'nombre'=>$this->nombre,
             // 'id_socio'=>$this->id_socio,
             // 'id_block'=>$this->id_block,

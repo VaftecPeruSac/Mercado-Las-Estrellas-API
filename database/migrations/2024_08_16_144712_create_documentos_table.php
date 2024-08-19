@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('documento', function (Blueprint $table) {
+        Schema::create('documentos', function (Blueprint $table) {
             $table->id('id_documento');
             $table->string('nombre');
             $table->string('numero');
@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('estado');
             $table->dateTime('fecha_registro');
             $table->integer('id_usuarioregistro');
-            $table->timestamps();
+            //$table->timestamps();
         });
     }
 

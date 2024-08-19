@@ -14,10 +14,15 @@ class Puesto extends Model
 
     public function Socio()
     {
-        return $this->belongsTo(Socio::class,'id_socio','id');
+        return $this->belongsTo(Socio::class,'id_socio','id_socio');
     }
     public function Block()
     {
-        return $this->hasOne(Block::class);
+        return $this->hasOne(Block::class,'id_block','id_block');
+    }
+
+    public function Inquilino()
+    {
+        return $this->belongsTo(Persona::class,'id_inquilino','id_persona');
     }
 }

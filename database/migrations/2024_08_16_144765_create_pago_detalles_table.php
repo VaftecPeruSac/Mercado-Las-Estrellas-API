@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pago_detalle', function (Blueprint $table) {
+        Schema::create('pago_detalles', function (Blueprint $table) {
             $table->id('id_pagodetalle');
             $table->unsignedBigInteger('id_pago');
             $table->unsignedBigInteger('id_deuda');
@@ -20,11 +20,11 @@ return new class extends Migration
             $table->integer('id_usuarioregistro');
             $table->foreign('id_pago')
             ->references('id_pago')
-            ->on('pago');
+            ->on('pagos');
             $table->foreign('id_deuda')
             ->references('id_deuda')
-            ->on('deuda');
-            $table->timestamps();
+            ->on('deudas');
+            //$table->timestamps();
            
         });
     }

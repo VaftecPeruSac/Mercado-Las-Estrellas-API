@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('servicio', function (Blueprint $table) {
+        Schema::create('servicios', function (Blueprint $table) {
             $table->id('id_servicio');
             $table->string('descripcion');
             $table->integer('costo_unitario');
@@ -20,7 +20,7 @@ return new class extends Migration
             $table->integer('id_usuarioregistro');
             $table->string('estado');
 
-            $table->timestamps();
+            //$table->timestamps();
         });
     }
 

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('persona', function (Blueprint $table) {
+        Schema::create('personas', function (Blueprint $table) {
             $table->id('id_persona');
             $table->string('nombre');
             $table->string('apellidoP');
@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('estado');
             $table->integer('id_usuarioregistro');
             $table->dateTime('fecha_registro');
-            $table->timestamps();
+            // $table->timestamps();
         });
     }
 
