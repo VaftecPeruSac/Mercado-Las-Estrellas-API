@@ -26,6 +26,7 @@ class PuestoCollection extends ResourceCollection
                     'estado' => $puesto->estado,
                     'socio' => new SocioResource($puesto->socio),
                     'persona' => new PersonaResource($puesto->socio->persona),
+                    'giro_negocio' => new GiroNegocioResource($puesto->socio->gironegocio),
                     'block' => new BlockResource($puesto->block),
                     'inquilino' => new PersonaResource($puesto->inquilino),
                 ];

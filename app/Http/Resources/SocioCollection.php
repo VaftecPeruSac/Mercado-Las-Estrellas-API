@@ -24,7 +24,8 @@ class SocioCollection extends ResourceCollection
                     'correo' => $socio->correo,
                     'id_gironegocio' => $socio->id_gironegocio,
                     // 'id_persona' => $socio->id_persona,
-                    'persona' => new PersonaResource($socio->persona), // Si estás incluyendo socios
+                    'persona' => new PersonaResource($socio->persona), // Si estás incluyendo sociosc
+                    'gironegocio' => new GiroNegocioResource($socio->gironegocio), //
                     // 'puestos' => new PuestoResource($socio->puestos), // Si estás incluyendo socios
                 ];
             }),

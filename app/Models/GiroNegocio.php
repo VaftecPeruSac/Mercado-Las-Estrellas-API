@@ -15,6 +15,6 @@ class GiroNegocio extends Model
 
     public function Socio()
     {
-        return $this->hasOne(Socio::class);
-    }
+        return $this->hasOne(GiroNegocio::class,'id_gironegocio','id_gironegocio');
+    } 
 }
