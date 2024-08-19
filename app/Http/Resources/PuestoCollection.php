@@ -29,6 +29,7 @@ class PuestoCollection extends ResourceCollection
                     'giro_negocio' => new GiroNegocioResource($puesto->socio->gironegocio),
                     'block' => new BlockResource($puesto->block),
                     'inquilino' => new PersonaResource($puesto->inquilino),
+                    'deuda' => new DeudaResource($puesto->deuda),
                 ];
             }),
             'links' => [

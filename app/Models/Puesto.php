@@ -20,6 +20,11 @@ class Puesto extends Model
     {
         return $this->hasOne(Block::class,'id_block','id_block');
     }
+    
+    public function Deuda()
+    {
+        return $this->belongsTo(Deuda::class,'id_puesto','id_puesto');
+    }
 
     public function Inquilino()
     {
