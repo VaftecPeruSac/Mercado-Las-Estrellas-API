@@ -17,6 +17,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::post('v1/personas', [PersonaController::class, 'store']);
+
 Route::group(['prefix' =>'v1', 'namespace'=>'App\Http\Controllers'], function(){
     Route::apiResource('personas',PersonaController::class);
     Route::apiResource('socios',SocioController::class);
@@ -30,8 +32,8 @@ Route::group(['prefix' =>'v1', 'namespace'=>'App\Http\Controllers'], function(){
     Route::apiResource('pago',PagoController::class);
     Route::apiResource('pago_detalle',PagoDetalleController::class);
 });
-Route::get('/csrf-token', function () {
-    return response()->json([
-        'token' => csrf_token()
-    ]);
-});
+// Route::get('/csrf-token', function () {
+//     return response()->json([
+//         'token' => csrf_token()
+//     ]);
+// });

@@ -28,6 +28,8 @@ class StorePersonaRequest extends FormRequest
             'apellidoM' => ['required'],
             'dni' => ['required'],
             'estado' => ['required'],
+            'id_usuarioregistro' => ['required'],
+            'fecha_registro' => ['required'],
         ];
     }
     protected function prepareForValidation(){

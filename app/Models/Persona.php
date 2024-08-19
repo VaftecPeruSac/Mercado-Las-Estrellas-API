@@ -14,8 +14,11 @@ class Persona extends Model
       'apellidoM',
       'dni',
       'estado',
-
+      'id_usuarioregistro',
+      'fecha_registro',
     ];
+
+    public $timestamps = false;
      public function Socio()
      {
         return $this->hasOne(Socio::class,'id_persona','id_persona');

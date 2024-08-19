@@ -30,9 +30,17 @@ class PersonaController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $persona = new Persona();
+        $persona->nombre = $request->input('nombre');
+        $persona->apellidoP = $request->input('apellidoP');
+        $persona->apellidoM = $request->input('apellidoM');
+        $persona->dni = $request->input('dni');
+        $persona->estado = $request->input('estado');
+        $persona->id_usuarioregistro = $request->input('id_usuarioregistro');
+        $persona->fecha_registro = $request->input('fecha_registro');
+        $persona->save();
     }
 
     /**
@@ -40,7 +48,6 @@ class PersonaController extends Controller
      */
     public function store(StorePersonaRequest $request)
     {
-        //
         return new PersonaResource(Persona::create($request->all()));
     }
 
