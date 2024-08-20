@@ -13,23 +13,26 @@ return new class extends Migration
     {
         Schema::create('puestos', function (Blueprint $table) {
             $table->id('id_puesto');
-            $table->string('nombre');
             $table->unsignedBigInteger('id_socio');
+            $table->unsignedBigInteger('id_gironegocio');
             $table->unsignedBigInteger('id_block');
             $table->string('area');
             $table->unsignedBigInteger('id_inquilino');
             $table->string('estado');
-            $table->integer('id_usuarioregistro');
             $table->dateTime('fecha_registro');
+            //relaciones
             $table->foreign('id_socio')
             ->references('id_socio')
             ->on('socios');
+            $table->foreign('id_gironegocio')
+            ->references('id_gironegocio')
+            ->on('giro_negocios');
             $table->foreign('id_block')
             ->references('id_block')
             ->on('blocks');
             $table->foreign('id_inquilino')
-            ->references('id_persona')
-            ->on('personas');
+            ->references('id_inquilino')
+            ->on('inquilinos');
             //$table->timestamps();
         });
     }

@@ -20,11 +20,13 @@ class PersonaCollection extends ResourceCollection
                 return [
                     'id_persona' => $persona->id_persona,
                     'nombre' => $persona->nombre,
-                    'apellidoP' => $persona->apellidoP,
-                    'apellidoM' => $persona->apellidoM,
+                    'apellido_paterno' => $persona->apellido_paterno,
+                    'apellido_materno' => $persona->apellido_materno,
                     'dni' => $persona->dni,
+                    'correo' => $persona->correo,
+                    'telefono' => $persona->telefono,
                     'estado' => $persona->estado,
-                    // 'socio' => new SocioResource($persona->socio), // Si estás incluyendo socios
+                    'fecha_registro' => $persona->fecha_registro,
                 ];
             }),
             'links' => [

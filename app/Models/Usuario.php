@@ -5,16 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Persona extends Model
+class Usuario extends Model
 {
     use HasFactory;
     protected $fillable = [
-      'nombre',
-      'apellido_paterno',
-      'apellido_materno',
-      'dni',
-      'correo',
-      'telefono',
+      'id_persona',
+      'nombre_usuario',
+      'contrasenia',
+      'rol',
       'estado',
       'fecha_registro',
     ];
@@ -22,9 +20,13 @@ class Persona extends Model
     public $timestamps = false;
 
     //antes tenia relacion con socio y puesto
-     public function Usuario()
-     {
-        return $this->hasOne(Usuario::class,'id_persona','id_persona');
+     public function Persona()
+     {//belongsTo es para la tabla que tiene la fk
+        return $this->belongsTo(Persona::class,'id_persona','id_persona');
      }
 
+     public function Socio()
+     {//hasOne es para la tabla que no tiene la fk
+        return $this->hasOne(Socio::class,'id_usuario','id_usuario');
+     }
 }

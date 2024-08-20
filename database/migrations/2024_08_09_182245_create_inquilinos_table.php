@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('servicios', function (Blueprint $table) {
-            $table->id('id_servicio');
-            $table->string('descripcion');
-            $table->integer('costo_unitario');
-            $table->integer('tipo_servicio');
-            $table->string('estado');
-            $table->dateTime('fecha_registro');
+        Schema::create('inquilinos', function (Blueprint $table) {
+            $table->id('id_inquilino');
+            $table->string('nombre_completo');
+            $table->string('apellido_materno');
+            $table->string('apellido_paterno');
+            $table->string('dni');
+            $table->string('telefono');
             //$table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('servicios');
+        Schema::dropIfExists('inquilinos');
     }
 };

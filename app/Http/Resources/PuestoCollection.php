@@ -19,17 +19,18 @@ class PuestoCollection extends ResourceCollection
 
                 return [
                     'id_puesto' => $puesto->id_puesto,
-                    'nombre' => $puesto->nombre,
                     'id_socio' => $puesto->id_socio,
+                    'id_gironegocio' => $puesto->id_gironegocio,
                     'id_block' => $puesto->id_block,
                     'area' => $puesto->area,
+                    'id_inquilino' => $puesto->id_inquilino,
                     'estado' => $puesto->estado,
+                    'fecha_registro' => $puesto->fecha_registro,
                     'socio' => new SocioResource($puesto->socio),
-                    'persona' => new PersonaResource($puesto->socio->persona),
-                    'giro_negocio' => new GiroNegocioResource($puesto->socio->gironegocio),
+                    'gironegocio' => new GiroNegocioResource($puesto->gironegocio), // Si estás incluyendo sociosc
                     'block' => new BlockResource($puesto->block),
-                    'inquilino' => new PersonaResource($puesto->inquilino),
-                    'deuda' => new DeudaResource($puesto->deuda),
+                    'inquilino' => new InquilinoResource($puesto->inquilino),
+                    // 'deuda' => new DeudaResource($puesto->deuda),
                 ];
             }),
             'links' => [

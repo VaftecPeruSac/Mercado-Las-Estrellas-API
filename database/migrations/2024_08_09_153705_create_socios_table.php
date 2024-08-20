@@ -13,19 +13,14 @@ return new class extends Migration
     {
         Schema::create('socios', function (Blueprint $table) {
             $table->id('id_socio');
-            $table->string('correo');
-            $table->string('telefono');
+            $table->unsignedBigInteger('id_usuario');
+            $table->string('saldo');
             $table->string('estado');
-            $table->integer('id_usuarioregistro');
             $table->dateTime('fecha_registro');
-            $table->unsignedBigInteger('id_persona');
-            $table->unsignedBigInteger('id_gironegocio');  
-            $table->foreign('id_gironegocio')
-            ->references('id_gironegocio')
-            ->on('giro_negocios');
-            $table->foreign('id_persona')
-			->references('id_persona')
-            ->on('personas');
+            //relaciones
+            $table->foreign('id_usuario')
+            ->references('id_usuario')
+            ->on('usuarios');
             //$table->timestamps();
         });
     }

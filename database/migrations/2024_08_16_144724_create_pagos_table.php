@@ -15,16 +15,17 @@ return new class extends Migration
             $table->id('id_pago');
             $table->unsignedBigInteger('id_socio');  
             $table->unsignedBigInteger('id_documento');
-            $table->integer('total');
+            $table->integer('numero_pago');
+            $table->integer('serie');
+            $table->integer('total_pago');
             $table->dateTime('fecha_registro');
-            $table->integer('id_usuarioregistro');
+            //relaciones
             $table->foreign('id_socio')
             ->references('id_socio')
             ->on('socios');
             $table->foreign('id_documento')
             ->references('id_documento')
             ->on('documentos');
-            
             //$table->timestamps();
         });
     }

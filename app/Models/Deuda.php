@@ -8,9 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Deuda extends Model
 {
     use HasFactory;
-
-    public function Deuda()
-    {
-        return $this->hasOne(Puesto::class,'id_puesto','id_puesto');
+    public function Socio()
+    {//belongsTo es para la tabla que tiene la fk
+       return $this->belongsTo(Socio::class,'id_socio','id_socio');
     }
 }

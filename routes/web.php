@@ -11,6 +11,7 @@ use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\PuestoController;
 use App\Http\Controllers\ServicioController;
 use App\Http\Controllers\SocioController;
+use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -21,6 +22,7 @@ Route::post('v1/personas', [PersonaController::class, 'store']);
 
 Route::group(['prefix' =>'v1', 'namespace'=>'App\Http\Controllers'], function(){
     Route::apiResource('personas',PersonaController::class);
+    Route::apiResource('usuarios',UsuarioController::class);
     Route::apiResource('socios',SocioController::class);
     Route::apiResource('puestos',PuestoController::class);
     Route::apiResource('giro-negocios',GiroNegocioController::class);

@@ -13,21 +13,21 @@ class Puesto extends Model
     ];
 
     public function Socio()
-    {
-        return $this->belongsTo(Socio::class,'id_socio','id_socio');
+    {//belongsTo es para la tabla que tiene la fk
+       return $this->belongsTo(Socio::class,'id_socio','id_socio');
     }
     public function Block()
     {
         return $this->hasOne(Block::class,'id_block','id_block');
     }
     
-    public function Deuda()
+    public function Gironegocio()
     {
-        return $this->belongsTo(Deuda::class,'id_puesto','id_puesto');
+        return $this->hasOne(GiroNegocio::class,'id_gironegocio','id_gironegocio');
     }
-
+    
     public function Inquilino()
     {
-        return $this->belongsTo(Persona::class,'id_inquilino','id_persona');
+        return $this->belongsTo(Inquilino::class,'id_inquilino','id_inquilino');
     }
 }

@@ -13,14 +13,13 @@ class SocioResource extends JsonResource
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array
-    {
+    {//resource tiene los datos que jalan en otras tablas
         return [
             'id_socio'=>$this->id_socio,
-            'correo'=>$this->correo,
-            'telefono' => $this->telefono, 
-            'id_persona'=>$this->id_persona,
+            'id_usuario'=>$this->id_usuario,
+            'saldo' => $this->saldo, 
             'fecha_registro'=>$this->fecha_registro,
-            'estado'=>$this->estado,
+            'usuario' => new UsuarioResource($this->usuario), // Si estás incluyendo sociosc
         ];
     }
 }

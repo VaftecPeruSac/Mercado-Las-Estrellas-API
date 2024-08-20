@@ -16,17 +16,18 @@ class PersonaFactory extends Factory
      */
     public function definition(): array
     {
-        $nombre_completo = $this->faker->nombre()+' '+$this->faker->apellidoP()+' '+ $this->faker->apellidoM();
-        // $type = $this->faker->ramdonElement(['I','B']);
-        // $name  = $type == 'I'  ?   $this->faker->name():$this->faker->company();
+        $nombre_completo = $this->faker->nombre()+' '+$this->faker->apellido_paterno()+' '+ $this->faker->apellido_materno();
         return [
             //
             'nombre'=>$this->faker->nombre(),
             'nombre_completo'=>$nombre_completo,
-            'apellidoP'=>$this->faker->apellidoP(),
-            'apellidoM'=>$this->faker->apellidoM(),
+            'apellido_paterno'=>$this->faker->apellido_paterno(),
+            'apellido_materno'=>$this->faker->apellido_materno(),
             'dni'=>$this->faker->dni(),
+            'correo'=>$this->faker->correo(),
+            'telefono'=>$this->faker->telefono(),
             'estado'=>$this->faker->estado(),
+            'fecha_registro'=>$this->faker->fecha_registro(),
         ];
     }
 }

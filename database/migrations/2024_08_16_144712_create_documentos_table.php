@@ -13,12 +13,10 @@ return new class extends Migration
     {
         Schema::create('documentos', function (Blueprint $table) {
             $table->id('id_documento');
-            $table->string('nombre');
-            $table->string('numero');
+            $table->string('numero_documento');
             $table->string('serie');
             $table->string('estado');
             $table->dateTime('fecha_registro');
-            $table->integer('id_usuarioregistro');
             //$table->timestamps();
         });
     }

@@ -13,13 +13,19 @@ return new class extends Migration
     {
         Schema::create('cuotas', function (Blueprint $table) {
             $table->id('id_cuota');
+            $table->unsignedBigInteger('id_puesto');//nueva columna
             $table->unsignedBigInteger('id_servicio');
-            $table->string('precio');
-            $table->string('id_usuarioregistro');
+            $table->string('importe');
+            $table->dateTime('fecha_vencimiento');
             $table->dateTime('fecha_registro');
+            //relaciones
+            $table->foreign('id_puesto')
+            ->references('id_puesto')
+            ->on('puestos');
             $table->foreign('id_servicio')
             ->references('id_servicio')
             ->on('servicios');
+            
             //$table->timestamps();
         });
     }

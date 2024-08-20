@@ -12,26 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('deudas', function (Blueprint $table) {
-            $table->id('id_deuda');
-            $table->unsignedBigInteger('id_cuota');
-            $table->unsignedBigInteger('id_puesto');
+            $table->id('id_deuda');;
             $table->unsignedBigInteger('id_socio');
-            $table->unsignedBigInteger('id_servicio');
-            $table->integer('importe');
+            $table->unsignedBigInteger('id_cuota');
+            $table->integer('total_deuda');
             $table->dateTime('fecha_registro');
-            $table->integer('id_usuarioregistro');
-            $table->foreign('id_cuota')
-            ->references('id_cuota')
-            ->on('cuotas');
-            $table->foreign('id_puesto')
-            ->references('id_puesto')
-            ->on('puestos');
+            //relaciones
             $table->foreign('id_socio')
             ->references('id_socio')
             ->on('socios');
-            $table->foreign('id_servicio')
-            ->references('id_servicio')
-            ->on('servicios');
+            $table->foreign('id_cuota')
+            ->references('id_cuota')
+            ->on('cuotas');
             //$table->timestamps();
         });
     }

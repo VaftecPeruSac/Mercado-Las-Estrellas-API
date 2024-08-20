@@ -1,12 +1,11 @@
 <?php
 namespace App\Filters;
 use Illuminate\Http\Request;
-class  PersonaFilter extends ApiFilter{
+class  UsuarioFilter extends ApiFilter{
 
     protected $safeParams = [
         'id' => ['eq'],
-        'nombre' => ['eq'],
-        'dni' => ['eq'],
+        'nombre_usuario' => ['eq'],
         'estado' => ['eq'],
     ];
     protected $operatorMap = [

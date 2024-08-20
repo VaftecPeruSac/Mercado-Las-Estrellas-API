@@ -13,23 +13,18 @@ class Socio extends Model
 
     ];
 
-    public function Persona()
-    {
-        return $this->hasOne(Persona::class,'id_persona','id_persona'); //belong to se coloca en la tabla que lleva la fk
+    public function Usuario()
+    {//belongsTo es para la tabla que tiene la fk
+       return $this->belongsTo(Usuario::class,'id_usuario','id_usuario');
     }
 
-    // public function Puesto()
-    // {
-    //     return $this->hasMany(Puesto::class,'id_socio','id');
-    // }
-
-    public function Puestos()
-    {
-        return $this->hasOne(Puesto::class,'id_socio','id_socio');
+    public function Deuda()
+    {//hasOne es para la tabla que no tiene la fk
+       return $this->hasOne(Deuda::class,'id_socio','id_socio');
     }
     
-    public function GiroNegocio()
-    {
-        return $this->belongsTo(GiroNegocio::class,'id_gironegocio','id_gironegocio');
-    }   
+    public function Puesto()
+    {//hasOne es para la tabla que no tiene la fk
+       return $this->hasOne(Puesto::class,'id_socio','id_socio');
+    }  
 }

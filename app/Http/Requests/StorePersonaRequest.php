@@ -22,13 +22,13 @@ class StorePersonaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
             'nombre' => ['required'],
-            'apellidoP' => ['required'],
-            'apellidoM' => ['required'],
+            'apellido_paterno' => ['required'],
+            'apellido_materno' => ['required'],
             'dni' => ['required'],
+            'correo' => ['required'],
+            'telefono' => ['required'],
             'estado' => ['required'],
-            'id_usuarioregistro' => ['required'],
             'fecha_registro' => ['required'],
         ];
     }
