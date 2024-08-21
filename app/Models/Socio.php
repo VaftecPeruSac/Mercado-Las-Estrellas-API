@@ -9,10 +9,14 @@ class Socio extends Model
 {
     use HasFactory;
 
-    protected $fiillable = [    
-
+    protected $fillable = [    
+      'id_usuario',
+      'saldo',
+      'estado',
+      'fecha_registro',
     ];
-
+    //para no usar los timestamps en el migrate, de lo contrario requiere ello y no permite hacer registros
+    public $timestamps = false;
     public function Usuario()
     {//belongsTo es para la tabla que tiene la fk
        return $this->belongsTo(Usuario::class,'id_usuario','id_usuario');

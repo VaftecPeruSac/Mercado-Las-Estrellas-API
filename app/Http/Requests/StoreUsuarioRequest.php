@@ -11,7 +11,7 @@ class StoreUsuarioRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,17 @@ class StoreUsuarioRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'id_persona' => ['required'],
+            'nombre_usuario' => ['required'],
+            'contrasenia' => ['required'],
+            'rol' => ['required'],
+            'estado' => ['required'],
+            'fecha_registro' => ['required'],
         ];
+    }
+    protected function prepareForValidation(){
+        $this->merge([
+            'telefono'  => $this->telefono
+        ]);
     }
 }

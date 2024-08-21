@@ -16,13 +16,10 @@ class DeudaResource extends JsonResource
     {
         return [
             'id_deuda'=>$this->id_deuda,
-            'id_cuota'=>$this->id_cuota,
-            'id_puesto' => $this->id_puesto, //fk
             'id_socio'=>$this->id_socio,
-            'id_servicio'=>$this->id_servicio,
-            'importe'=>$this->importe,
+            'id_cuota'=>$this->id_cuota,
+            'total_deuda'=>$this->total_deuda,
             'fecha_registro'=>$this->fecha_registro,
-            'id_usuarioregistro'=>$this->id_usuarioregistro,
         ];
     }
 }

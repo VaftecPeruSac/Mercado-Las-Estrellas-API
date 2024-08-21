@@ -11,7 +11,7 @@ class StorePuestoRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,13 @@ class StorePuestoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'id_socio' => ['required'],
+            'id_gironegocio' => ['required'],
+            'id_block' => ['required'],
+            'area' => ['required'],
+            'id_inquilino' => ['required'],
+            'estado' => ['required'],
+            'fecha_registro' => ['required'],
         ];
     }
 }

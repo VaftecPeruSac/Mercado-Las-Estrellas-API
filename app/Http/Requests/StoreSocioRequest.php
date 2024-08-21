@@ -4,6 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+use function PHPUnit\Framework\isTrue;
+
 class StoreSocioRequest extends FormRequest
 {
     /**
@@ -11,7 +13,7 @@ class StoreSocioRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,11 +25,10 @@ class StoreSocioRequest extends FormRequest
     {
         return [
             //
-            'correo' => ['required'],
-            'telefono' => ['required'],
-            'id_gironegocio' => ['required'],
-            'id_persona' => ['required'],
+            'id_usuario' => ['required'],
+            'saldo' => ['required'],
             'estado' => ['required'],
+            'fecha_registro' => ['required'],
         ];
     }
 }

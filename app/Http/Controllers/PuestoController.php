@@ -7,6 +7,7 @@ use App\Http\Requests\StorePuestoRequest;
 use App\Http\Requests\UpdatePuestoRequest;
 use App\Http\Resources\PuestoCollection;
 use App\Filters\PuestoFilter;
+use App\Http\Resources\PuestoResource;
 use Illuminate\Http\Request;
 
 class PuestoController extends Controller
@@ -42,7 +43,8 @@ class PuestoController extends Controller
      */
     public function store(StorePuestoRequest $request)
     {
-        //
+        new PuestoResource(Puesto::create($request->all()));
+        return "Puesto Registrado correctamente";
     }
 
     /**

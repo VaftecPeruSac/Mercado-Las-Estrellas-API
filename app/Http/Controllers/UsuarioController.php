@@ -7,6 +7,7 @@ use App\Models\Usuario;
 use App\Http\Requests\StoreUsuarioRequest;
 use App\Http\Requests\UpdateUsuarioRequest;
 use App\Http\Resources\UsuarioCollection;
+use App\Http\Resources\UsuarioResource;
 use Illuminate\Http\Request;
 class UsuarioController extends Controller
 {
@@ -37,8 +38,9 @@ class UsuarioController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(StoreUsuarioRequest $request)
-    {
-        //
+    { // authorize=true en StoreUsuarioRequest
+        new UsuarioResource(Usuario::create($request->all()));
+        return "Usuario Registrado correctamente";
     }
 
     /**

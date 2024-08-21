@@ -8,10 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class Puesto extends Model
 {
     use HasFactory;
-    protected $fiillable = [
-
-    ];
-
+    protected $fillable = [    
+        'id_socio',
+        'id_gironegocio',
+        'id_block',
+        'area',
+        'id_inquilino',
+        'estado',
+        'fecha_registro',
+      ];
+    //para no usar los timestamps en el migrate, de lo contrario requiere ello y no permite hacer registros
+    public $timestamps = false;
     public function Socio()
     {//belongsTo es para la tabla que tiene la fk
        return $this->belongsTo(Socio::class,'id_socio','id_socio');

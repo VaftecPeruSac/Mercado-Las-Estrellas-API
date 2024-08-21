@@ -18,12 +18,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('v1/personas', [PersonaController::class, 'store']);
+// Route::post('v1/personas', [PersonaController::class, 'store']);
+// Route::post('v1/usuarios', [UsuarioController::class, 'store']);
 
 Route::group(['prefix' =>'v1', 'namespace'=>'App\Http\Controllers'], function(){
     Route::apiResource('personas',PersonaController::class);
     Route::apiResource('usuarios',UsuarioController::class);
     Route::apiResource('socios',SocioController::class);
+    // Route::apiResource('socio/registrar',SocioController::class,'store');
     Route::apiResource('puestos',PuestoController::class);
     Route::apiResource('giro-negocios',GiroNegocioController::class);
     Route::apiResource('blocks',BlockController::class);

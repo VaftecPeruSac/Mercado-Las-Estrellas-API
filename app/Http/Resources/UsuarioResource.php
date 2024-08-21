@@ -18,12 +18,10 @@ class UsuarioResource extends JsonResource
             'id_persona' => $this->id_persona,
             'nombre_usuario' => $this->nombre_usuario,
             'contrasenia' => $this->contrasenia,
-            'rol' => $this->dni,
+            'rol' => $this->rol,
             'estado' => $this->estado,
             'fecha_registro' => $this->fecha_registro,
-            'persona' => new PersonaResource($this->persona), // Si estás incluyendo sociosc
-
+            'persona' => new PersonaResource($this->persona),//solo para el listar
         ];
     }
-    
 }
