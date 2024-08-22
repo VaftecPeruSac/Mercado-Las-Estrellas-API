@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_socio');
             $table->unsignedBigInteger('id_gironegocio');
             $table->unsignedBigInteger('id_block');
+            $table->string('numero_puesto');
             $table->string('area');
             $table->unsignedBigInteger('id_inquilino');
             $table->string('estado');

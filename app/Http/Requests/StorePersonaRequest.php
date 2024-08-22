@@ -28,6 +28,8 @@ class StorePersonaRequest extends FormRequest
             'dni' => ['required'],
             'correo' => ['required'],
             'telefono' => ['required'],
+            'direccion' => ['required'],
+            'sexo' => ['required'],
             'estado' => ['required'],
             'fecha_registro' => ['required'],
         ];

@@ -11,8 +11,8 @@ class Socio extends Model
 
     protected $fillable = [    
       'id_usuario',
+      'tipo_persona',
       'saldo',
-      'estado',
       'fecha_registro',
     ];
     //para no usar los timestamps en el migrate, de lo contrario requiere ello y no permite hacer registros

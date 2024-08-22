@@ -5,9 +5,6 @@ class  SociosFilter extends ApiFilter{
 
     protected $safeParams = [
         'id' => ['eq'],
-        'id_persona' => ['eq'],
-        'correo' => ['eq'],
-        'telefono' => ['eq'],
     ];
     protected $operatorMap = [
         'eq' => '=',

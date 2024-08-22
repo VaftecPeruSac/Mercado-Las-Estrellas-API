@@ -17,8 +17,8 @@ class SocioResource extends JsonResource
         return [
             // 'id_socio'=>$this->id_socio,
             'id_usuario'=>$this->id_usuario,
+            'tipo_persona' => $this->tipo_persona, 
             'saldo' => $this->saldo, 
-            'estado' => $this->estado, 
             'fecha_registro'=>$this->fecha_registro,
             'usuario' => new UsuarioResource($this->usuario), // Si estás incluyendo socios
             'deuda' => new DeudaResource($this->deuda), // Si estás incluyendo socios

@@ -22,6 +22,7 @@ class PuestoCollection extends ResourceCollection
                     'id_socio' => $puesto->id_socio,
                     'id_gironegocio' => $puesto->id_gironegocio,
                     'id_block' => $puesto->id_block,
+                    'numero_puesto' => $puesto->numero_puesto,
                     'area' => $puesto->area,
                     'id_inquilino' => $puesto->id_inquilino,
                     'estado' => $puesto->estado,

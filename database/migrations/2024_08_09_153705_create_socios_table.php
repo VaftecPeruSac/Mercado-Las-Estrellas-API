@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('socios', function (Blueprint $table) {
             $table->id('id_socio');
             $table->unsignedBigInteger('id_usuario');
+            $table->string('tipo_persona');
             $table->string('saldo');
-            $table->string('estado');
             $table->dateTime('fecha_registro');
             //relaciones
             $table->foreign('id_usuario')

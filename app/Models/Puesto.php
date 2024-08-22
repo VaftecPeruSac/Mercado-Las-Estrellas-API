@@ -12,6 +12,7 @@ class Puesto extends Model
         'id_socio',
         'id_gironegocio',
         'id_block',
+        'numero_puesto',
         'area',
         'id_inquilino',
         'estado',

@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('dni');
             $table->string('correo');
             $table->string('telefono');
+            $table->string('direccion');
+            $table->string('sexo');
             $table->string('estado');
             $table->dateTime('fecha_registro');
             // $table->timestamps();

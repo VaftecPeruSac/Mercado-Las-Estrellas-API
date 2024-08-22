@@ -26,8 +26,8 @@ class StoreSocioRequest extends FormRequest
         return [
             //
             'id_usuario' => ['required'],
+            'tipo_persona' => ['required'],
             'saldo' => ['required'],
-            'estado' => ['required'],
             'fecha_registro' => ['required'],
         ];
     }

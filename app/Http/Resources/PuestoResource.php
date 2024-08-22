@@ -19,6 +19,7 @@ class PuestoResource extends JsonResource
             'id_socio'=>$this->id_socio,
             'id_gironegocio'=>$this->id_gironegocio,
             'id_block'=>$this->id_block,
+            'numero_puesto'=>$this->numero_puesto,
             'area'=>$this->area,
             'id_inquilino'=>$this->id_inquilino,
             'estado'=>$this->estado,

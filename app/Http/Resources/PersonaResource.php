@@ -21,6 +21,8 @@ class PersonaResource extends JsonResource
             'dni' => $this->dni,
             'correo' => $this->correo,
             'telefono' => $this->telefono,
+            'direccion'=> $this->direccion,
+            'sexo'=> $this->sexo,
             'estado' => $this->estado,
             'fecha_registro' => $this->fecha_registro,
         ];

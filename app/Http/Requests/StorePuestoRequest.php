@@ -25,6 +25,7 @@ class StorePuestoRequest extends FormRequest
             'id_socio' => ['required'],
             'id_gironegocio' => ['required'],
             'id_block' => ['required'],
+            'numero_puesto' => ['required'],
             'area' => ['required'],
             'id_inquilino' => ['required'],
             'estado' => ['required'],

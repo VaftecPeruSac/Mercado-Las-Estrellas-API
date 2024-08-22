@@ -20,12 +20,12 @@ class SocioCollection extends ResourceCollection
                 return [
                     'id_socio' => $this->id_socio,
                     'id_usuario' => $this->id_usuario,
+                    'tipo_persona' => $this->tipo_persona,
                     'saldo' => $this->saldo,
-                    'estado' => $this->estado,
                     'fecha_registro' => $this->fecha_registro,
                     // 'id_persona' => $socio->id_persona,
-                    'persona' => new PersonaResource($socio->persona), // Si estás incluyendo sociosc
-                    'gironegocio' => new GiroNegocioResource($socio->gironegocio), //
+                    // 'persona' => new PersonaResource($socio->persona), // Si estás incluyendo sociosc
+                    // 'gironegocio' => new GiroNegocioResource($socio->gironegocio), //
                     // 'puestos' => new PuestoResource($socio->puestos), // Si estás incluyendo socios
                 ];
             }),

@@ -25,6 +25,8 @@ class PersonaCollection extends ResourceCollection
                     'dni' => $persona->dni,
                     'correo' => $persona->correo,
                     'telefono' => $persona->telefono,
+                    'direccion' => $persona->direccion,
+                    'sexo' => $persona->sexo,
                     'estado' => $persona->estado,
                     'fecha_registro' => $persona->fecha_registro,
                 ];
