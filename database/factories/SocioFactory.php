@@ -1,9 +1,7 @@
 <?php
 
 namespace Database\Factories;
-
-use App\Models\GiroNegocio;
-use App\Models\Persona;
+use App\Models\Usuario;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,11 +18,10 @@ class SocioFactory extends Factory
     {
         return [
             //
-            'id_gironegocio'=>GiroNegocio::factory(),
-            'correo'=>$this->faker->correo(),
-            'telefono'=>$this->faker->telefono(),
+            'id_usuario'=> Usuario::factory(),
+            'tipo_persona'=>$this->faker->tipo_persona(),
             'estado'=>$this->faker->estado(),
-            'id_persona'=> Persona::factory(),
+            'fecha_registro'=>$this->faker->fecha_registro(),
         ];
     }
 }

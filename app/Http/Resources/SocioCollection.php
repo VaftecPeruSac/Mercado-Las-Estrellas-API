@@ -18,11 +18,11 @@ class SocioCollection extends ResourceCollection
             'data' => $this->collection->transform(function ($socio) {
 
                 return [
-                    'id_socio' => $this->id_socio,
-                    'id_usuario' => $this->id_usuario,
-                    'tipo_persona' => $this->tipo_persona,
-                    'saldo' => $this->saldo,
-                    'fecha_registro' => $this->fecha_registro,
+                    'id_socio' => $socio->id_socio,
+                    'id_usuario' => $socio->id_usuario,
+                    'tipo_persona' => $socio->tipo_persona,
+                    'saldo' => $socio->saldo,
+                    'fecha_registro' => $socio->fecha_registro,
                     // 'id_persona' => $socio->id_persona,
                     // 'persona' => new PersonaResource($socio->persona), // Si estás incluyendo sociosc
                     // 'gironegocio' => new GiroNegocioResource($socio->gironegocio), //

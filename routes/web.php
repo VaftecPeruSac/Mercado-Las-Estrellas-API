@@ -34,6 +34,7 @@ Route::group(['prefix' =>'v1', 'namespace'=>'App\Http\Controllers'], function(){
     Route::apiResource('deudas',DeudaController::class);
     Route::apiResource('servicios',ServicioController::class);
     Route::apiResource('pago',PagoController::class);
+    Route::apiResource('deudas',DeudaController::class);
     Route::apiResource('pago_detalle',PagoDetalleController::class);
 });
 // Route::get('/csrf-token', function () {

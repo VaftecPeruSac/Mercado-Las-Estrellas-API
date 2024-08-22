@@ -12,8 +12,24 @@ class DeudaCollection extends ResourceCollection
      *
      * @return array<int|string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'data' => $this->collection->transform(function ($deuda) {
+
+                return [
+                    'id_deuda' => $deuda->id_deuda,
+                    'id_socio' => $deuda->id_socio,
+                    'total_deuda' => $deuda->total_deuda,
+                    'fecha_registro' => $deuda->fecha_registro,
+                ];
+            }),
+            'links' => [
+                'self' => url('/cuotas'),
+            ],
+            'meta' => [
+                'total' => $this->collection->count(),
+            ],
+        ];
     }
 }

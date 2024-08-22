@@ -11,7 +11,7 @@ class StoreDeudaRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,6 +23,9 @@ class StoreDeudaRequest extends FormRequest
     {
         return [
             //
+            'id_socio' => ['required'],
+            'total_deuda' => ['required'],
+            'fecha_registro' => ['required'],
         ];
     }
 }
