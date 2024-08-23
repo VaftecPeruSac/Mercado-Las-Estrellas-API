@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_persona');
             $table->string('nombre_usuario');
             $table->string('contrasenia');
-            $table->string('rol');
+            $table->string('rol')->nullable();
             $table->string('estado');
             $table->dateTime('fecha_registro');
             //relaciones

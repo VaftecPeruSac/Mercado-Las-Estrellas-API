@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('puestos', function (Blueprint $table) {
             $table->id('id_puesto');
-            $table->unsignedBigInteger('id_socio');
+            $table->unsignedBigInteger('id_socio')->nullable();
             $table->unsignedBigInteger('id_gironegocio');
             $table->unsignedBigInteger('id_block');
-            $table->string('numero_puesto');
-            $table->string('area');
+            $table->string('numero_puesto',30);
+            $table->string('area',12);
             $table->unsignedBigInteger('id_inquilino');
             $table->string('estado');
             $table->dateTime('fecha_registro');

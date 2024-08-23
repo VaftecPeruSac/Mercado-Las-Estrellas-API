@@ -32,15 +32,18 @@ class PersonaController extends Controller
      */
     public function create(Request $request)
     {
-        // $persona = new Persona();
-        // $persona->nombre = $request->input('nombre');
-        // $persona->apellidoP = $request->input('apellidoP');
-        // $persona->apellidoM = $request->input('apellidoM');
-        // $persona->dni = $request->input('dni');
-        // $persona->estado = $request->input('estado');
-        // $persona->id_usuarioregistro = $request->input('id_usuarioregistro');
-        // $persona->fecha_registro = $request->input('fecha_registro');
-        // $persona->save();
+        $persona = new Persona();
+        $persona->nombre = $request->input('nombre');
+        $persona->apellido_paterno = $request->input('apellido_paterno');
+        $persona->apellido_materno = $request->input('apellido_paterno');
+        $persona->dni = $request->input('dni');
+        $persona->correo = $request->input('correo');
+        $persona->telefono = $request->input('telefono');
+        $persona->direccion = $request->input('direccion');
+        $persona->sexo = $request->input('sexo');
+        $persona->estado = $request->input('estado');
+        $persona->fecha_registro = $request->input('fecha_registro');
+        $persona->save();
     }
 
     /**

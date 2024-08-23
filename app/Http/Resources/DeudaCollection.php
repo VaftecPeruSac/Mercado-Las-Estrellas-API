@@ -16,7 +16,6 @@ class DeudaCollection extends ResourceCollection
     {
         return [
             'data' => $this->collection->transform(function ($deuda) {
-
                 return [
                     'id_deuda' => $deuda->id_deuda,
                     'id_socio' => $deuda->id_socio,
