@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Puesto extends Model
 {
+    //se declara la pk en el model con el nombre que tiene en la bd porque laravel define el id de una tabla como "id"
+    protected $primaryKey = 'id_puesto'; 
     use HasFactory;
     protected $fillable = [    
         'id_socio',

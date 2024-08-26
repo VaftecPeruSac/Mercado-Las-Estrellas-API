@@ -70,8 +70,6 @@ class SocioController extends Controller
         $persona->estado = $request->input('estado');
         $persona->fecha_registro = $request->input('fecha_registro');
         $persona->save();
-        // echo 'Datos de la persona:',$persona;
-        echo 'Id:',$persona->id;
         // registro de usuario
         $usuario = new Usuario();
         $usuario->id_persona = $persona->id;
@@ -81,19 +79,18 @@ class SocioController extends Controller
         $usuario->rol = 0;//se va considerar como null
         $usuario->fecha_registro = $request->input('fecha_registro');
         $usuario->save();//hasta aqui se crea
-        echo 'Datos del usuario:',$usuario;
+        // echo 'Datos del usuario:',$usuario;
          // registro de socio
          $socio = new Socio();
-         $socio->id_usuario = $usuario->id_usuario;
+         $socio->id_usuario = $usuario->id;
          $socio->tipo_persona = $request->input('tipo_persona');//tipo_persona
-         $socio->saldo = $request->input('saldo');//tipo_persona
+         $socio->saldo = $request->input('saldo');
          $socio->fecha_registro = $request->input('fecha_registro');// fecha registro
          $socio->save();
-        //registro de socio en el puesto
-        $puesto = new Puesto();
-        $persona->id_puesto = $request->input('id_puesto');//id_puesto
-        $persona->id_socio = $socio->id_socio;
-        $puesto->update();
+         //registro de socio en el puesto
+         $puesto = Puesto::where('id_puesto', $request->input('id_puesto'))->first();
+         $puesto->id_socio = $socio->id;
+         $puesto->update();
         return "Se Registro el socio correctamente";
         // return new SocioResource(Socio::create($request->all()));
     }

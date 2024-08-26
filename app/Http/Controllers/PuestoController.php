@@ -8,6 +8,8 @@ use App\Http\Requests\UpdatePuestoRequest;
 use App\Http\Resources\PuestoCollection;
 use App\Filters\PuestoFilter;
 use App\Http\Resources\PuestoResource;
+use App\Models\GiroNegocio;
+use App\Models\Socio;
 use Illuminate\Http\Request;
 
 class PuestoController extends Controller
@@ -35,15 +37,24 @@ class PuestoController extends Controller
      */
     public function create()
     {
-        //
+        
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorePuestoRequest $request)
+    public function store(Request $request)
     {
-        new PuestoResource(Puesto::create($request->all()));
+        $puesto = new Puesto();
+        $puesto->id_gironegocio = $request->input('id_gironegocio');
+        $puesto->id_block = $request->input('id_block');
+        $puesto->numero_puesto = $request->input('numero_puesto');
+        $puesto->area = $request->input('area');
+        // $puesto->estado = $request->input('estado');//por defecto 1
+        $puesto->fecha_registro = $request->input('fecha_registro');// fecha registro
+        $puesto->save();
+        echo 'Datos del puesto:',$puesto;
+        // new PuestoResource(Puesto::create($request->all()));
         return "Puesto Registrado correctamente";
     }
 

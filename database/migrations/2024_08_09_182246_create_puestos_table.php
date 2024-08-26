@@ -18,8 +18,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_block');
             $table->string('numero_puesto',30);
             $table->string('area',12);
-            $table->unsignedBigInteger('id_inquilino');
-            $table->string('estado');
+            $table->unsignedBigInteger('id_inquilino')->nullable();
+            $table->string('estado')->default('1');
             $table->dateTime('fecha_registro');
             //relaciones
             $table->foreign('id_socio')
