@@ -12,8 +12,26 @@ class InquilinoCollection extends ResourceCollection
      *
      * @return array<int|string, mixed>
      */
-    public function toArray(Request $request): array
+
+    public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'data' => $this->collection->transform(function ($inquilino) {
+                return [
+                    'id_inquilino' => $inquilino->id_inquilino,
+                    'nombre_completo' => $inquilino->nombre_completo,
+                    'apellido_paterno' => $inquilino->apellido_paterno,
+                    'apellido_materno' => $inquilino->apellido_materno,
+                    'dni' => $inquilino->dni,
+                    'telefono' => $inquilino->telefono,
+                ];
+            }),
+            'links' => [
+                'self' => url('/inquilinos'),
+            ],
+            'meta' => [
+                'total' => $this->collection->count(),
+            ],
+        ];
     }
 }

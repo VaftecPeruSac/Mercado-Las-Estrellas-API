@@ -6,6 +6,7 @@ use App\Models\Block;
 use App\Http\Requests\StoreBlockRequest;
 use App\Http\Requests\UpdateBlockRequest;
 use App\Http\Resources\BlockCollection;
+use Illuminate\Http\Request;
 
 class BlockController extends Controller
 {
@@ -30,9 +31,12 @@ class BlockController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreBlockRequest $request)
+    public function store(Request $request)
     {
-        //
+        $block = new Block();
+        $block->nombre = $request->input('nombre');
+        $block->save();
+        return "Block Registrado correctamente";
     }
 
     /**

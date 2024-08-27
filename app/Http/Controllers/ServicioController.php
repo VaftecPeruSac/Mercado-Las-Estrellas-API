@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Servicio;
 use App\Http\Requests\StoreServicioRequest;
 use App\Http\Requests\UpdateServicioRequest;
+use App\Http\Resources\ServicioCollection;
+use Illuminate\Http\Request;
 
 class ServicioController extends Controller
 {
@@ -13,7 +15,8 @@ class ServicioController extends Controller
      */
     public function index()
     {
-        //
+        $servicios = Servicio::all();
+        return new ServicioCollection($servicios);
     }
 
     /**
@@ -27,9 +30,16 @@ class ServicioController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreServicioRequest $request)
+    public function store(Request $request)
     {
-        //
+        $servicio = new Servicio();
+        $servicio->descripcion = $request->input('descripcion');
+        $servicio->costo_unitario = $request->input('costo_unitario');
+        $servicio->tipo_servicio = $request->input('tipo_servicio');
+        $servicio->estado = $request->input('estado');
+        $servicio->fecha_registro = $request->input('fecha_registro');
+        $servicio->save();
+        return "Servicio Registrado correctamente";
     }
 
     /**

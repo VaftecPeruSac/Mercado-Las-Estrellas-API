@@ -50,12 +50,11 @@ class PuestoController extends Controller
         $puesto->id_block = $request->input('id_block');
         $puesto->numero_puesto = $request->input('numero_puesto');
         $puesto->area = $request->input('area');
-        // $puesto->estado = $request->input('estado');//por defecto 1
         $puesto->fecha_registro = $request->input('fecha_registro');// fecha registro
         $puesto->save();
         echo 'Datos del puesto:',$puesto;
-        // new PuestoResource(Puesto::create($request->all()));
         return "Puesto Registrado correctamente";
+        // new PuestoResource(Puesto::create($request->all()));
     }
 
     /**

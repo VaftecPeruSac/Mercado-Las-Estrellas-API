@@ -5,6 +5,7 @@ use App\Http\Controllers\CuotaController;
 use App\Http\Controllers\DeudaController;
 use App\Http\Controllers\DocumentoController;
 use App\Http\Controllers\GiroNegocioController;
+use App\Http\Controllers\InquilinoController;
 use App\Http\Controllers\PagoController;
 use App\Http\Controllers\PagoDetalleController;
 use App\Http\Controllers\PersonaController;
@@ -25,7 +26,7 @@ Route::group(['prefix' =>'v1', 'namespace'=>'App\Http\Controllers'], function(){
     Route::apiResource('personas',PersonaController::class);
     Route::apiResource('usuarios',UsuarioController::class);
     Route::apiResource('socios',SocioController::class);
-    // Route::apiResource('socio/registrar',SocioController::class,'store');
+    Route::apiResource('inquilinos',InquilinoController::class);
     Route::apiResource('puestos',PuestoController::class);
     Route::apiResource('giro-negocios',GiroNegocioController::class);
     Route::apiResource('blocks',BlockController::class);

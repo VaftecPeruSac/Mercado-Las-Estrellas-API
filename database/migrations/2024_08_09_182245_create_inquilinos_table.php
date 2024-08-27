@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('apellido_paterno');
             $table->string('dni');
             $table->string('telefono');
-            //$table->timestamps();
         });
     }
 
