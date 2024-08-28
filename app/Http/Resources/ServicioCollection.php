@@ -18,6 +18,7 @@ class ServicioCollection extends ResourceCollection
             'data' => $this->collection->transform(function ($servicio) {
 
                 return [
+                    'id_servicio' => $servicio->id_servicio,
                     'descripcion' => $servicio->descripcion,
                     'costo_unitario' => $servicio->costo_unitario,
                     'tipo_servicio' => $servicio->tipo_servicio,

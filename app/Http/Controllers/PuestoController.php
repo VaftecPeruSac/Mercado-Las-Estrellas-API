@@ -29,7 +29,6 @@ class PuestoController extends Controller
             $socios = Puesto::where($queryItems)->paginate();
             return new PuestoCollection($socios->appends($request->query())); 
         }
-        
     }
 
     /**
@@ -55,6 +54,14 @@ class PuestoController extends Controller
         echo 'Datos del puesto:',$puesto;
         return "Puesto Registrado correctamente";
         // new PuestoResource(Puesto::create($request->all()));
+    }
+
+    public function asignar(Request $request)
+        {
+            $puesto = Puesto::where('id_puesto', $request->input('id_puesto'))->first();
+        $puesto->id_socio = $request->input('id_socio');
+        $puesto->update();
+       return "Se Asigno el puesto a un socio correctamente";
     }
 
     /**

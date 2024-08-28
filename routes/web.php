@@ -28,6 +28,7 @@ Route::group(['prefix' =>'v1', 'namespace'=>'App\Http\Controllers'], function(){
     Route::apiResource('socios',SocioController::class);
     Route::apiResource('inquilinos',InquilinoController::class);
     Route::apiResource('puestos',PuestoController::class);
+    Route::post('puestos/asignar',[PuestoController::class,'asignar']);
     Route::apiResource('giro-negocios',GiroNegocioController::class);
     Route::apiResource('blocks',BlockController::class);
     Route::apiResource('cuotas',CuotaController::class);
