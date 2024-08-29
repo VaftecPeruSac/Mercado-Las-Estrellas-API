@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Pago;
 use App\Http\Requests\StorePagoRequest;
 use App\Http\Requests\UpdatePagoRequest;
+use App\Http\Resources\PagoCollection;
 
 class PagoController extends Controller
 {
@@ -13,7 +14,9 @@ class PagoController extends Controller
      */
     public function index()
     {
-        //
+     
+        $pagos = Pago::all();
+        return new PagoCollection($pagos);
     }
 
     /**

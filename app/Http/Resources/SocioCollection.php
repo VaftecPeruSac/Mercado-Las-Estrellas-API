@@ -27,7 +27,9 @@ class SocioCollection extends ResourceCollection
                     'id_inquilino' => $puesto->id_inquilino,
                     'estado' => $puesto->estado,
                     'fecha_registro' => $puesto->socio && $puesto->socio->usuario ? $puesto->socio->usuario->fecha_registro : 'no',
-                    'socio' => $puesto->socio && $puesto->socio->usuario && $puesto->socio->usuario->persona ? $puesto->socio->usuario->persona->nombre : 'no',
+                    'socio' => $puesto->socio && $puesto->socio->usuario && $puesto->socio->usuario->persona
+                        ? $puesto->socio->usuario->persona->nombre . ' ' . $puesto->socio->usuario->persona->apellido_paterno . ' ' . $puesto->socio->usuario->persona->apellido_materno
+                        : 'no', 
                     'dni' => $puesto->socio && $puesto->socio->usuario && $puesto->socio->usuario->persona ? $puesto->socio->usuario->persona->dni : 'no',
                     'telefono' => $puesto->socio && $puesto->socio->usuario && $puesto->socio->usuario->persona ? $puesto->socio->usuario->persona->telefono : 'no',
                     'correo' => $puesto->socio && $puesto->socio->usuario && $puesto->socio->usuario->persona ? $puesto->socio->usuario->persona->correo : 'no',

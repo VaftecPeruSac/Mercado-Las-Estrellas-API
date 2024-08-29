@@ -39,9 +39,11 @@ class BlockController extends Controller
         return "Block Registrado correctamente";
     }
 
-    /**
-     * Display the specified resource.
-     */
+    public function select()
+    {
+        $blocks = Block::all(['id_block', 'nombre']);
+        return response()->json($blocks);
+    }
     public function show(Block $block)
     {
         //

@@ -31,4 +31,8 @@ class Socio extends Model
     {//hasOne es para la tabla que no tiene la fk
        return $this->hasOne(Puesto::class,'id_socio','id_socio');
     }  
+    public function Pago()
+    {//hasOne es para la tabla que no tiene la fk
+       return $this->hasOne(Pago::class,'id_socio','id_socio');
+    }
 }

@@ -20,3 +20,4 @@ use Illuminate\Support\Facades\Route;
 //     // Aquí puedes obtener y devolver los datos de la tabla personas
 //     return PersonaController::store();
 // })->withoutMiddleware([VerifyCsrfToken::class]);
+

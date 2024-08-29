@@ -3,13 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Puesto;
-use App\Http\Requests\StorePuestoRequest;
 use App\Http\Requests\UpdatePuestoRequest;
 use App\Http\Resources\PuestoCollection;
 use App\Filters\PuestoFilter;
-use App\Http\Resources\PuestoResource;
-use App\Models\GiroNegocio;
-use App\Models\Socio;
 use Illuminate\Http\Request;
 
 class PuestoController extends Controller
@@ -25,9 +21,9 @@ class PuestoController extends Controller
         // $socios = Socio::all();
         if (count($queryItems) == 0) {
             return new PuestoCollection(Puesto::paginate());
-        }else{
+        } else {
             $socios = Puesto::where($queryItems)->paginate();
-            return new PuestoCollection($socios->appends($request->query())); 
+            return new PuestoCollection($socios->appends($request->query()));
         }
     }
 
@@ -36,7 +32,6 @@ class PuestoController extends Controller
      */
     public function create()
     {
-        
     }
 
     /**
@@ -49,32 +44,35 @@ class PuestoController extends Controller
         $puesto->id_block = $request->input('id_block');
         $puesto->numero_puesto = $request->input('numero_puesto');
         $puesto->area = $request->input('area');
-        $puesto->fecha_registro = $request->input('fecha_registro');// fecha registro
+        $puesto->fecha_registro = $request->input('fecha_registro'); // fecha registro
         $puesto->save();
-        echo 'Datos del puesto:',$puesto;
+        echo 'Datos del puesto:', $puesto;
         return "Puesto Registrado correctamente";
         // new PuestoResource(Puesto::create($request->all()));
     }
 
     public function asignar(Request $request)
-        {
-            $puesto = Puesto::where('id_puesto', $request->input('id_puesto'))->first();
+    {
+        $puesto = Puesto::where('id_puesto', $request->input('id_puesto'))->first();
         $puesto->id_socio = $request->input('id_socio');
         $puesto->update();
-       return "Se Asigno el puesto a un socio correctamente";
+        return "Se Asigno el puesto a un socio correctamente";
+    }
+
+    public function select()
+    {
+        $puestos = Puesto::all(['id_puesto','id_block', 'numero_puesto']);
+        return response()->json($puestos);
     }
 
     /**
-     * Display the specified resource.
+     * Show the form for editing the specified resource.
      */
     public function show(Puesto $puesto)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Puesto $puesto)
     {
         //
