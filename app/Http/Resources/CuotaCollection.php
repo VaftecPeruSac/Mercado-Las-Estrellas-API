@@ -18,6 +18,7 @@ class CuotaCollection extends ResourceCollection
                 'data' => $this->collection->transform(function ($cuota) {
                     
                     return [
+                        'id_cuota' => $cuota->id_cuota,
                         'importe' => $cuota->importe,
                         'fecha_vencimiento' => $cuota->fecha_vencimiento,
                         'fecha_registro' => $cuota->fecha_registro,
