@@ -26,9 +26,9 @@ class SocioController extends Controller
         $filter = new SociosFilter();
         $queryItems = $filter->transform($request);
         if (count($queryItems) == 0) {
-            return new SocioCollection(Puesto::paginate());//se sa el modelo Puesto porque lista los registros uno por uno
+            return new SocioCollection(Socio::paginate());//se sa el modelo Puesto porque lista los registros uno por uno
         } else {
-            $socios = Puesto::where($queryItems)->paginate();
+            $socios = Socio::where($queryItems)->paginate();
             return new SocioCollection($socios->appends($request->query()));
         }
         //opcion 2
