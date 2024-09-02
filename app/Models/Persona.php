@@ -19,6 +19,7 @@ class Persona extends Model
       'sexo',
       'estado',
       'fecha_registro',
+      'nombre_completo',
     ];
     //para no usar los timestamps en el migrate, de lo contrario requiere ello y no permite hacer registros
     public $timestamps = false;

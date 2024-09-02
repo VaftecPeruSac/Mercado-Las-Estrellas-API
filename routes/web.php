@@ -26,6 +26,7 @@ Route::get('/', function () {
 Route::group(['prefix' =>'v1', 'namespace'=>'App\Http\Controllers'], function(){
     Route::apiResource('personas',PersonaController::class);
     Route::apiResource('usuarios',UsuarioController::class);
+    Route::get('socios/consin-puestos',[SocioController::class,'consinPuestos']);
     Route::apiResource('socios',SocioController::class);
     Route::apiResource('inquilinos',InquilinoController::class);
     Route::get('puestos/select',[PuestoController::class,'select']);//1

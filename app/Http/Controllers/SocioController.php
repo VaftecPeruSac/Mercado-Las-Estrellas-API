@@ -7,12 +7,14 @@ use App\Models\Socio;
 use App\Http\Requests\StoreSocioRequest;
 use App\Http\Requests\UpdateSocioRequest;
 use App\Http\Resources\SocioCollection;
+use App\Http\Resources\SocioConSinPuestos;
 use App\Http\Resources\SocioResource;
 use App\Models\Block;
 use App\Models\Persona;
 use App\Models\Puesto;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SocioController extends Controller
 {
@@ -125,5 +127,23 @@ class SocioController extends Controller
     public function destroy(Socio $socio)
     {
         //
+    }
+
+    public function consinPuestos(Request $request)
+    {
+        $filter = new SociosFilter();
+        $queryItems = $filter->transform($request);
+        // Socio::select('socio.*')->leftJoin('','','')->paginate();
+        if (count($queryItems) == 0) {
+            return new SocioConSinPuestos(
+                Socio::select('socios.*')
+                    ->leftJoin('puestos','puestos.id_socio','socios.id_socio')
+                    ->paginate());
+        } else {
+            $socios = Socio::select('socios.*')
+                ->leftJoin('puestos','puestos.id_socio','socios.id_socio')
+                ->where($queryItems)->paginate();
+            return new SocioConSinPuestos($socios->appends($request->query()));
+        }
     }
 }
