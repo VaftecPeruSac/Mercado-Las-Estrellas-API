@@ -44,6 +44,11 @@ class CuotaController extends Controller
         $servicio->cuotas()->attach($cuota);
         return "Cuota Registrado correctamente";
     }
+    
+    public function listardeudacuota(Request $request)
+    {
+        
+    }
 
     /**
      * Display the specified resource.

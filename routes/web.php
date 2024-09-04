@@ -30,6 +30,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::apiResource('socios', SocioController::class);
     Route::apiResource('inquilinos', InquilinoController::class);
     Route::get('puestos/select', [PuestoController::class, 'select']); //1
+    Route::get('puestos/exportar', [PuestoController::class, 'export']);
     Route::apiResource('puestos', PuestoController::class); //2
     Route::post('puestos/asignar', [PuestoController::class, 'asignar']); //3
     Route::apiResource('cuotas', CuotaController::class);
@@ -38,6 +39,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::apiResource('giro-negocios', GiroNegocioController::class);
     Route::apiResource('documentos', DocumentoController::class);
     Route::apiResource('deudas', DeudaController::class);
+    Route::get('servicios/exportar', [ServicioController::class, 'export']);
     Route::apiResource('servicios', ServicioController::class);
     Route::apiResource('pagos', PagoController::class);
     Route::apiResource('deudas', DeudaController::class);

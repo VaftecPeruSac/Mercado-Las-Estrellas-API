@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PuestosExport;
 use App\Models\Puesto;
 use App\Http\Requests\UpdatePuestoRequest;
 use App\Http\Resources\PuestoCollection;
 use App\Filters\PuestoFilter;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PuestoController extends Controller
 {
@@ -64,7 +66,10 @@ class PuestoController extends Controller
         $puestos = Puesto::all(['id_puesto','id_block', 'numero_puesto']);
         return response()->json($puestos);
     }
-
+    public function export()
+    {
+        return Excel::download(new PuestosExport(), 'puestos.xlsx');
+    }
     /**
      * Show the form for editing the specified resource.
      */

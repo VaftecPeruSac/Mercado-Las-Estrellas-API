@@ -7,9 +7,11 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class SociosExport implements FromCollection, WithHeadings, WithColumnWidths,WithColumnFormatting
+class SociosExport implements FromCollection, WithHeadings, WithColumnWidths,WithColumnFormatting,WithStyles
 {    /**
      * @return \Illuminate\Support\Collection
      */
@@ -66,7 +68,13 @@ class SociosExport implements FromCollection, WithHeadings, WithColumnWidths,Wit
             'J' => 25,
         ];
     }
-
+    public function styles(Worksheet $sheet)
+    {
+        return [
+            // Aplica negrita a la primera fila (encabezados)
+            1 => ['font' => ['bold' => true]],
+        ];
+    }
     public function columnFormats(): array
     {
         // Si deseas un formato específico para las columnas, por ejemplo, fechas

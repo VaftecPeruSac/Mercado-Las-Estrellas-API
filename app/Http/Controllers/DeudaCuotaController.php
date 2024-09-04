@@ -2,22 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pago;
-use App\Http\Requests\StorePagoRequest;
-use App\Http\Requests\UpdatePagoRequest;
-use App\Http\Resources\PagoCollection;
-use Illuminate\Http\Client\Request;
+use App\Models\DeudaCuota;
+use App\Http\Requests\StoreDeudaCuotaRequest;
+use App\Http\Requests\UpdateDeudaCuotaRequest;
 
-class PagoController extends Controller
+class DeudaCuotaController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-     
-        $pagos = Pago::all();
-        return new PagoCollection($pagos);
+        //
     }
 
     /**
@@ -31,7 +27,7 @@ class PagoController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorePagoRequest $request)
+    public function store(StoreDeudaCuotaRequest $request)
     {
         //
     }
@@ -39,7 +35,7 @@ class PagoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Pago $pago)
+    public function show(DeudaCuota $deudaCuota)
     {
         //
     }
@@ -47,7 +43,7 @@ class PagoController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Pago $pago)
+    public function edit(DeudaCuota $deudaCuota)
     {
         //
     }
@@ -55,7 +51,7 @@ class PagoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePagoRequest $request, Pago $pago)
+    public function update(UpdateDeudaCuotaRequest $request, DeudaCuota $deudaCuota)
     {
         //
     }
@@ -63,7 +59,7 @@ class PagoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Pago $pago)
+    public function destroy(DeudaCuota $deudaCuota)
     {
         //
     }
