@@ -11,6 +11,7 @@ class DeudaCuota extends Model
     protected $fillable = [
         'id_deuda',
         'id_cuota',
+        'a_cuenta',
         'estado',
     ];
     //para no usar los timestamps en el migrate, de lo contrario requiere ello y no permite hacer registros

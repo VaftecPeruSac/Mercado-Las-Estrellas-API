@@ -35,6 +35,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::post('puestos/asignar', [PuestoController::class, 'asignar']); //3
     Route::apiResource('cuotas', CuotaController::class);
     Route::get('block/select', [BlockController::class, 'select']);
+    Route::get('deudacuota', [PagoController::class, 'ListaDeudaCuotas']);
     Route::apiResource('blocks', BlockController::class);
     Route::apiResource('giro-negocios', GiroNegocioController::class);
     Route::apiResource('documentos', DocumentoController::class);
@@ -45,8 +46,8 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::apiResource('deudas', DeudaController::class);
     Route::apiResource('pago_detalle', PagoDetalleController::class);
 });
-// Route::get('/csrf-token', function () {
-//     return response()->json([
-//         'token' => csrf_token()
-//     ]);
-// });
+Route::get('/csrf-token', function () {
+    return response()->json([
+        'token' => csrf_token()
+    ]);
+});
