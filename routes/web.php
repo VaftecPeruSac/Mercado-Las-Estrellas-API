@@ -35,7 +35,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::post('puestos/asignar', [PuestoController::class, 'asignar']); //3
     Route::apiResource('cuotas', CuotaController::class);
     Route::get('block/select', [BlockController::class, 'select']);
-    Route::get('deudacuota', [PagoController::class, 'ListaDeudaCuotas']);
+    Route::get('deudacuota/{id_puesto}', [PagoController::class,'ListaDeudaCuotas']);
     Route::apiResource('blocks', BlockController::class);
     Route::apiResource('giro-negocios', GiroNegocioController::class);
     Route::apiResource('documentos', DocumentoController::class);

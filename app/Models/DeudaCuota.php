@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class DeudaCuota extends Model
 {
-    use HasFactory;
+    use HasFactory;    
+    protected $primaryKey = 'id_deuda_cuota';
     protected $fillable = [
         'id_deuda',
         'id_cuota',
