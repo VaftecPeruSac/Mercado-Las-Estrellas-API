@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\CuotaExport;
 use App\Models\Cuota;
 use App\Http\Requests\StoreCuotaRequest;
 use App\Http\Requests\UpdateCuotaRequest;
 use App\Http\Resources\CuotaCollection;
 use App\Models\Servicio;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CuotaController extends Controller
 {
@@ -44,12 +46,10 @@ class CuotaController extends Controller
         $servicio->cuotas()->attach($cuota);
         return "Cuota Registrado correctamente";
     }
-    
-    public function listardeudacuota(Request $request)
+    public function export()
     {
-        
+        return Excel::download(new CuotaExport(), 'cuotas.xlsx');
     }
-
     /**
      * Display the specified resource.
      */

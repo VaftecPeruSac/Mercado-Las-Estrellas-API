@@ -33,6 +33,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::get('puestos/exportar', [PuestoController::class, 'export']);
     Route::apiResource('puestos', PuestoController::class); //2
     Route::post('puestos/asignar', [PuestoController::class, 'asignar']); //3
+    Route::get('cuotas/exportar', [CuotaController::class, 'export']);
     Route::apiResource('cuotas', CuotaController::class);
     Route::get('block/select', [BlockController::class, 'select']);
     Route::get('deudacuota/{id_puesto}', [PagoController::class,'ListaDeudaCuotas']);
@@ -42,6 +43,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::apiResource('deudas', DeudaController::class);
     Route::get('servicios/exportar', [ServicioController::class, 'export']);
     Route::apiResource('servicios', ServicioController::class);
+    Route::get('pagos/exportar', [PagoController::class, 'export']);
     Route::apiResource('pagos', PagoController::class);
     Route::apiResource('deudas', DeudaController::class);
     Route::apiResource('pago_detalle', PagoDetalleController::class);
