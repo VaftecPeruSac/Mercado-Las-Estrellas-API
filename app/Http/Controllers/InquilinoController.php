@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Inquilino;
 use App\Http\Requests\StoreInquilinoRequest;
 use App\Http\Requests\UpdateInquilinoRequest;
+use App\Http\Resources\InquilinoCollection;
 use App\Models\Puesto;
 use Illuminate\Http\Request;
 
@@ -16,6 +17,8 @@ class InquilinoController extends Controller
     public function index()
     {
         //
+        $inquilinos = Inquilino::all();
+        return new InquilinoCollection($inquilinos);
     }
 
     /**
