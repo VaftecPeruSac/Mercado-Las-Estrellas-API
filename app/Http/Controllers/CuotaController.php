@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Exports\CuotaExport;
 use App\Models\Cuota;
+use App\Models\Deuda;
+use App\Models\Socio;
 use App\Http\Requests\StoreCuotaRequest;
 use App\Http\Requests\UpdateCuotaRequest;
 use App\Http\Resources\CuotaCollection;
@@ -35,15 +37,27 @@ class CuotaController extends Controller
      */
     public function store(Request $request)
     {
-        
-        $servicio = Servicio::where('id_servicio', $request->input('id_servicio'))->first();
-        $cuota = new Cuota();
-        $cuota->importe = $request->input('importe');
-        $cuota->fecha_registro = $request->input('fecha_registro');
-        $cuota->fecha_vencimiento = $request->input('fecha_vencimiento');
-        $cuota->save();
-        echo $cuota;
-        $servicio->cuotas()->attach($cuota);
+        foreach($request->input('servicios') as $value){
+            // $servicio = Servicio::where('id_servicio', $request->input('id_servicio'))->first();
+            $cuota = new Cuota();
+            $cuota->importe = $request->input('importe');
+            $cuota->id_servicio = $value;
+            $cuota->fecha_registro = $request->input('fecha_registro');
+            $cuota->fecha_vencimiento = $request->input('fecha_vencimiento');
+            $cuota->save();
+            // echo $cuota;
+            // $servicio->cuotas()->attach($cuota);
+            $listado = Socio::where('estado',1)->get();
+            foreach($listado as $valu){
+                // Deuda
+                $deuda = new Deuda();
+                $deuda->id_socio = $valu->id_socio;
+                $deuda->id_cuota = $cuota->id;
+                $deuda->total_deuda = $request->input('importe');
+                $deuda->fecha_registro = $request->input('fecha_registro');
+                $deuda->save();
+            }
+        }
         return "Cuota Registrado correctamente";
     }
     public function export()

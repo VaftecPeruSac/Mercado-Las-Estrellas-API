@@ -19,7 +19,7 @@ class SocioCollection extends ResourceCollection
             'data' => $this->collection->transform(function ($socio) {
                 return [
                     // 'id_puesto' => $puesto->id_puesto,
-                    // 'id_socio' => $puesto->id_socio,
+                    'id_socio' => $socio->id_socio,
                     // 'id_gironegocio' => $puesto->id_gironegocio,
                     // 'id_block' => $puesto->id_block,
                     'numero_puesto' => $socio->puesto ? $socio->puesto->numero_puesto:'no',
