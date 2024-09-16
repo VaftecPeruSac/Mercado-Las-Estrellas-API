@@ -32,7 +32,10 @@ class GiroNegocioController extends Controller
      */
     public function store(StoreGiroNegocioRequest $request)
     {
-        //
+        $giroNegocio = new GiroNegocio();
+        $giroNegocio->nombre = $request->input('nombre');
+        $giroNegocio->save();
+        return "Giro de negocio registrado correctamente";
     }
 
     /**
