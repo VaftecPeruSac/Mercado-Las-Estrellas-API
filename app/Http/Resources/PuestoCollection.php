@@ -24,8 +24,8 @@ class PuestoCollection extends ResourceCollection
                     'estado' => $puesto->estado,
                     'fecha_registro' => $puesto->fecha_registro,
                     'socio' => $puesto->socio && $puesto->socio->usuario && $puesto->socio->usuario->persona ? $puesto->socio->usuario->persona->nombre : 'no',
-                    'gironegocio_nombre' => $puesto->gironegocio ? $puesto->gironegocio->nombre : 'no',
-                    'block_nombre' => $puesto->block ? $puesto->block->nombre : 'no',
+                    'giro_negocio' => $puesto->gironegocio ? $puesto->gironegocio : 'no',
+                    'block' => $puesto->block ? $puesto->block : 'no',
                     'inquilino' => $puesto->inquilino ? $puesto->inquilino->nombre_completo : 'no',
                 ];
             }),
