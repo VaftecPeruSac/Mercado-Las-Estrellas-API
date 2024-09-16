@@ -24,7 +24,7 @@ class BlockCollection extends ResourceCollection
                 }),
                 'links' => [
                     'self' => url('/blocks'),
-                ],
+                ],  
                 'meta' => [
                     'total' => $this->collection->count(),
                 ],

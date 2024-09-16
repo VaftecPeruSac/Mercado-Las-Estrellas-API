@@ -21,6 +21,8 @@ class Deuda extends Model
     }
     public function cuotas()
     {//belongsToMany es para relaciones de muchos a muchos, va en ambas tablas
-        return $this->belongsToMany(Cuota::class);
+        return $this->belongsToMany(Cuota::class,'deuda_cuotas','id_deuda','id_cuota')
+        ->withPivot('a_cuenta');
     }
+
 }

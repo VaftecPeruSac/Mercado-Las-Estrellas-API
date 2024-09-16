@@ -19,8 +19,9 @@ class Cuota extends Model
     public $timestamps = false;
 
     public function deudas()
-    { //belongsToMany es para relaciones de muchos a muchos, va en ambas tablas
-        return $this->belongsToMany(Deuda::class);
+    {
+        return $this->belongsToMany(Deuda::class, 'deuda_cuotas', 'id_cuota', 'id_deuda')
+                    ->withPivot('a_cuenta', 'estado');
     }
     public function servicios()
     { //belongsToMany es para relaciones de muchos a muchos, va en ambas tablas

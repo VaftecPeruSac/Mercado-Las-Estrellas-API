@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ServicioExport;
 use App\Models\Servicio;
 use App\Http\Requests\StoreServicioRequest;
 use App\Http\Requests\UpdateServicioRequest;
 use App\Http\Resources\ServicioCollection;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ServicioController extends Controller
 {
@@ -41,7 +43,10 @@ class ServicioController extends Controller
         $servicio->save();
         return "Servicio Registrado correctamente";
     }
-
+    public function export()
+    {
+        return Excel::download(new ServicioExport(), 'servicios.xlsx');
+    }
     /**
      * Display the specified resource.
      */

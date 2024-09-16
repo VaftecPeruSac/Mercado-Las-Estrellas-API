@@ -23,28 +23,33 @@ Route::get('/', function () {
 // Route::post('v1/personas', [PersonaController::class, 'store']);
 // Route::post('v1/usuarios', [UsuarioController::class, 'store']);
 
-Route::group(['prefix' =>'v1', 'namespace'=>'App\Http\Controllers'], function(){
-    Route::apiResource('personas',PersonaController::class);
-    Route::apiResource('usuarios',UsuarioController::class);
-    Route::get('socios/consin-puestos',[SocioController::class,'consinPuestos']);
-    Route::apiResource('socios',SocioController::class);
-    Route::apiResource('inquilinos',InquilinoController::class);
-    Route::get('puestos/select',[PuestoController::class,'select']);//1
-    Route::apiResource('puestos',PuestoController::class);//2
-    Route::post('puestos/asignar',[PuestoController::class,'asignar']);//3
-    Route::apiResource('cuotas',CuotaController::class);
-    Route::get('block/select',[BlockController::class,'select']);
-    Route::apiResource('blocks',BlockController::class);
-    Route::apiResource('giro-negocios',GiroNegocioController::class);
-    Route::apiResource('documentos',DocumentoController::class);
-    Route::apiResource('deudas',DeudaController::class);
-    Route::apiResource('servicios',ServicioController::class);
-    Route::apiResource('pagos',PagoController::class);
-    Route::apiResource('deudas',DeudaController::class);
-    Route::apiResource('pago_detalle',PagoDetalleController::class);
+Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function () {
+    Route::apiResource('personas', PersonaController::class);
+    Route::apiResource('usuarios', UsuarioController::class);
+    Route::get('socios/exportar', [SocioController::class, 'export']);
+    Route::apiResource('socios', SocioController::class);
+    Route::apiResource('inquilinos', InquilinoController::class);
+    Route::get('puestos/select', [PuestoController::class, 'select']); //1
+    Route::get('puestos/exportar', [PuestoController::class, 'export']);
+    Route::apiResource('puestos', PuestoController::class); //2
+    Route::post('puestos/asignar', [PuestoController::class, 'asignar']); //3
+    Route::get('cuotas/exportar', [CuotaController::class, 'export']);
+    Route::apiResource('cuotas', CuotaController::class);
+    Route::get('block/select', [BlockController::class, 'select']);
+    Route::get('deudacuota/{id_puesto}', [PagoController::class,'ListaDeudaCuotas']);
+    Route::apiResource('blocks', BlockController::class);
+    Route::apiResource('giro-negocios', GiroNegocioController::class);
+    Route::apiResource('documentos', DocumentoController::class);
+    Route::apiResource('deudas', DeudaController::class);
+    Route::get('servicios/exportar', [ServicioController::class, 'export']);
+    Route::apiResource('servicios', ServicioController::class);
+    Route::get('pagos/exportar', [PagoController::class, 'export']);
+    Route::apiResource('pagos', PagoController::class);
+    Route::apiResource('deudas', DeudaController::class);
+    Route::apiResource('pago_detalle', PagoDetalleController::class);
 });
-// Route::get('/csrf-token', function () {
-//     return response()->json([
-//         'token' => csrf_token()
-//     ]);
-// });
+Route::get('/csrf-token', function () {
+    return response()->json([
+        'token' => csrf_token()
+    ]);
+});

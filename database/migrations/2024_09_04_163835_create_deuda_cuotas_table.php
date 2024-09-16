@@ -12,17 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('deuda_cuotas', function (Blueprint $table) {
-            $table->id('id_deuda_cuota');
-            $table->unsignedBigInteger('id_deuda');
-            $table->unsignedBigInteger('id_cuota');
-            $table->string('estado');
-            $table->string('a_cuenta');
-            $table->foreign('id_deuda')
-            ->references('id_deuda')
-            ->on('deudas');
-            $table->foreign('id_cuota')
-            ->references('id_cuota')
-            ->on('cuotas');
+            $table->id();
+            $table->timestamps();
         });
     }
 

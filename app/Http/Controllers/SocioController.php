@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\SociosExport;
 use App\Filters\SociosFilter;
 use App\Models\Socio;
 use App\Http\Requests\StoreSocioRequest;
@@ -15,6 +16,9 @@ use App\Models\Puesto;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Str;
+
 
 class SocioController extends Controller
 {
@@ -28,7 +32,7 @@ class SocioController extends Controller
         $filter = new SociosFilter();
         $queryItems = $filter->transform($request);
         if (count($queryItems) == 0) {
-            return new SocioCollection(Socio::paginate());//se sa el modelo Puesto porque lista los registros uno por uno
+            return new SocioCollection(Socio::paginate()); //se sa el modelo Puesto porque lista los registros uno por uno
         } else {
             $socios = Socio::where($queryItems)->paginate();
             return new SocioCollection($socios->appends($request->query()));
@@ -58,7 +62,7 @@ class SocioController extends Controller
      */
     public function store(Request $request)
     {
-        
+
         //registro de persona
         $persona = new Persona();
         $persona->nombre = $request->input('nombre');
@@ -75,28 +79,31 @@ class SocioController extends Controller
         // registro de usuario
         $usuario = new Usuario();
         $usuario->id_persona = $persona->id;
-        $usuario->nombre_usuario = $request->input('nombre');
-        $usuario->contrasenia = $request->input('contrasenia');
-        $usuario->estado = $request->input('estado');// estado
-        $usuario->rol = 0;//se va considerar como null
+        $usuario->nombre_usuario = $request->input('nombre').' '.$request->input('apellido_paterno').' '.$request->input('apellido_materno');
+        $usuario->contrasenia = Str::random(10);
+        $usuario->estado = $request->input('estado'); // estado
+        $usuario->rol = 0; //se va considerar como null
         $usuario->fecha_registro = $request->input('fecha_registro');
-        $usuario->save();//hasta aqui se crea
+        $usuario->save(); //hasta aqui se crea
         // echo 'Datos del usuario:',$usuario;
-         // registro de socio
-         $socio = new Socio();
-         $socio->id_usuario = $usuario->id;
-         $socio->tipo_persona = $request->input('tipo_persona');//tipo_persona
-         $socio->saldo = $request->input('saldo');
-         $socio->fecha_registro = $request->input('fecha_registro');// fecha registro
-         $socio->save();
-         //registro de socio en el puesto
-         $puesto = Puesto::where('id_puesto', $request->input('id_puesto'))->first();
-         $puesto->id_socio = $socio->id;
-         $puesto->update();
+        // registro de socio
+        $socio = new Socio();
+        $socio->id_usuario = $usuario->id;
+        $socio->tipo_persona = "natural"; //tipo_persona
+        $socio->saldo = 0;
+        $socio->fecha_registro = $request->input('fecha_registro'); // fecha registro
+        $socio->save();
+        //registro de socio en el puesto
+        $puesto = Puesto::where('id_puesto', $request->input('id_puesto'))->first();
+        $puesto->id_socio = $socio->id;
+        $puesto->update();
         return "Se Registro el socio correctamente";
         // return new SocioResource(Socio::create($request->all()));
     }
-
+    public function export()
+    {
+        return Excel::download(new SociosExport(), 'socios.xlsx');
+    }
     /**
      * Display the specified resource.
      */
