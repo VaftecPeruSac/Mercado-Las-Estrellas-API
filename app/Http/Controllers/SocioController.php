@@ -27,16 +27,16 @@ class SocioController extends Controller
      */
     public function index(Request $request)
     {
-        //opcion 1
+        // // //opcion 1
 
-        $filter = new SociosFilter();
-        $queryItems = $filter->transform($request);
-        if (count($queryItems) == 0) {
-            return new SocioCollection(Socio::paginate()); //se sa el modelo Puesto porque lista los registros uno por uno
-        } else {
-            $socios = Socio::where($queryItems)->paginate();
-            return new SocioCollection($socios->appends($request->query()));
-        }
+        // // $filter = new SociosFilter();
+        // // $queryItems = $filter->transform($request);
+        // // if (count($queryItems) == 0) {
+        // //     return new SocioCollection(Socio::paginate()); //se sa el modelo Puesto porque lista los registros uno por uno
+        // // } else {
+        // //     $socios = Socio::where($queryItems)->paginate();
+        // //     return new SocioCollection($socios->appends($request->query()));
+        // // }
         //opcion 2
         // $filter = new SociosFilter();
         // $queryItems = $filter->transform($request);
@@ -47,6 +47,20 @@ class SocioController extends Controller
         // }
         // return new SocioCollection($socios->appends($request->query()));
 
+        //opcion 3
+
+        if (isset($request->buscar_texto)) {
+            $texto = strtr(utf8_decode($request->buscar_texto), utf8_decode('àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
+            $texto = strtr(utf8_decode($texto), utf8_decode('àáâãäçèéêëìíîïññòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiin?ooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
+            $texto = str_replace(' ', '%', $texto);
+            $paginate = Socio::select('socios.*')
+                ->join('personas','socios.id_socio','personas.id_persona')
+                ->whereRaw("upper(nombre) LIKE upper( ? )", ['%'.$texto.'%'])
+                ->paginate();
+            return new SocioCollection($paginate);
+        } else {
+            return new SocioCollection(Socio::paginate());
+        }
     }
 
     /**
