@@ -11,9 +11,7 @@ class Block extends Model
     public $timestamps = false;
     protected $fillable = [    
         'nombre',
-      ];
-          //para no usar los timestamps en el migrate, de lo contrario requiere ello y no permite hacer registros
-          public $timestamps = false;
+    ];
 
     public function Puesto()
     {
