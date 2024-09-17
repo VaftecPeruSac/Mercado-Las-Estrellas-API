@@ -9,6 +9,7 @@ use App\Models\Socio;
 use App\Http\Requests\StoreCuotaRequest;
 use App\Http\Requests\UpdateCuotaRequest;
 use App\Http\Resources\CuotaCollection;
+use App\Http\Resources\DeudaAndCuotaCollection;
 use App\Models\Servicio;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -20,8 +21,8 @@ class CuotaController extends Controller
      */
     public function index()
     {
-        $cuotas = Cuota::all();
-        return new CuotaCollection($cuotas);
+        $paginate = Deuda::paginate();
+        return new DeudaAndCuotaCollection($paginate);
     }
 
     /**
@@ -47,12 +48,18 @@ class CuotaController extends Controller
             $cuota->save();
             // echo $cuota;
             // $servicio->cuotas()->attach($cuota);
-            $listado = Socio::where('estado',1)->get();
+            $listado = Socio::select('socios.*','puestos.id_puesto')
+                ->join('puestos','puestos.id_socio','socios.id_socio')
+                ->where('socios.estado',1)
+                ->where('puestos.estado',1)
+                ->get();
             foreach($listado as $valu){
                 // Deuda
                 $deuda = new Deuda();
                 $deuda->id_socio = $valu->id_socio;
                 $deuda->id_cuota = $cuota->id;
+                $deuda->id_puesto = $valu->id_puesto;
+                $deuda->id_servicio = $value;
                 $deuda->total_deuda = $request->input('importe');
                 $deuda->fecha_registro = $request->input('fecha_registro');
                 $deuda->save();
