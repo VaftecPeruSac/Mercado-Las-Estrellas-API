@@ -25,6 +25,8 @@ class SocioCollection extends ResourceCollection
                         'apellido_paterno' => $socio->usuario->persona->apellido_paterno,
                         'apellido_materno' => $socio->usuario->persona->apellido_materno,
                         'dni' => $socio->usuario->persona->dni ? $socio->usuario->persona->dni : 'No',
+                        'sexo' => $socio->usuario->persona->sexo,
+                        'direccion' => $socio->usuario->persona->direccion ? $socio->usuario->persona->direccion : 'No',
                         'telefono' => $socio->usuario && $socio->usuario->persona ? $socio->usuario->persona->telefono : 'No',
                         'correo' => $socio->usuario && $socio->usuario->persona ? $socio->usuario->persona->correo : 'No',
                     ] : 'No',
