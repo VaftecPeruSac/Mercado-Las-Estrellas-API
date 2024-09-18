@@ -18,28 +18,28 @@ class SocioCollection extends ResourceCollection
             //Se listan por Puestos porque  un socio tiene muchos puestos y se quiere traer todos los registros
             'data' => $this->collection->transform(function ($socio) {
                 return [
-                    // 'id_puesto' => $puesto->id_puesto,
                     'id_socio' => $socio->id_socio,
-                    // 'id_gironegocio' => $puesto->id_gironegocio,
-                    // 'id_block' => $puesto->id_block,
-                    'numero_puesto' => $socio->puesto ? $socio->puesto->numero_puesto:'no',
-                    // 'area' => $puesto->area,
-                    'id_inquilino' =>  $socio->puesto ? $socio->puesto->id_inquilino:'no',
-                    'estado' =>  $socio->puesto ? $socio->puesto->estado:'no',
-                    'fecha_registro' =>$socio->usuario ? $socio->usuario->fecha_registro : 'no',
-                    'socio' =>$socio->usuario ? $socio->usuario->nombre_usuario : 'no',
-                    'dni' =>$socio->usuario->persona->dni,
-                    'telefono' => $socio->usuario && $socio->usuario->persona ? $socio->usuario->persona->telefono : 'no',
-                    'correo' =>$socio->usuario && $socio->usuario->persona ? $socio->usuario->persona->correo : 'no',
-                    'gironegocio_nombre' => $socio->puesto && $socio->puesto->gironegocio ? $socio->puesto->gironegocio->nombre : 'no',
-                    'block_nombre' =>$socio->puesto && $socio->puesto->block ? $socio->puesto->block->nombre : 'no',
-                    'inquilino' =>$socio->puesto && $socio->puesto->inquilino ? $socio->puesto->inquilino->nombre_completo : 'no',
-                    'deuda' =>$socio->puesto && $socio->puesto->deuda ? $socio->puesto->deuda->total_deuda : 'no',
-                    // 'socio' => new SocioResource($puesto->socio),
-                    // 'gironegocio' => new GiroNegocioResource($puesto->gironegocio), // Si estás incluyendo sociosc
-                    // 'block' => new BlockResource($puesto->block),
-                    // 'inquilino' => new InquilinoResource($puesto->inquilino),
-                    // 'deuda' => new DeudaResource($puesto->deuda),
+                    'nombre_completo' => $socio->usuario->nombre_usuario,
+                    'datos_socio' => $socio->usuario->persona ? [
+                        'nombre' => $socio->usuario->persona->nombre,
+                        'apellido_paterno' => $socio->usuario->persona->apellido_paterno,
+                        'apellido_materno' => $socio->usuario->persona->apellido_materno,
+                        'dni' => $socio->usuario->persona->dni ? $socio->usuario->persona->dni : 'No',
+                        'telefono' => $socio->usuario && $socio->usuario->persona ? $socio->usuario->persona->telefono : 'No',
+                        'correo' => $socio->usuario && $socio->usuario->persona ? $socio->usuario->persona->correo : 'No',
+                    ] : 'No',
+                    'puesto' => $socio->puesto ? [
+                        'id_puesto' => $socio->puesto->id_puesto,
+                        'bloque' => $socio->puesto->block,
+                        'gironegocio_nombre' => $socio->puesto && $socio->puesto->gironegocio ? $socio->puesto->gironegocio->nombre : 'No',
+                        'inquilino' =>  $socio->puesto->inquilino ? [
+                            'id_inquilino' => $socio->puesto->id_inquilino,
+                            'nombre_completo' =>$socio->puesto && $socio->puesto->inquilino ? $socio->puesto->inquilino->nombre_completo : 'No',
+                        ] : 'No',
+                    ] : 'No',
+                    'estado' =>  $socio->puesto ? $socio->puesto->estado:'No',
+                    'fecha_registro' =>$socio->usuario ? $socio->usuario->fecha_registro : 'No',
+                    'deuda' =>$socio->puesto && $socio->puesto->deuda ? $socio->puesto->deuda->total_deuda : 'No',
                 ];
             }),
             'links' => [
