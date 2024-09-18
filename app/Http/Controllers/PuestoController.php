@@ -17,16 +17,35 @@ class PuestoController extends Controller
      */
     public function index(Request $request)
     {
-        //
-        $filter = new PuestoFilter();
-        $queryItems = $filter->transform($request);
-        // $socios = Socio::all();
-        if (count($queryItems) == 0) {
-            return new PuestoCollection(Puesto::paginate());
-        } else {
-            $socios = Puesto::where($queryItems)->paginate();
-            return new PuestoCollection($socios->appends($request->query()));
+        // //
+        // $filter = new PuestoFilter();
+        // $queryItems = $filter->transform($request);
+        // // $socios = Socio::all();
+        // if (count($queryItems) == 0) {
+        //     return new PuestoCollection(Puesto::paginate());
+        // } else {
+        //     $socios = Puesto::where($queryItems)->paginate();
+        //     return new PuestoCollection($socios->appends($request->query()));
+        // }
+
+        $paginate = Puesto::select('puestos.*');
+        if (isset($request->id_gironegocio)) {
+            $paginate->where('id_gironegocio',$request->id_gironegocio);
         }
+        if (isset($request->id_block)) {
+            $paginate->where('id_block',$request->id_block);
+        }
+        if (isset($request->numero_puesto)) {
+            $paginate->whereRaw("upper(numero_puesto) LIKE upper( ? )", ['%'.$request->numero_puesto.'%']);
+        }
+        if (isset($request->buscar_texto)) {
+            $texto = strtr(utf8_decode($request->buscar_texto), utf8_decode('àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
+            $texto = strtr(utf8_decode($texto), utf8_decode('àáâãäçèéêëìíîïññòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiin?ooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
+            $texto = str_replace(' ', '%', $texto);
+            $paginate->whereRaw("upper(numero_puesto) LIKE upper( ? )", ['%'.$texto.'%']);
+        }
+
+        return new PuestoCollection($paginate->paginate());
     }
 
     /**
@@ -86,9 +105,25 @@ class PuestoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePuestoRequest $request, Puesto $puesto)
+    public function update(Request $request,$id_puesto)
     {
-        //
+        $validated = $request->validate([
+            'area' => 'required|max:255',
+            'fecha_registro' => 'required',
+            'id_block' => 'required',
+            'id_gironegocio' => 'required',
+            'numero_puesto' => 'required|max:30',
+        ]);
+
+        $puesto = Puesto::findOrFail($id_puesto);
+        $puesto->id_gironegocio = $validated['id_gironegocio'];
+        $puesto->id_block = $validated['id_block'];
+        $puesto->numero_puesto = $validated['numero_puesto'];
+        $puesto->area = $validated['area'];
+        $puesto->fecha_registro = $validated['fecha_registro'];
+        $puesto->save();
+
+        return "Puesto Editado correctamente";
     }
 
     /**
