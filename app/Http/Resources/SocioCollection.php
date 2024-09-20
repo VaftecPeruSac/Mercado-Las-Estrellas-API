@@ -40,6 +40,11 @@ class SocioCollection extends ResourceCollection
                     // 'block' => new BlockResource($puesto->block),
                     // 'inquilino' => new InquilinoResource($puesto->inquilino),
                     // 'deuda' => new DeudaResource($puesto->deuda),
+                    'nombre' => $socio->usuario && $socio->usuario->persona ? $socio->usuario->persona->nombre : '',
+                    'apellido_paterno' => $socio->usuario && $socio->usuario->persona ? $socio->usuario->persona->apellido_paterno : '',
+                    'apellido_materno' => $socio->usuario && $socio->usuario->persona ? $socio->usuario->persona->apellido_materno : '',
+                    'direccion' => $socio->usuario && $socio->usuario->persona ? $socio->usuario->persona->direccion : '',
+                    'sexo' => $socio->usuario && $socio->usuario->persona ? $socio->usuario->persona->sexo : '',
                 ];
             }),
             'links' => [
