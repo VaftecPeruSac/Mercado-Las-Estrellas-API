@@ -17,16 +17,10 @@ class PuestoController extends Controller
      */
     public function index(Request $request)
     {
-        // //
-        // $filter = new PuestoFilter();
-        // $queryItems = $filter->transform($request);
-        // // $socios = Socio::all();
-        // if (count($queryItems) == 0) {
-        //     return new PuestoCollection(Puesto::paginate());
-        // } else {
-        //     $socios = Puesto::where($queryItems)->paginate();
-        //     return new PuestoCollection($socios->appends($request->query()));
-        // }
+        $per_page = 15;
+        if (isset($request->per_page)) {
+            $per_page = $request->per_page;
+        }
 
         $paginate = Puesto::select('puestos.*');
         if (isset($request->id_gironegocio)) {
@@ -34,6 +28,9 @@ class PuestoController extends Controller
         }
         if (isset($request->id_block)) {
             $paginate->where('id_block',$request->id_block);
+        }
+        if (isset($request->id_socio)) {
+            $paginate->where('id_socio',$request->id_socio);
         }
         if (isset($request->numero_puesto)) {
             $paginate->whereRaw("upper(numero_puesto) LIKE upper( ? )", ['%'.$request->numero_puesto.'%']);
@@ -45,7 +42,7 @@ class PuestoController extends Controller
             $paginate->whereRaw("upper(numero_puesto) LIKE upper( ? )", ['%'.$texto.'%']);
         }
 
-        return new PuestoCollection($paginate->paginate());
+        return new PuestoCollection($paginate->paginate($per_page));
     }
 
     /**

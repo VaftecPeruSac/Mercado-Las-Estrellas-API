@@ -38,6 +38,14 @@ class CuotaController extends Controller
      */
     public function store(Request $request)
     {
+        $listado = Socio::select('socios.*','puestos.id_puesto')
+            ->join('puestos','puestos.id_socio','socios.id_socio')
+            ->where('socios.estado',1)
+            ->where('puestos.estado',1)
+            ->get();
+        if(count($listado) == 0){
+            return response()->json(['error' => 'No se encontrarón socios con puestos.'], 400);
+        }
         foreach($request->input('servicios') as $value){
             // $servicio = Servicio::where('id_servicio', $request->input('id_servicio'))->first();
             $cuota = new Cuota();
@@ -46,13 +54,12 @@ class CuotaController extends Controller
             $cuota->fecha_registro = $request->input('fecha_registro');
             $cuota->fecha_vencimiento = $request->input('fecha_vencimiento');
             $cuota->save();
-            // echo $cuota;
-            // $servicio->cuotas()->attach($cuota);
-            $listado = Socio::select('socios.*','puestos.id_puesto')
-                ->join('puestos','puestos.id_socio','socios.id_socio')
-                ->where('socios.estado',1)
-                ->where('puestos.estado',1)
-                ->get();
+
+            // $listado = Socio::select('socios.*','puestos.id_puesto')
+            //     ->join('puestos','puestos.id_socio','socios.id_socio')
+            //     ->where('socios.estado',1)
+            //     ->where('puestos.estado',1)
+            //     ->get();
             foreach($listado as $valu){
                 // Deuda
                 $deuda = new Deuda();

@@ -8,8 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Usuario extends Model
 {
     use HasFactory;
+    protected $primaryKey = 'id_usuario';
+    public $incrementing = false;
     protected $fillable = [
-      'id_persona',
+      // 'id_persona',
       'nombre_usuario',
       'contrasenia',
       'rol',
@@ -22,7 +24,7 @@ class Usuario extends Model
     //antes tenia relacion con socio y puesto
      public function Persona()
      {//belongsTo es para la tabla que tiene la fk
-        return $this->belongsTo(Persona::class,'id_persona','id_persona');
+        return $this->belongsTo(Persona::class,'id_usuario','id_persona');
      }
 
      public function Socio()

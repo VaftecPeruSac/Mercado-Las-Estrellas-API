@@ -5,61 +5,36 @@ namespace App\Http\Controllers;
 use App\Exports\SociosExport;
 use App\Filters\SociosFilter;
 use App\Models\Socio;
-use App\Http\Requests\StoreSocioRequest;
 use App\Http\Requests\UpdateSocioRequest;
 use App\Http\Resources\SocioCollection;
 use App\Http\Resources\SocioConSinPuestos;
-use App\Http\Resources\SocioResource;
-use App\Models\Block;
 use App\Models\Persona;
 use App\Models\Puesto;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Str;
 
 
 class SocioController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
-        // // //opcion 1
-
-        // // $filter = new SociosFilter();
-        // // $queryItems = $filter->transform($request);
-        // // if (count($queryItems) == 0) {
-        // //     return new SocioCollection(Socio::paginate()); //se sa el modelo Puesto porque lista los registros uno por uno
-        // // } else {
-        // //     $socios = Socio::where($queryItems)->paginate();
-        // //     return new SocioCollection($socios->appends($request->query()));
-        // // }
-        //opcion 2
-        // $filter = new SociosFilter();
-        // $queryItems = $filter->transform($request);
-        // $includepuestos = $request->query("puesto");
-        // $socios = Socio::where($queryItems)->paginate();
-        // if ($includepuestos){
-        //     $socios = Socio::with("puesto")->where($queryItems)->paginate();
-        // }
-        // return new SocioCollection($socios->appends($request->query()));
-
-        //opcion 3
-
+        $per_page = 15;
+        if (isset($request->per_page)) {
+            $per_page = $request->per_page;
+        }
         if (isset($request->buscar_texto)) {
             $texto = strtr(utf8_decode($request->buscar_texto), utf8_decode('àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
             $texto = strtr(utf8_decode($texto), utf8_decode('àáâãäçèéêëìíîïññòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiin?ooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
             $texto = str_replace(' ', '%', $texto);
             $paginate = Socio::select('socios.*')
                 ->join('personas','socios.id_socio','personas.id_persona')
-                ->whereRaw("upper(nombre) LIKE upper( ? )", ['%'.$texto.'%'])
-                ->paginate();
+                ->whereRaw("concat(upper(nombre_completo),dni,correo,telefono) LIKE upper( ? )", ['%'.$texto.'%'])
+                ->paginate($per_page);
             return new SocioCollection($paginate);
         } else {
-            return new SocioCollection(Socio::paginate());
+            return new SocioCollection(Socio::paginate($per_page));
         }
     }
 
@@ -71,17 +46,14 @@ class SocioController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-
         //registro de persona
         $persona = new Persona();
         $persona->nombre = $request->input('nombre');
         $persona->apellido_paterno = $request->input('apellido_paterno');
         $persona->apellido_materno = $request->input('apellido_materno');
+        $persona->nombre_completo = $request->input('nombre').' '.$request->input('apellido_paterno').' '.$request->input('apellido_materno');
         $persona->dni = $request->input('dni');
         $persona->correo = $request->input('correo');
         $persona->telefono = $request->input('telefono');
@@ -92,7 +64,8 @@ class SocioController extends Controller
         $persona->save();
         // registro de usuario
         $usuario = new Usuario();
-        $usuario->id_persona = $persona->id;
+        // $usuario->id_persona = $persona->id;
+        $usuario->id_usuario = $persona->id;
         $usuario->nombre_usuario = $request->input('nombre').' '.$request->input('apellido_paterno').' '.$request->input('apellido_materno');
         $usuario->contrasenia = Str::random(10);
         $usuario->estado = $request->input('estado'); // estado
@@ -102,7 +75,8 @@ class SocioController extends Controller
         // echo 'Datos del usuario:',$usuario;
         // registro de socio
         $socio = new Socio();
-        $socio->id_usuario = $usuario->id;
+        // $socio->id_usuario = $usuario->id;
+        $socio->id_socio = $persona->id;
         $socio->tipo_persona = "natural"; //tipo_persona
         $socio->saldo = 0;
         $socio->fecha_registro = $request->input('fecha_registro'); // fecha registro

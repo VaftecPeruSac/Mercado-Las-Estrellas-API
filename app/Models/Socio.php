@@ -8,31 +8,37 @@ use Illuminate\Database\Eloquent\Model;
 class Socio extends Model
 {
     use HasFactory;
-
-    protected $fillable = [    
-      'id_usuario',
+    protected $primaryKey = 'id_socio';
+    public $incrementing = false;
+    public $timestamps = false;
+    protected $fillable = [
       'tipo_persona',
       'saldo',
       'fecha_registro',
-    ];
-    //para no usar los timestamps en el migrate, de lo contrario requiere ello y no permite hacer registros
-    public $timestamps = false;
-    public function Usuario()
-    {//belongsTo es para la tabla que tiene la fk
-       return $this->belongsTo(Usuario::class,'id_usuario','id_usuario');
-    }
+   ];
 
-    public function Deuda()
-    {//hasOne es para la tabla que no tiene la fk
-       return $this->hasOne(Deuda::class,'id_socio','id_socio');
-    }
-    
-    public function Puesto()
-    {//hasOne es para la tabla que no tiene la fk
-       return $this->hasOne(Puesto::class,'id_socio','id_socio');
-    }  
-    public function Pago()
-    {//hasOne es para la tabla que no tiene la fk
-       return $this->hasOne(Pago::class,'id_socio','id_socio');
-    }
+   public function Usuario()
+   {
+      return $this->belongsTo(Usuario::class,'id_socio','id_usuario');
+   }
+
+   public function Persona()
+   {
+      return $this->belongsTo(Persona::class,'id_socio','id_persona');
+   }
+
+   public function Deuda()
+   {
+      return $this->hasOne(Deuda::class,'id_socio','id_socio');
+   }
+
+   public function Puesto()
+   {
+      return $this->hasOne(Puesto::class,'id_socio','id_socio');
+   }
+
+   public function Pago()
+   {
+      return $this->hasOne(Pago::class,'id_socio','id_socio');
+   }
 }
