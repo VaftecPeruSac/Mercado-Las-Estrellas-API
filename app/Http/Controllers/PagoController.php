@@ -15,6 +15,7 @@ use App\Models\Deuda;
 use App\Models\Documento;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\DB;
 
 class PagoController extends Controller
 {
@@ -90,15 +91,33 @@ class PagoController extends Controller
     // }
     public function store(Request $request)
     {
-        //el importe que se envie ya sera restado en el front
-        $deuda_array = $request->input('deudas');
-        if (!is_array($deuda_array) || empty($deuda_array)){
-            return response()->json(['error' => 'No se recibierón deudas válidas'], 400);
-        }
+        $validated = $request->validate([
+            'id_socio' => 'required',
+            'deudas' => 'required|array|min:1',
+            'deudas.*.id_deuda' => 'required',
+            'deudas.*.importe' => 'required|numeric|min:0|not_in:0',
+        ]);
         $documento = Documento::find(1);
         $numero_pago = Pago::max('numero_pago');
         $numero_pago_nueno = $numero_pago + 1;
+        $no_validos = "";
 
+        foreach ($validated['deudas'] as $deuda_value) {
+            $deuda = Deuda::find($deuda_value['id_deuda']);
+            $importe_a_cuenta = DetallePagos::where('id_deuda',$deuda_value['id_deuda'])
+                ->sum("importe");
+            $importe_a_cuenta = $importe_a_cuenta ? $importe_a_cuenta : 0;
+            $resto_de_deuda = $deuda->total_deuda - $importe_a_cuenta;
+
+            if(!($resto_de_deuda >= $deuda_value['importe'])){
+                $no_validos .= "#".$deuda_value['id_deuda']." ".$deuda_value['importe']." ";
+            }
+        }
+        if($no_validos != ""){
+            return response()->json(['error' => 'No se recibieron deudas válidas ('.$no_validos.').'], 400);
+        }
+
+        DB::beginTransaction();
         $pago = new Pago();
         $pago->id_socio = $request->input('id_socio');
         $pago->id_documento = 1;
@@ -107,19 +126,30 @@ class PagoController extends Controller
         $pago->total_pago = 0;
         $pago->fecha_registro = null;
         $pago->save();
-        foreach ($deuda_array as $deuda_value) {
+        // $no_validos = "";
+        foreach ($validated['deudas'] as $deuda_value) {
             $deuda = Deuda::find($deuda_value['id_deuda']);
+            // $importe_a_cuenta = DetallePagos::where('id_deuda',$deuda_value['id_deuda'])
+            //     ->sum("importe");
+            // $importe_a_cuenta = $importe_a_cuenta ? $importe_a_cuenta : 0;
+            // $resto_de_deuda = $deuda->total_deuda - $importe_a_cuenta;
 
-            $detallePagos = new DetallePagos();
-            $detallePagos->id_pago = $pago->id;
-            $detallePagos->id_cuota = $deuda->id_cuota;
-            $detallePagos->id_deuda = $deuda->id_deuda;
-            $detallePagos->id_puesto = $deuda->id_puesto;
-            $detallePagos->importe = $deuda_value['importe'];
-            $detallePagos->fecha_registro = null;
-            $detallePagos->save();
+            // if($resto_de_deuda >= $deuda_value['importe']){
+                $detallePagos = new DetallePagos();
+                $detallePagos->id_pago = $pago->id_pago;
+                $detallePagos->id_cuota = $deuda->id_cuota;
+                $detallePagos->id_deuda = $deuda->id_deuda;
+                $detallePagos->id_puesto = $deuda->id_puesto;
+                $detallePagos->importe = $deuda_value['importe'];
+                $detallePagos->fecha_registro = null;
+                $detallePagos->save();
+            // } else {
+            //     $no_validos .= "no valido #".$deuda_value['id_deuda']." ".$deuda_value['importe']." ";
+            // }
         }
-        return response()->json(['message' => 'Deudas actualizadas correctamente'], 200);
+        DB::commit();
+        // DB::rollback();
+        return response()->json(['message' => 'Deudas actualizadas correctamente'.'('.$no_validos.')'], 200);
     }
 
 

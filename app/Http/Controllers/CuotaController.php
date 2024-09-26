@@ -120,11 +120,12 @@ class CuotaController extends Controller
             return response()->json(['error' => 'No se encontro el puesto.'], 400);
         }
 
-        $paginate = Deuda::select(
+        $paginate = Deuda::leftJoin('detalle_pagos','deudas.id_deuda','detalle_pagos.id_deuda')
+            ->select(
                 'deudas.id_deuda',
                 'deudas.total_deuda as total',
-                DB::raw("year(deudas.fecha_registro) as anio"),
-                DB::raw("CASE WHEN MONTH(deudas.fecha_registro) = 1 THEN 'Enero'
+                DB::raw("max(year(deudas.fecha_registro)) as anio"),
+                DB::raw("max(CASE WHEN MONTH(deudas.fecha_registro) = 1 THEN 'Enero'
                     WHEN MONTH(deudas.fecha_registro) = 2 THEN 'Febrero'
                     WHEN MONTH(deudas.fecha_registro) = 3 THEN 'Marzo'
                     WHEN MONTH(deudas.fecha_registro) = 4 THEN 'Abril'
@@ -136,15 +137,14 @@ class CuotaController extends Controller
                     WHEN MONTH(deudas.fecha_registro) = 10 THEN 'Octubre'
                     WHEN MONTH(deudas.fecha_registro) = 11 THEN 'Noviembre'
                     WHEN MONTH(deudas.fecha_registro) = 12 THEN 'Diciembre'
-                    ELSE '-' END AS mes"),
-                DB::raw("ifnull((select sum(importe) from detalle_pagos where detalle_pagos.id_deuda = deudas.id_deuda),0) as a_cuenta"),
-                // DB::raw("() as deuda")
-                DB::raw("deudas.total_deuda - ifnull((select sum(importe) from detalle_pagos where detalle_pagos.id_deuda = deudas.id_deuda),0) as deuda")
+                    ELSE '-' END) AS mes")
             )
-            ->where('id_socio',$request->id_socio)
-            ->where('id_puesto',$request->id_puesto)
+            ->selectRaw('coalesce(sum(detalle_pagos.importe),0) as a_cuenta, (deudas.total_deuda - coalesce(sum(detalle_pagos.importe),0)) as deuda')
+            ->where('deudas.id_socio',$request->id_socio)
+            ->where('deudas.id_puesto',$request->id_puesto)
+            ->groupBy('deudas.id_deuda','deudas.total_deuda')
+            ->havingRaw("deudas.total_deuda - coalesce(sum(detalle_pagos.importe),0) > 0")
             ->paginate();
-        // return new DeudaAndCuotaCollection($paginate);
         return $paginate;
     }
 }

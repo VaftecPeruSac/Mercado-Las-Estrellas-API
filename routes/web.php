@@ -1,5 +1,9 @@
 <?php
 
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: Authorization,Origin, Content-Type, X-Auth-Token, X-XSRF-TOKEN');
+
 use App\Http\Controllers\BlockController;
 use App\Http\Controllers\CuotaController;
 use App\Http\Controllers\DeudaController;
@@ -13,6 +17,7 @@ use App\Http\Controllers\PuestoController;
 use App\Http\Controllers\ServicioController;
 use App\Http\Controllers\SocioController;
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\ReporteController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -48,6 +53,8 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::apiResource('pagos', PagoController::class);
     Route::apiResource('deudas', DeudaController::class);
     Route::apiResource('pago_detalle', PagoDetalleController::class);
+    Route::get('reportes/pagos', [ReporteController::class, 'pagos']);
+    Route::get('reportes/deudas', [ReporteController::class, 'deudas']);
 });
 Route::get('/csrf-token', function () {
     return response()->json([

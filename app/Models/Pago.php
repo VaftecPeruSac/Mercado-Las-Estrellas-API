@@ -8,16 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class Pago extends Model
 {
     use HasFactory;
+    protected $primaryKey = 'id_pago';
+    public $timestamps = false;
     protected $fillable = [    
+        'id_pago',
         'id_socio',
         'id_documento',
         'numero_pago',
         'serie',
         'total_pago',
         'fecha_registro',
-      ];
-      //para no usar los timestamps en el migrate, de lo contrario requiere ello y no permite hacer registros
-      public $timestamps = false;
+    ];
 
     public function Socio()
     {//belongsTo es para la tabla que tiene la fk
