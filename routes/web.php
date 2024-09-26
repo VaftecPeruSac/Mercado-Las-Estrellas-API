@@ -33,6 +33,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::get('puestos/exportar', [PuestoController::class, 'export']);
     Route::apiResource('puestos', PuestoController::class); //2
     Route::post('puestos/asignar', [PuestoController::class, 'asignar']); //3
+    Route::get('cuotas/pendientes', [CuotaController::class, 'deudaPendientes']);
     Route::get('cuotas/exportar', [CuotaController::class, 'export']);
     Route::apiResource('cuotas', CuotaController::class);
     Route::get('block/select', [BlockController::class, 'select']);

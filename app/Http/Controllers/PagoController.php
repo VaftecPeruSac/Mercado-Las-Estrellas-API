@@ -113,6 +113,7 @@ class PagoController extends Controller
             $detallePagos = new DetallePagos();
             $detallePagos->id_pago = $pago->id;
             $detallePagos->id_cuota = $deuda->id_cuota;
+            $detallePagos->id_deuda = $deuda->id_deuda;
             $detallePagos->id_puesto = $deuda->id_puesto;
             $detallePagos->importe = $deuda_value['importe'];
             $detallePagos->fecha_registro = null;

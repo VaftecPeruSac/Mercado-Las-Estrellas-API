@@ -16,6 +16,7 @@ class DetallePagos extends Model
         'id_pago',
         'id_cuota',
         'id_puesto',
+        'id_deuda',
         'importe',
         'fecha_registro',
     ];

@@ -13,6 +13,7 @@ use App\Http\Resources\DeudaAndCuotaCollection;
 use App\Models\Servicio;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\DB;
 
 class CuotaController extends Controller
 {
@@ -108,5 +109,42 @@ class CuotaController extends Controller
     public function destroy(Cuota $cuota)
     {
         //
+    }
+
+    public function deudaPendientes(Request $request)
+    {
+        if(!isset($request->id_socio)){
+            return response()->json(['error' => 'No se encontro el socio.'], 400);
+        }
+        if(!isset($request->id_puesto)){
+            return response()->json(['error' => 'No se encontro el puesto.'], 400);
+        }
+
+        $paginate = Deuda::select(
+                'deudas.id_deuda',
+                'deudas.total_deuda as total',
+                DB::raw("year(deudas.fecha_registro) as anio"),
+                DB::raw("CASE WHEN MONTH(deudas.fecha_registro) = 1 THEN 'Enero'
+                    WHEN MONTH(deudas.fecha_registro) = 2 THEN 'Febrero'
+                    WHEN MONTH(deudas.fecha_registro) = 3 THEN 'Marzo'
+                    WHEN MONTH(deudas.fecha_registro) = 4 THEN 'Abril'
+                    WHEN MONTH(deudas.fecha_registro) = 5 THEN 'Mayo'
+                    WHEN MONTH(deudas.fecha_registro) = 6 THEN 'Junio'
+                    WHEN MONTH(deudas.fecha_registro) = 7 THEN 'Julio'
+                    WHEN MONTH(deudas.fecha_registro) = 8 THEN 'Agosto'
+                    WHEN MONTH(deudas.fecha_registro) = 9 THEN 'Septiembre'
+                    WHEN MONTH(deudas.fecha_registro) = 10 THEN 'Octubre'
+                    WHEN MONTH(deudas.fecha_registro) = 11 THEN 'Noviembre'
+                    WHEN MONTH(deudas.fecha_registro) = 12 THEN 'Diciembre'
+                    ELSE '-' END AS mes"),
+                DB::raw("ifnull((select sum(importe) from detalle_pagos where detalle_pagos.id_deuda = deudas.id_deuda),0) as a_cuenta"),
+                // DB::raw("() as deuda")
+                DB::raw("deudas.total_deuda - ifnull((select sum(importe) from detalle_pagos where detalle_pagos.id_deuda = deudas.id_deuda),0) as deuda")
+            )
+            ->where('id_socio',$request->id_socio)
+            ->where('id_puesto',$request->id_puesto)
+            ->paginate();
+        // return new DeudaAndCuotaCollection($paginate);
+        return $paginate;
     }
 }
