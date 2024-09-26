@@ -35,7 +35,7 @@ class PersonaController extends Controller
         $persona = new Persona();
         $persona->nombre = $request->input('nombre');
         $persona->apellido_paterno = $request->input('apellido_paterno');
-        $persona->apellido_materno = $request->input('apellido_paterno');
+        $persona->apellido_materno = $request->input('apellido_materno');
         $persona->dni = $request->input('dni');
         $persona->correo = $request->input('correo');
         $persona->telefono = $request->input('telefono');
