@@ -22,6 +22,7 @@ class ReporteCuotaPorMetroCollection extends ResourceCollection
                 // $importe_por_pagar = $deuda->total_deuda - $importeSuma;
 
                 return [
+                    'id_cuota' => $deuda->id_cuota,
                     'nombre_completo' => $deuda->persona ? $deuda->persona->nombre_completo : '',
                     'numero_puesto' => $deuda->puesto ? $deuda->puesto->numero_puesto : '',
                     'area' => $deuda->puesto ? $deuda->puesto->area : '',

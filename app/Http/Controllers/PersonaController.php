@@ -52,7 +52,8 @@ class PersonaController extends Controller
     public function store(StorePersonaRequest $request)
     {
         new PersonaResource(Persona::create($request->all()));
-        return "Persona Registrada correctamente";
+        // return "Persona Registrada correctamente";
+        return response()->json(["data"=>[],"message"=>"Persona Registrada correctamente"]);
     }
 
     /**

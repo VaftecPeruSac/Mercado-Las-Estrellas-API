@@ -40,7 +40,8 @@ class UsuarioController extends Controller
     public function store(StoreUsuarioRequest $request)
     { // authorize=true en StoreUsuarioRequest
         new UsuarioResource(Usuario::create($request->all()));
-        return "Usuario Registrado correctamente";
+        // return "Usuario Registrado correctamente";
+        return response()->json(["data"=>[],"message"=>"Usuario Registrado correctamente"]);
     }
 
     /**

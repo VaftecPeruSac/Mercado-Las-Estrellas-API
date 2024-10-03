@@ -36,7 +36,8 @@ class BlockController extends Controller
         $block = new Block();
         $block->nombre = $request->input('nombre');
         $block->save();
-        return "Block Registrado correctamente";
+        // return "Block Registrado correctamente";
+        return response()->json(["data"=>$block,"message"=>"Block Registrado correctamente"]);
     }
 
     public function select()

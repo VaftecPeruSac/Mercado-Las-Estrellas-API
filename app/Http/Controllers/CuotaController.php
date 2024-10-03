@@ -48,7 +48,6 @@ class CuotaController extends Controller
             return response()->json(['error' => 'No se encontrarón socios con puestos.'], 400);
         }
         foreach($request->input('servicios') as $value){
-            // $servicio = Servicio::where('id_servicio', $request->input('id_servicio'))->first();
             $cuota = new Cuota();
             $cuota->importe = $request->input('importe');
             $cuota->id_servicio = $value;
@@ -56,13 +55,7 @@ class CuotaController extends Controller
             $cuota->fecha_vencimiento = $request->input('fecha_vencimiento');
             $cuota->save();
 
-            // $listado = Socio::select('socios.*','puestos.id_puesto')
-            //     ->join('puestos','puestos.id_socio','socios.id_socio')
-            //     ->where('socios.estado',1)
-            //     ->where('puestos.estado',1)
-            //     ->get();
             foreach($listado as $valu){
-                // Deuda
                 $deuda = new Deuda();
                 $deuda->id_socio = $valu->id_socio;
                 $deuda->id_cuota = $cuota->id;
@@ -73,7 +66,8 @@ class CuotaController extends Controller
                 $deuda->save();
             }
         }
-        return "Cuota Registrado correctamente";
+
+        return response()->json(["data"=>[],"message"=>"Cuota Registrado correctamente"]);
     }
     public function export()
     {

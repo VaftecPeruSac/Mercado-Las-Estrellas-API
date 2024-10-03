@@ -35,7 +35,7 @@ class InquilinoController extends Controller
     public function store(Request $request)
     {
         $inquilino = new Inquilino();
-        $inquilino->nombre_completo = $request->input('nombre_completo');
+        $inquilino->nombre_completo = $request->input('nombre');
         $inquilino->apellido_paterno = $request->input('apellido_paterno');
         $inquilino->apellido_materno = $request->input('apellido_materno');
         $inquilino->dni = $request->input('dni');
@@ -44,9 +44,15 @@ class InquilinoController extends Controller
         $puesto = Puesto::where('id_puesto', $request->input('id_puesto'))->first();
         $puesto->id_inquilino = $inquilino->id_inquilino;
         $puesto->update();
-        // echo 'Datos del inquilino:',$inquilino;
-        return "Puesto Registrado correctamente";
+
+        return response()->json(["data"=>$inquilino,"message"=>"Puesto Registrado correctamente"]);
     }
+    // id_inquilino
+    // nombre_completo
+    // apellido_materno
+    // apellido_paterno
+    // dni
+    // telefono
 
     /**
      * Display the specified resource.

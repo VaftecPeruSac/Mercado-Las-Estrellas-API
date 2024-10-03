@@ -64,9 +64,10 @@ class PuestoController extends Controller
         $puesto->area = $request->input('area');
         $puesto->fecha_registro = $request->input('fecha_registro'); // fecha registro
         $puesto->save();
-        echo 'Datos del puesto:', $puesto;
-        return "Puesto Registrado correctamente";
+        // echo 'Datos del puesto:', $puesto;
+        // return "Puesto Registrado correctamente";
         // new PuestoResource(Puesto::create($request->all()));
+        return response()->json(["data"=>$puesto,"message"=>"Puesto Registrado correctamente"]);
     }
 
     public function asignar(Request $request)
@@ -74,7 +75,8 @@ class PuestoController extends Controller
         $puesto = Puesto::where('id_puesto', $request->input('id_puesto'))->first();
         $puesto->id_socio = $request->input('id_socio');
         $puesto->update();
-        return "Se Asigno el puesto a un socio correctamente";
+        // return "Se Asigno el puesto a un socio correctamente";
+        return response()->json(["data"=>$puesto,"message"=>"Se Asigno el puesto a un socio correctamente"]);
     }
 
     public function select()
@@ -120,7 +122,8 @@ class PuestoController extends Controller
         $puesto->fecha_registro = $validated['fecha_registro'];
         $puesto->save();
 
-        return "Puesto Editado correctamente";
+        // return "Puesto Editado correctamente";
+        return response()->json(["data"=>$puesto,"message"=>"Puesto Editado correctamente"]);
     }
 
     /**

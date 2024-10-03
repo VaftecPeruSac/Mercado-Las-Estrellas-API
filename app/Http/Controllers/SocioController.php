@@ -85,8 +85,9 @@ class SocioController extends Controller
         $puesto = Puesto::where('id_puesto', $request->input('id_puesto'))->first();
         $puesto->id_socio = $socio->id;
         $puesto->update();
-        return "Se Registro el socio correctamente";
+        // return "Se Registro el socio correctamente";
         // return new SocioResource(Socio::create($request->all()));
+        return response()->json(["data"=>$socio,"message"=>"Se Registro el socio correctamente"]);
     }
     public function export()
     {

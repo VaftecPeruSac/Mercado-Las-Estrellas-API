@@ -24,6 +24,7 @@ class ReporteCuotaPorPuestoCollection extends ResourceCollection
                 $importe_por_pagar = $deuda->total_deuda - $importe_pagado;
 
                 return [
+                    'id_cuota' => $deuda->id_cuota,
                     'anio' => (new Carbon( $deuda->fecha_registro ))->format('Y'),
                     'servicio_descripcion' => $deuda->servicio ? $deuda->servicio->descripcion : '',
                     'aprobado' => $deuda->total_deuda,

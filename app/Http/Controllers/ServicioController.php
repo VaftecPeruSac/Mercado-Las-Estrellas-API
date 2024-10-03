@@ -51,7 +51,8 @@ class ServicioController extends Controller
         $servicio->estado = $request->input('estado');
         $servicio->fecha_registro = $request->input('fecha_registro');
         $servicio->save();
-        return "Servicio Registrado correctamente";
+        // return "Servicio Registrado correctamente";
+        return response()->json(["data"=>$servicio,"message"=>"Servicio Registrado correctamente"]);
     }
     public function export()
     {
@@ -93,7 +94,8 @@ class ServicioController extends Controller
         $servicio->estado = $validated['estado'];
         $servicio->fecha_registro = $validated['fecha_registro'];
         $servicio->save();
-        return "Servicio Editado correctamente";
+        // return "Servicio Editado correctamente";
+        return response()->json(["data"=>$servicio,"message"=>"Servicio Editado correctamente"]);
     }
 
     /**

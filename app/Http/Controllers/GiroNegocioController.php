@@ -35,7 +35,8 @@ class GiroNegocioController extends Controller
         $giroNegocio = new GiroNegocio();
         $giroNegocio->nombre = $request->input('nombre');
         $giroNegocio->save();
-        return "Giro de negocio registrado correctamente";
+        // return "Giro de negocio registrado correctamente";
+        return response()->json(["data"=>$giroNegocio,"message"=>"Giro de negocio registrado correctamente"]);
     }
 
     /**
