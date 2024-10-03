@@ -16,6 +16,7 @@ use App\Models\Documento;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class PagoController extends Controller
 {
@@ -124,7 +125,7 @@ class PagoController extends Controller
         $pago->numero_pago = $numero_pago_nueno;
         $pago->serie = $documento->serie;
         $pago->total_pago = 0;
-        $pago->fecha_registro = null;
+        $pago->fecha_registro = Carbon::now();
         $pago->save();
         // $no_validos = "";
         foreach ($validated['deudas'] as $deuda_value) {
@@ -147,6 +148,9 @@ class PagoController extends Controller
             //     $no_validos .= "no valido #".$deuda_value['id_deuda']." ".$deuda_value['importe']." ";
             // }
         }
+        $sumaImporte = DetallePagos::where('id_pago',$pago->id_pago)->sum('importe');
+        $pago->total_pago = $sumaImporte;
+        $pago->save();
         DB::commit();
         // DB::rollback();
         return response()->json(['message' => 'Deudas actualizadas correctamente'.'('.$no_validos.')'], 200);

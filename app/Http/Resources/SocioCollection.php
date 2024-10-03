@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Support\Facades\DB;
 
 class SocioCollection extends ResourceCollection
 {
@@ -15,8 +16,17 @@ class SocioCollection extends ResourceCollection
     public function toArray($request)
     {
         return [
-            //Se listan por Puestos porque  un socio tiene muchos puestos y se quiere traer todos los registros
             'data' => $this->collection->transform(function ($socio) {
+                $query = DB::select("select sum(b.total_deuda) deuda from puestos a
+                    left join deudas b on a.id_puesto = b.id_puesto
+                    where a.id_socio = ".$socio->id_socio);
+                $deuda = collect($query)->first();
+                $deuda_total = $deuda->deuda ? $deuda->deuda : 0;
+                $query = DB::select("select sum(importe) pago from puestos a left join detalle_pagos b on a.id_puesto = b.id_puesto
+                    where a.id_socio = ".$socio->id_socio);
+                $pago = collect($query)->first();
+                $pago_total = $pago->pago ? $pago->pago : 0;
+                $deuda = $deuda_total - $pago_total;
                 return [
                     'id_socio' => $socio->id_socio,
                     // 'nombre_completo' => $socio->usuario ? $socio->usuario->nombre_usuario : '',
@@ -37,7 +47,8 @@ class SocioCollection extends ResourceCollection
                     'nombre_inquilino' =>$socio->puesto && $socio->puesto->inquilino ? $socio->puesto->inquilino->nombre_completo : 'No asignado',
                     'estado' =>  $socio->persona->estado,
                     'fecha_registro' => $socio->fecha_registro ? $socio->fecha_registro : null,
-                    'deuda' =>$socio->puesto && $socio->puesto->deuda ? $socio->puesto->deuda->total_deuda : 'No',
+                    // 'deuda' =>$socio->puesto && $socio->puesto->deuda ? $socio->puesto->deuda->total_deuda : 'No',
+                    'deuda' =>$deuda,
                 ];
             }),
             'links' => [

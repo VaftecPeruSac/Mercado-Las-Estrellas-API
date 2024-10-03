@@ -130,4 +130,35 @@ class PuestoController extends Controller
     {
         //
     }
+
+    public function indexLibre(Request $request)
+    {
+        $per_page = 15;
+        if (isset($request->per_page)) {
+            $per_page = $request->per_page;
+        }
+
+        $paginate = Puesto::select('puestos.*')
+            ->whereNull('id_socio');
+        if (isset($request->id_gironegocio)) {
+            $paginate->where('id_gironegocio',$request->id_gironegocio);
+        }
+        if (isset($request->id_block)) {
+            $paginate->where('id_block',$request->id_block);
+        }
+        if (isset($request->id_socio)) {
+            $paginate->where('id_socio',$request->id_socio);
+        }
+        if (isset($request->numero_puesto)) {
+            $paginate->whereRaw("upper(numero_puesto) LIKE upper( ? )", ['%'.$request->numero_puesto.'%']);
+        }
+        if (isset($request->buscar_texto)) {
+            $texto = strtr(utf8_decode($request->buscar_texto), utf8_decode('àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
+            $texto = strtr(utf8_decode($texto), utf8_decode('àáâãäçèéêëìíîïññòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiin?ooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
+            $texto = str_replace(' ', '%', $texto);
+            $paginate->whereRaw("upper(numero_puesto) LIKE upper( ? )", ['%'.$texto.'%']);
+        }
+
+        return new PuestoCollection($paginate->paginate($per_page));
+    }
 }

@@ -34,6 +34,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::get('socios/exportar', [SocioController::class, 'export']);
     Route::apiResource('socios', SocioController::class);
     Route::apiResource('inquilinos', InquilinoController::class);
+    Route::get('puestos/libre', [PuestoController::class, 'indexLibre']);
     Route::get('puestos/select', [PuestoController::class, 'select']); //1
     Route::get('puestos/exportar', [PuestoController::class, 'export']);
     Route::apiResource('puestos', PuestoController::class); //2
@@ -55,6 +56,8 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::apiResource('pago_detalle', PagoDetalleController::class);
     Route::get('reportes/pagos', [ReporteController::class, 'pagos']);
     Route::get('reportes/deudas', [ReporteController::class, 'deudas']);
+    Route::get('reportes/cuota-por-metros', [ReporteController::class, 'cuotaPorMetros']);
+    Route::get('reportes/cuota-por-puestos', [ReporteController::class, 'cuotaPorPuestos']);
 });
 Route::get('/csrf-token', function () {
     return response()->json([
