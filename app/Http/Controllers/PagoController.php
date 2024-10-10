@@ -25,9 +25,18 @@ class PagoController extends Controller
      */
     public function index()
     {
+        // $pagos = Pago::all();
+        // return new PagoCollection($pagos);
 
-        $pagos = Pago::all();
-        return new PagoCollection($pagos);
+        $per_page = 15;
+        if (isset($request->per_page)) {
+            $per_page = $request->per_page;
+        }
+        $paginate = Pago::paginate($per_page);
+        // $response = new ReporteDeudaCollection($paginate);
+
+        // return response()->json($response);
+        return new PagoCollection($paginate);
     }
 
     /**

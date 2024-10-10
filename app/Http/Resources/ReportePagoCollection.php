@@ -30,7 +30,7 @@ class ReportePagoCollection extends ResourceCollection
                     ];
                 }),
                 'links' => [
-                    'self' => url('/pagos'),
+                    'self' => url('/reportes/pagos'),
                 ],
                 'meta' => [
                     'total' => $this->collection->count(),
