@@ -115,30 +115,32 @@ class CuotaController extends Controller
         }
 
         $paginate = Deuda::leftJoin('detalle_pagos','deudas.id_deuda','detalle_pagos.id_deuda')
-            ->select(
-                'deudas.id_deuda',
-                'deudas.total_deuda as total',
-                DB::raw("max(year(deudas.fecha_registro)) as anio"),
-                DB::raw("max(CASE WHEN MONTH(deudas.fecha_registro) = 1 THEN 'Enero'
-                    WHEN MONTH(deudas.fecha_registro) = 2 THEN 'Febrero'
-                    WHEN MONTH(deudas.fecha_registro) = 3 THEN 'Marzo'
-                    WHEN MONTH(deudas.fecha_registro) = 4 THEN 'Abril'
-                    WHEN MONTH(deudas.fecha_registro) = 5 THEN 'Mayo'
-                    WHEN MONTH(deudas.fecha_registro) = 6 THEN 'Junio'
-                    WHEN MONTH(deudas.fecha_registro) = 7 THEN 'Julio'
-                    WHEN MONTH(deudas.fecha_registro) = 8 THEN 'Agosto'
-                    WHEN MONTH(deudas.fecha_registro) = 9 THEN 'Septiembre'
-                    WHEN MONTH(deudas.fecha_registro) = 10 THEN 'Octubre'
-                    WHEN MONTH(deudas.fecha_registro) = 11 THEN 'Noviembre'
-                    WHEN MONTH(deudas.fecha_registro) = 12 THEN 'Diciembre'
-                    ELSE '-' END) AS mes")
-            )
-            ->selectRaw('coalesce(sum(detalle_pagos.importe),0) as a_cuenta, (deudas.total_deuda - coalesce(sum(detalle_pagos.importe),0)) as deuda')
-            ->where('deudas.id_socio',$request->id_socio)
-            ->where('deudas.id_puesto',$request->id_puesto)
-            ->groupBy('deudas.id_deuda','deudas.total_deuda')
-            ->havingRaw("deudas.total_deuda - coalesce(sum(detalle_pagos.importe),0) > 0")
-            ->paginate();
+        ->leftJoin('servicios', 'deudas.id_servicio', 'servicios.id_servicio')
+        ->select(
+            'deudas.id_deuda',
+            'deudas.total_deuda as total',
+            'servicios.descripcion as servicio_descripcion',
+            DB::raw("max(year(deudas.fecha_registro)) as anio"),
+            DB::raw("max(CASE WHEN MONTH(deudas.fecha_registro) = 1 THEN 'Enero'
+                WHEN MONTH(deudas.fecha_registro) = 2 THEN 'Febrero'
+                WHEN MONTH(deudas.fecha_registro) = 3 THEN 'Marzo'
+                WHEN MONTH(deudas.fecha_registro) = 4 THEN 'Abril'
+                WHEN MONTH(deudas.fecha_registro) = 5 THEN 'Mayo'
+                WHEN MONTH(deudas.fecha_registro) = 6 THEN 'Junio'
+                WHEN MONTH(deudas.fecha_registro) = 7 THEN 'Julio'
+                WHEN MONTH(deudas.fecha_registro) = 8 THEN 'Agosto'
+                WHEN MONTH(deudas.fecha_registro) = 9 THEN 'Septiembre'
+                WHEN MONTH(deudas.fecha_registro) = 10 THEN 'Octubre'
+                WHEN MONTH(deudas.fecha_registro) = 11 THEN 'Noviembre'
+                WHEN MONTH(deudas.fecha_registro) = 12 THEN 'Diciembre'
+                ELSE '-' END) AS mes")
+        )
+        ->selectRaw('coalesce(sum(detalle_pagos.importe),0) as a_cuenta, (deudas.total_deuda - coalesce(sum(detalle_pagos.importe),0)) as deuda')
+        ->where('deudas.id_socio', $request->id_socio)
+        ->where('deudas.id_puesto', $request->id_puesto)
+        ->groupBy('deudas.id_deuda', 'deudas.total_deuda', 'servicios.descripcion')
+        ->havingRaw("deudas.total_deuda - coalesce(sum(detalle_pagos.importe),0) > 0")
+        ->paginate();
         return $paginate;
     }
 }
