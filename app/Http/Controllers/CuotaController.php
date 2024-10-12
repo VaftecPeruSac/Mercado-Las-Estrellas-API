@@ -39,6 +39,19 @@ class CuotaController extends Controller
      */
     public function store(Request $request)
     {
+        $validated = $request->validate([
+            // 'id_socio' => 'required',
+            // 'deudas' => 'required|array|min:1',
+            // 'deudas.*.id_deuda' => 'required',
+            // 'deudas.*.importe' => 'required|numeric|min:0|not_in:0',
+            'fecha_registro' => 'required',
+            'fecha_vencimiento' => 'required',
+            'importe' => 'required',
+            'servicios' => 'required|array|min:1',
+        ]);
+        // fecha_registro
+        // fecha_vencimiento
+        // importe
         $listado = Socio::select('socios.*','puestos.id_puesto')
             ->join('puestos','puestos.id_socio','socios.id_socio')
             ->where('socios.estado',1)

@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Persona extends Model
 {
     use HasFactory;
+    protected $primaryKey = 'id_persona';
+    public $timestamps = false;
     protected $fillable = [
+      'id_persona',
       'nombre',
       'apellido_paterno',
       'apellido_materno',
@@ -22,7 +25,7 @@ class Persona extends Model
       'nombre_completo',
     ];
     //para no usar los timestamps en el migrate, de lo contrario requiere ello y no permite hacer registros
-    public $timestamps = false;
+    // public $timestamps = false;
 
     //antes tenia relacion con socio y puesto
      public function Usuario()
