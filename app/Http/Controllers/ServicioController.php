@@ -12,14 +12,8 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ServicioController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
-        // $servicios = Servicio::all();
-        // return new ServicioCollection($servicios);
-
         $paginate = Servicio::select('servicios.*');
         if (isset($request->buscar_texto)) {
             $texto = strtr(utf8_decode($request->buscar_texto), utf8_decode('àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
@@ -31,17 +25,9 @@ class ServicioController extends Controller
         return new ServicioCollection($paginate->paginate());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
-    {
-        //
-    }
+    {}
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $servicio = new Servicio();
@@ -51,32 +37,21 @@ class ServicioController extends Controller
         $servicio->estado = $request->input('estado');
         $servicio->fecha_registro = $request->input('fecha_registro');
         $servicio->save();
-        // return "Servicio Registrado correctamente";
+
         return response()->json(["data"=>$servicio,"message"=>"Servicio Registrado correctamente"]);
     }
+
     public function export()
     {
         return Excel::download(new ServicioExport(), 'servicios.xlsx');
     }
-    /**
-     * Display the specified resource.
-     */
+
     public function show(Servicio $servicio)
-    {
-        //
-    }
+    {}
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Servicio $servicio)
-    {
-        //
-    }
+    {}
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request,$id_servicio)
     {
         $validated = $request->validate([
@@ -94,15 +69,17 @@ class ServicioController extends Controller
         $servicio->estado = $validated['estado'];
         $servicio->fecha_registro = $validated['fecha_registro'];
         $servicio->save();
-        // return "Servicio Editado correctamente";
+
         return response()->json(["data"=>$servicio,"message"=>"Servicio Editado correctamente"]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Servicio $servicio)
+    public function destroy($id_servicio)
     {
-        //
+        $servicio = Servicio::find($id_servicio);
+        if(!$servicio){
+            return response()->json(['error' => 'El servicio no existe.'], 400);
+        }
+        $servicio->delete();
+        return response()->json(["data"=>[],"message"=>"El servicio se elimino correctamente"]);
     }
 }

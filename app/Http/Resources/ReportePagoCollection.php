@@ -19,8 +19,10 @@ class ReportePagoCollection extends ResourceCollection
                 'data' => $this->collection->transform(function ($pago) {
                     
                     return [
+                        'id_pago' => $pago->id_pago,
                         'numero' => $pago->numero_pago,
                         'serie' => $pago->serie,
+                        'serie_numero' => $pago->serie.'-'.$pago->numero_pago,
                         'aporte' => $pago->total_pago,
                         'total' => $pago->total_pago,
                         'fecha' => $pago->fecha_registro,

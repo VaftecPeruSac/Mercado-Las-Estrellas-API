@@ -12,16 +12,12 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class PuestoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         $per_page = 15;
         if (isset($request->per_page)) {
             $per_page = $request->per_page;
         }
-
         $paginate = Puesto::select('puestos.*');
         if (isset($request->id_gironegocio)) {
             $paginate->where('id_gironegocio',$request->id_gironegocio);
@@ -45,16 +41,9 @@ class PuestoController extends Controller
         return new PuestoCollection($paginate->paginate($per_page));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
-    {
-    }
+    {}
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $puesto = new Puesto();
@@ -62,11 +51,9 @@ class PuestoController extends Controller
         $puesto->id_block = $request->input('id_block');
         $puesto->numero_puesto = $request->input('numero_puesto');
         $puesto->area = $request->input('area');
-        $puesto->fecha_registro = $request->input('fecha_registro'); // fecha registro
+        $puesto->fecha_registro = $request->input('fecha_registro');
         $puesto->save();
-        // echo 'Datos del puesto:', $puesto;
-        // return "Puesto Registrado correctamente";
-        // new PuestoResource(Puesto::create($request->all()));
+
         return response()->json(["data"=>$puesto,"message"=>"Puesto Registrado correctamente"]);
     }
 
@@ -74,8 +61,9 @@ class PuestoController extends Controller
     {
         $puesto = Puesto::where('id_puesto', $request->input('id_puesto'))->first();
         $puesto->id_socio = $request->input('id_socio');
+        $puesto->estado = '2';
         $puesto->update();
-        // return "Se Asigno el puesto a un socio correctamente";
+
         return response()->json(["data"=>$puesto,"message"=>"Se Asigno el puesto a un socio correctamente"]);
     }
 
@@ -84,26 +72,18 @@ class PuestoController extends Controller
         $puestos = Puesto::all(['id_puesto','id_block', 'numero_puesto']);
         return response()->json($puestos);
     }
+
     public function export()
     {
         return Excel::download(new PuestosExport(), 'puestos.xlsx');
     }
-    /**
-     * Show the form for editing the specified resource.
-     */
+
     public function show(Puesto $puesto)
-    {
-        //
-    }
+    {}
 
     public function edit(Puesto $puesto)
-    {
-        //
-    }
+    {}
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request,$id_puesto)
     {
         $validated = $request->validate([
@@ -122,16 +102,17 @@ class PuestoController extends Controller
         $puesto->fecha_registro = $validated['fecha_registro'];
         $puesto->save();
 
-        // return "Puesto Editado correctamente";
         return response()->json(["data"=>$puesto,"message"=>"Puesto Editado correctamente"]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Puesto $puesto)
+    public function destroy($id_puesto)
     {
-        //
+        $puesto = Puesto::find($id_puesto);
+        if(!$puesto){
+            return response()->json(['error' => 'El puesto no existe.'], 400);
+        }
+        $puesto->delete();
+        return response()->json(["data"=>[],"message"=>"El puesto se elimino correctamente"]);
     }
 
     public function indexLibre(Request $request)
@@ -140,7 +121,6 @@ class PuestoController extends Controller
         if (isset($request->per_page)) {
             $per_page = $request->per_page;
         }
-
         $paginate = Puesto::select('puestos.*')
             ->whereNull('id_socio');
         if (isset($request->id_gironegocio)) {

@@ -17,6 +17,7 @@ class Usuario extends Model
       'rol',
       'estado',
       'fecha_registro',
+      'token',
     ];
     //para no usar los timestamps en el migrate, de lo contrario requiere ello y no permite hacer registros
     public $timestamps = false;

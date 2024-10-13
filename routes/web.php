@@ -18,6 +18,7 @@ use App\Http\Controllers\ServicioController;
 use App\Http\Controllers\SocioController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ReporteController;
+use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -28,6 +29,13 @@ Route::get('/', function () {
 // Route::post('v1/personas', [PersonaController::class, 'store']);
 // Route::post('v1/usuarios', [UsuarioController::class, 'store']);
 
+Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function () {
+    Route::post('login', [LoginController::class, 'login']);
+    Route::post('logout', [LoginController::class, 'logout']);
+    Route::post('change-password', [LoginController::class, 'changePassword']);
+    Route::get('validaciones', [LoginController::class, 'validaciones']);
+    Route::get('ventanas', [LoginController::class, 'ventanas']);
+});
 Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function () {
     Route::apiResource('personas', PersonaController::class);
     Route::apiResource('usuarios', UsuarioController::class);
@@ -58,6 +66,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::get('reportes/deudas', [ReporteController::class, 'deudas']);
     Route::get('reportes/cuota-por-metros', [ReporteController::class, 'cuotaPorMetros']);
     Route::get('reportes/cuota-por-puestos', [ReporteController::class, 'cuotaPorPuestos']);
+    Route::get('reportes/dashboard', [ReporteController::class, 'dashboard']);
 });
 Route::get('/csrf-token', function () {
     return response()->json([

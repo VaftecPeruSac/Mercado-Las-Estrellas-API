@@ -110,6 +110,7 @@ class PagoController extends Controller
         $documento = Documento::find(1);
         $numero_pago = Pago::max('numero_pago');
         $numero_pago_nueno = $numero_pago + 1;
+        $numero_pago_nueno = str_pad($numero_pago_nueno, 8, '0', STR_PAD_LEFT);
         $no_validos = "";
 
         foreach ($validated['deudas'] as $deuda_value) {
@@ -162,7 +163,7 @@ class PagoController extends Controller
         $pago->save();
         DB::commit();
         // DB::rollback();
-        return response()->json(['message' => 'Deudas actualizadas correctamente'.'('.$no_validos.')'], 200);
+        return response()->json(['data' => $pago, 'message' => 'Deudas actualizadas correctamente'.'('.$no_validos.')'], 200);
     }
 
 
