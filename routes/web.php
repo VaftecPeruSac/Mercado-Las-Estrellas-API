@@ -67,6 +67,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::get('reportes/cuota-por-metros', [ReporteController::class, 'cuotaPorMetros']);
     Route::get('reportes/cuota-por-puestos', [ReporteController::class, 'cuotaPorPuestos']);
     Route::get('reportes/dashboard', [ReporteController::class, 'dashboard']);
+    Route::get('reportes/resumen-por-puestos', [ReporteController::class, 'resumenPorPuestos']);
 });
 Route::get('/csrf-token', function () {
     return response()->json([

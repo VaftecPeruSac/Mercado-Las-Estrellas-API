@@ -21,6 +21,8 @@ class DetallePagos extends Model
         'fecha_registro',
     ];
 
-    // public $timestamps = false;
-
+    public function Pago()
+    {
+       return $this->belongsTo(Pago::class,'id_pago','id_pago');
+    }
 }

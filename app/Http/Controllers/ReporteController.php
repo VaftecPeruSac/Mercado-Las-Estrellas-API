@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pago;
+use App\Models\DetallePagos;
 use App\Models\Deuda;
 use App\Http\Resources\ReportePagoCollection;
 use App\Http\Resources\ReporteDeudaCollection;
 use App\Http\Resources\ReporteCuotaPorMetroCollection;
 use App\Http\Resources\ReporteCuotaPorPuestoCollection;
+use App\Http\Resources\ReporteResumenPorPuestoCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -79,5 +81,19 @@ class ReporteController extends Controller
             'cantidad_socios_activos' => $cantidadSociosActivos,
         ];
         return response()->json($response);
+    }
+
+    public function resumenPorPuestos(Request $request)
+    {
+        $per_page = 15;
+        if (isset($request->per_page)) {
+            $per_page = $request->per_page;
+        }
+        $paginate = DetallePagos::select('detalle_pagos.*')
+            ->join('pagos','detalle_pagos.id_pago','pagos.id_pago')
+            ->where('detalle_pagos.id_puesto', $request->id_puesto)
+            ->paginate($per_page);
+
+        return new ReporteResumenPorPuestoCollection($paginate);
     }
 }
