@@ -14,6 +14,7 @@ use App\Models\Servicio;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class CuotaController extends Controller
 {
@@ -39,19 +40,31 @@ class CuotaController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        // $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             // 'id_socio' => 'required',
             // 'deudas' => 'required|array|min:1',
             // 'deudas.*.id_deuda' => 'required',
             // 'deudas.*.importe' => 'required|numeric|min:0|not_in:0',
             'fecha_registro' => 'required',
             'fecha_vencimiento' => 'required',
-            'importe' => 'required',
+            'importe' => 'required|numeric|min:0|not_in:0',
             'servicios' => 'required|array|min:1',
+        ], [
+            'fecha_registro.required' => 'La fecha de registro es requerida.',
+            'fecha_vencimiento.required' => 'La fecha de vencimiento es requerida.',
+            'importe.required' => 'El importe es requerido.',
+            'importe.not_in' => 'El importe no puede ser 0.',
+            'servicios.required' => 'No se han seleccionado servicios.',
         ]);
         // fecha_registro
         // fecha_vencimiento
         // importe
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()->first()], 400);
+        }
+
         $listado = Socio::select('socios.*','puestos.id_puesto')
             ->join('puestos','puestos.id_socio','socios.id_socio')
             ->where('socios.estado',1)
@@ -80,7 +93,7 @@ class CuotaController extends Controller
             }
         }
 
-        return response()->json(["data"=>[],"message"=>"Cuota Registrado correctamente"]);
+        return response()->json(["data"=>[],"message"=>"Cuota Registrada correctamente"]);
     }
     public function export()
     {

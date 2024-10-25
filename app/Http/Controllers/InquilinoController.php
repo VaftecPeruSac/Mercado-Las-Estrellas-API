@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateInquilinoRequest;
 use App\Http\Resources\InquilinoCollection;
 use App\Models\Puesto;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class InquilinoController extends Controller
 {
@@ -34,6 +35,28 @@ class InquilinoController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'nombre' => 'required|string|max:255',
+            'apellido_paterno' => 'required|string|max:255',
+            'apellido_materno' => 'required|string|max:255',
+            'dni' => 'required|string|digits:8',
+            'telefono' => 'required|string|digits:9',
+            'id_puesto' => 'required',
+        ], [
+            'nombre.required' => 'El nombre es requerido.',
+            'apellido_paterno.required' => 'El apellido paterno es requerido.',
+            'apellido_materno.required' => 'El apellido materno es requerido.',
+            'dni.required' => 'El DNI es requerido.',
+            'dni.digits' => 'El DNI debe tener 8 dígitos.',
+            'telefono.required' => 'El teléfono es requerido.',
+            'telefono.digits' => 'El teléfono debe tener 9 dígitos.',
+            'id_puesto.required' => 'El puesto es requerido.',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(["error" => $validator->errors()->first()], 400);
+        }
+
         $inquilino = new Inquilino();
         $inquilino->nombre_completo = $request->input('nombre');
         $inquilino->apellido_paterno = $request->input('apellido_paterno');
@@ -45,7 +68,7 @@ class InquilinoController extends Controller
         $puesto->id_inquilino = $inquilino->id_inquilino;
         $puesto->update();
 
-        return response()->json(["data"=>$inquilino,"message"=>"Puesto Registrado correctamente"]);
+        return response()->json(["data"=>$inquilino,"message"=>"Inquilino registrado correctamente"]);
     }
     // id_inquilino
     // nombre_completo

@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
 
 class PagoController extends Controller
 {
@@ -101,19 +102,32 @@ class PagoController extends Controller
     // }
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        // $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'id_socio' => 'required',
             'deudas' => 'required|array|min:1',
             'deudas.*.id_deuda' => 'required',
             'deudas.*.importe' => 'required|numeric|min:0|not_in:0',
+        ], [
+            'id_socio.required' => 'El id del socio es requerido.',
+            'deudas.required' => 'No se han seleccionado deudas.',
+            'deudas.*.id_deuda.required' => 'No se recibió el id de la deuda.',
+            'deudas.*.importe.required' => 'No se recibió el importe de la deuda.',
+            'deudas.*.importe.not_in' => 'El importe de la deuda no puede ser 0.',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()->first()], 400);
+        }
+        
         $documento = Documento::find(1);
         $numero_pago = Pago::max('numero_pago');
         $numero_pago_nueno = $numero_pago + 1;
         $numero_pago_nueno = str_pad($numero_pago_nueno, 8, '0', STR_PAD_LEFT);
         $no_validos = "";
 
-        foreach ($validated['deudas'] as $deuda_value) {
+        // foreach ($validated['deudas'] as $deuda_value) {
+        foreach ($request->input('deudas') as $deuda_value) {
             $deuda = Deuda::find($deuda_value['id_deuda']);
             $importe_a_cuenta = DetallePagos::where('id_deuda',$deuda_value['id_deuda'])
                 ->sum("importe");
@@ -138,7 +152,9 @@ class PagoController extends Controller
         $pago->fecha_registro = Carbon::now();
         $pago->save();
         // $no_validos = "";
-        foreach ($validated['deudas'] as $deuda_value) {
+
+        // foreach ($validated['deudas'] as $deuda_value) {
+        foreach ($request->input('deudas') as $deuda_value) {
             $deuda = Deuda::find($deuda_value['id_deuda']);
             // $importe_a_cuenta = DetallePagos::where('id_deuda',$deuda_value['id_deuda'])
             //     ->sum("importe");

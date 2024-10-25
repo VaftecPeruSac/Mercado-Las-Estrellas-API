@@ -8,6 +8,7 @@ use App\Http\Requests\UpdatePuestoRequest;
 use App\Http\Resources\PuestoCollection;
 use App\Filters\PuestoFilter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
 class PuestoController extends Controller
@@ -46,6 +47,24 @@ class PuestoController extends Controller
 
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'id_gironegocio' => 'required',
+            'id_block' => 'required',
+            'numero_puesto' => 'required',
+            'area' => 'required',
+            'fecha_registro' => 'required',
+        ], [
+            'id_gironegocio.required' => 'El campo giro de negocio es obligatorio.',
+            'id_block.required' => 'El campo block es obligatorio.',
+            'numero_puesto.required' => 'El campo numero de puesto es obligatorio.',
+            'area.required' => 'El campo area es obligatorio.',
+            'fecha_registro.required' => 'El campo fecha de registro es obligatorio.',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()->first()], 400);
+        }
+
         $puesto = new Puesto();
         $puesto->id_gironegocio = $request->input('id_gironegocio');
         $puesto->id_block = $request->input('id_block');
@@ -54,7 +73,7 @@ class PuestoController extends Controller
         $puesto->fecha_registro = $request->input('fecha_registro');
         $puesto->save();
 
-        return response()->json(["data"=>$puesto,"message"=>"Puesto Registrado correctamente"]);
+        return response()->json(["data"=>$puesto,"message"=>"Puesto registrado correctamente"]);
     }
 
     public function asignar(Request $request)
@@ -86,23 +105,34 @@ class PuestoController extends Controller
 
     public function update(Request $request,$id_puesto)
     {
-        $validated = $request->validate([
+        // $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'area' => 'required|max:255',
             'fecha_registro' => 'required',
             'id_block' => 'required',
             'id_gironegocio' => 'required',
             'numero_puesto' => 'required|max:30',
+        ], [
+            'area.required' => 'El campo area es obligatorio.',
+            'fecha_registro.required' => 'El campo fecha de registro es obligatorio.',
+            'id_block.required' => 'El campo block es obligatorio.',
+            'id_gironegocio.required' => 'El campo giro de negocio es obligatorio.',
+            'numero_puesto.required' => 'El campo numero de puesto es obligatorio.',
         ]);
 
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()->first()], 400);
+        }
+
         $puesto = Puesto::findOrFail($id_puesto);
-        $puesto->id_gironegocio = $validated['id_gironegocio'];
-        $puesto->id_block = $validated['id_block'];
-        $puesto->numero_puesto = $validated['numero_puesto'];
-        $puesto->area = $validated['area'];
-        $puesto->fecha_registro = $validated['fecha_registro'];
+        $puesto->id_gironegocio = $request->input('id_gironegocio');
+        $puesto->id_block = $request->input('id_block');
+        $puesto->numero_puesto = $request->input('numero_puesto');
+        $puesto->area = $request->input('area');
+        $puesto->fecha_registro = $request->input('fecha_registro');
         $puesto->save();
 
-        return response()->json(["data"=>$puesto,"message"=>"Puesto Editado correctamente"]);
+        return response()->json(["data"=>$puesto,"message"=>"Los datos del puesto fueron actualizados correctamente"]);
     }
 
     public function destroy($id_puesto)

@@ -12,6 +12,7 @@ use App\Models\Persona;
 use App\Models\Puesto;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Str;
 
@@ -48,20 +49,36 @@ class SocioController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'nombre' => 'required',
             'apellido_materno' => 'required',
             'apellido_paterno' => 'required',
             'correo' => 'required',
             'direccion' => 'required',
-            'dni' => 'required',
+            'dni' => 'required|string|digits:8',
             'estado' => 'required',
             'fecha_registro' => 'required',
-            // 'id_socio' => 'required',
             'sexo' => 'required',
-            'telefono' => 'required',
-            'id_puesto' => 'required',
+            'telefono' => 'required|string|digits:9',
+        ], [
+            'nombre.required' => 'El campo nombre es obligatorio',
+            'apellido_materno.required' => 'El campo apellido materno es obligatorio',
+            'apellido_paterno.required' => 'El campo apellido paterno es obligatorio',
+            'correo.required' => 'El campo correo es obligatorio',
+            'direccion.required' => 'El campo direccion es obligatorio',
+            'dni.required' => 'El campo dni es obligatorio',
+            'dni.digits' => 'El campo dni debe tener 8 digitos',
+            'estado.required' => 'El campo estado es obligatorio',
+            'fecha_registro.required' => 'El campo fecha de registro es obligatorio',
+            'sexo.required' => 'El campo sexo es obligatorio',
+            'telefono.required' => 'El campo telefono es obligatorio',
+            'telefono.digits' => 'El campo telefono debe tener 9 digitos',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json(["error" => $validator->errors()->first()], 400);
+        }
+
         //registro de persona
         $persona = new Persona();
         $persona->nombre = $request->input('nombre');
@@ -101,7 +118,7 @@ class SocioController extends Controller
         $puesto->estado = '2';
         $puesto->update();
 
-        return response()->json(["data"=>$socio,"message"=>"Se Registro el socio correctamente"]);
+        return response()->json(["data"=>$socio,"message"=>"Socio registrado correctamente"]);
     }
 
     public function export()
@@ -117,19 +134,38 @@ class SocioController extends Controller
 
     public function update(Request $request, $id_socio)
     {
-        $validated = $request->validate([
+        // $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'nombre' => 'required',
             'apellido_materno' => 'required',
             'apellido_paterno' => 'required',
             'correo' => 'required',
             'direccion' => 'required',
-            'dni' => 'required',
+            'dni' => 'required|string|digits:8',
             'estado' => 'required',
             'fecha_registro' => 'required',
             'id_socio' => 'required',
             'sexo' => 'required',
-            'telefono' => 'required',
+            'telefono' => 'required|string|digits:9',
+        ], [
+            'nombre.required' => 'El campo nombre es obligatorio',
+            'apellido_materno.required' => 'El campo apellido materno es obligatorio',
+            'apellido_paterno.required' => 'El campo apellido paterno es obligatorio',
+            'correo.required' => 'El campo correo es obligatorio',
+            'direccion.required' => 'El campo direccion es obligatorio',
+            'dni.required' => 'El campo dni es obligatorio',
+            'dni.digits' => 'El campo dni debe tener 8 digitos',
+            'estado.required' => 'El campo estado es obligatorio',
+            'fecha_registro.required' => 'El campo fecha de registro es obligatorio',
+            'id_socio.required' => 'El campo id_socio es obligatorio',
+            'sexo.required' => 'El campo sexo es obligatorio',
+            'telefono.required' => 'El campo telefono es obligatorio',
+            'telefono.digits' => 'El campo telefono debe tener 9 digitos',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json(["error" => $validator->errors()->first()], 400);
+        }
 
         //registro de persona
         $persona = Persona::where('id_persona',$id_socio)->first();
@@ -146,7 +182,7 @@ class SocioController extends Controller
         $persona->telefono = $request->input('telefono');
         $persona->save();
 
-        return response()->json(["data"=>$persona,"message"=>"Se guardo el socio correctamente"]);
+        return response()->json(["data"=>$persona,"message"=>"Los datos del socio fueron actualizados correctamente"]);
     }
 
     public function destroy($id_socio)

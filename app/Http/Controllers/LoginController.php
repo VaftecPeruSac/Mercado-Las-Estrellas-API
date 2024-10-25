@@ -2,41 +2,37 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\PagosExport;
-use App\Models\Pago;
-use App\Http\Requests\StorePagoRequest;
-use App\Http\Requests\UpdatePagoRequest;
-use App\Http\Resources\PagoCollection;
-use App\Models\Cuota;
-use App\Models\DeudaCuota;
-use App\Models\Puesto;
-use App\Models\DetallePagos;
-use App\Models\Deuda;
-use App\Models\Documento;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
-use App\Http\Middleware\APIToken;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class LoginController extends Controller
 {
     public function login(Request $request)
     {
-        $validated = $request->validate([
+        // $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'usuario' => 'required',
             'password' => 'required',
+        ], [
+            'usuario.required' => 'El usuario es requerido.',
+            'password.required' => 'La contraseña es requerida.',
         ]);
 
-        $usuario = Usuario::where('nombre_usuario',$validated['usuario'])->first();
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()->first()], 400);
+        }
+
+        // $usuario = Usuario::where('nombre_usuario', $validated['usuario'])->first();
+        $usuario = Usuario::where('nombre_usuario', $request->input('usuario'))->first();
         if (!$usuario){
             return response()->json(['message' => 'No se pudo validar el acceso.'], 400);
         }
 
-        if(password_verify($validated['password'],$usuario->contrasenia)){
+        // if(password_verify($validated['password'],$usuario->contrasenia)){
+        if(password_verify($request->input('password'), $usuario->contrasenia)){
             $usuario = Usuario::find($usuario->id_usuario);
             $usuario->token = $this->apiToken();
             $usuario->save();
@@ -70,14 +66,24 @@ class LoginController extends Controller
 
     public function changePassword(Request $request)
     {
-        $validated = $request->validate([
+        // $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'usuario' => 'required',
             'password' => 'required',
+        ], [
+            'usuario.required' => 'El usuario es requerido.',
+            'password.required' => 'La contraseña es requerida.',
         ]);
 
-        $usuario = Usuario::where('nombre_usuario',$validated['usuario'])->first();
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()->first()], 400);
+        }
+
+        // $usuario = Usuario::where('nombre_usuario',$validated['usuario'])->first();
+        $usuario = Usuario::where('nombre_usuario', $request->input('usuario'))->first();
         if ($usuario) {
-            $usuario->contrasenia = Hash::make($validated['password']);
+            // $usuario->contrasenia = Hash::make($validated['password']);
+            $usuario->contrasenia = Hash::make($request->input('password'));
             $usuario->save();
         }
     }

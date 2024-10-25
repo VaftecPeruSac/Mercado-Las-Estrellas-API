@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Exports\ServicioExport;
 use App\Models\Servicio;
-use App\Http\Requests\StoreServicioRequest;
-use App\Http\Requests\UpdateServicioRequest;
 use App\Http\Resources\ServicioCollection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ServicioController extends Controller
@@ -30,6 +29,24 @@ class ServicioController extends Controller
 
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'costo_unitario' => 'required',
+            'descripcion' => 'required',
+            'estado' => 'required',
+            'fecha_registro' => 'required',
+            'tipo_servicio' => 'required',
+        ], [
+            'costo_unitario.required' => 'El costo unitario es requerido.',
+            'descripcion.required' => 'La descripción es requerida.',
+            'estado.required' => 'El estado es requerido.',
+            'fecha_registro.required' => 'La fecha de registro es requerida.',
+            'tipo_servicio.required' => 'El tipo de servicio es requerido.',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()->first()], 400);
+        }
+
         $servicio = new Servicio();
         $servicio->descripcion = $request->input('descripcion');
         $servicio->costo_unitario = $request->input('costo_unitario');
@@ -54,23 +71,34 @@ class ServicioController extends Controller
 
     public function update(Request $request,$id_servicio)
     {
-        $validated = $request->validate([
+        // $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'costo_unitario' => 'required',
-            'descripcion' => 'required|max:255',
+            'descripcion' => 'required',
             'estado' => 'required',
             'fecha_registro' => 'required',
             'tipo_servicio' => 'required',
+        ], [
+            'costo_unitario.required' => 'El costo unitario es requerido.',
+            'descripcion.required' => 'La descripción es requerida.',
+            'estado.required' => 'El estado es requerido.',
+            'fecha_registro.required' => 'La fecha de registro es requerida.',
+            'tipo_servicio.required' => 'El tipo de servicio es requerido.',
         ]);
 
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()->first()], 400);
+        }
+
         $servicio = Servicio::findOrFail($id_servicio);
-        $servicio->descripcion = $validated['descripcion'];
-        $servicio->costo_unitario = $validated['costo_unitario'];
-        $servicio->tipo_servicio = $validated['tipo_servicio'];
-        $servicio->estado = $validated['estado'];
-        $servicio->fecha_registro = $validated['fecha_registro'];
+        $servicio->descripcion = $request->input('descripcion');
+        $servicio->costo_unitario = $request->input('costo_unitario');
+        $servicio->tipo_servicio = $request->input('tipo_servicio');
+        $servicio->estado = $request->input('estado');
+        $servicio->fecha_registro = $request->input('fecha_registro');
         $servicio->save();
 
-        return response()->json(["data"=>$servicio,"message"=>"Servicio Editado correctamente"]);
+        return response()->json(["data"=>$servicio,"message"=>"Los datos del servicio fueron actualizados correctamente"]);
     }
 
     public function destroy($id_servicio)

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Block;
-use App\Http\Requests\StoreBlockRequest;
 use App\Http\Requests\UpdateBlockRequest;
 use App\Http\Resources\BlockCollection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class BlockController extends Controller
 {
@@ -33,11 +33,22 @@ class BlockController extends Controller
      */
     public function store(Request $request)
     {
+
+        $validator = Validator::make($request->all(), [
+            'nombre' => 'required|string|max:255',
+        ], [
+            'nombre.required' => 'El nombre del bloque es requerido.',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(["error" => $validator->errors()->first()], 400);
+        }
+
         $block = new Block();
         $block->nombre = $request->input('nombre');
         $block->save();
         // return "Block Registrado correctamente";
-        return response()->json(["data"=>$block,"message"=>"Block Registrado correctamente"]);
+        return response()->json(["data"=>$block,"message"=>"Bloque Registrado correctamente"]);
     }
 
     public function select()

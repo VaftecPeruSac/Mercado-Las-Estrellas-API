@@ -6,6 +6,7 @@ use App\Models\GiroNegocio;
 use App\Http\Requests\StoreGiroNegocioRequest;
 use App\Http\Requests\UpdateGiroNegocioRequest;
 use App\Http\Resources\GiroNegocioCollection;
+use Illuminate\Support\Facades\Validator;
 
 class GiroNegocioController extends Controller
 {
@@ -32,6 +33,16 @@ class GiroNegocioController extends Controller
      */
     public function store(StoreGiroNegocioRequest $request)
     {
+        $validator = Validator::make($request->all(), [
+            'nombre' => 'required|string|max:255',
+        ], [
+            'nombre.required' => 'El nombre del giro de negocio es requerido.',
+        ]);
+
+        if ($validator -> fails()) {
+            return response()->json(["error" => $validator->errors()->first()], 400);
+        }
+
         $giroNegocio = new GiroNegocio();
         $giroNegocio->nombre = $request->input('nombre');
         $giroNegocio->save();
