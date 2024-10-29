@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\GiroNegocio;
-use App\Http\Requests\StoreGiroNegocioRequest;
 use App\Http\Requests\UpdateGiroNegocioRequest;
 use App\Http\Resources\GiroNegocioCollection;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class GiroNegocioController extends Controller
@@ -31,7 +31,7 @@ class GiroNegocioController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreGiroNegocioRequest $request)
+    public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'nombre' => 'required|string|max:255',

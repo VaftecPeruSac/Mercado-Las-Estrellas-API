@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Exports\SociosExport;
 use App\Filters\SociosFilter;
 use App\Models\Socio;
-use App\Http\Requests\UpdateSocioRequest;
 use App\Http\Resources\SocioCollection;
 use App\Http\Resources\SocioConSinPuestos;
 use App\Models\Persona;

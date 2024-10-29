@@ -48,14 +48,14 @@ class CuotaController extends Controller
             // 'deudas.*.importe' => 'required|numeric|min:0|not_in:0',
             'fecha_registro' => 'required',
             'fecha_vencimiento' => 'required',
-            'importe' => 'required|numeric|min:0|not_in:0',
             'servicios' => 'required|array|min:1',
+            'importe' => 'required|numeric|min:0|not_in:0',
         ], [
-            'fecha_registro.required' => 'La fecha de registro es requerida.',
+            'fecha_registro.required' => 'La fecha de emision es requerida.',
             'fecha_vencimiento.required' => 'La fecha de vencimiento es requerida.',
+            'servicios.required' => 'No se han seleccionado servicios.',
             'importe.required' => 'El importe es requerido.',
             'importe.not_in' => 'El importe no puede ser 0.',
-            'servicios.required' => 'No se han seleccionado servicios.',
         ]);
         // fecha_registro
         // fecha_vencimiento

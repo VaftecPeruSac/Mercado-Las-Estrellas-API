@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\PuestosExport;
 use App\Models\Puesto;
-use App\Http\Requests\UpdatePuestoRequest;
 use App\Http\Resources\PuestoCollection;
-use App\Filters\PuestoFilter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
@@ -48,16 +46,16 @@ class PuestoController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id_gironegocio' => 'required',
             'id_block' => 'required',
             'numero_puesto' => 'required',
             'area' => 'required',
+            'id_gironegocio' => 'required',
             'fecha_registro' => 'required',
         ], [
-            'id_gironegocio.required' => 'El campo giro de negocio es obligatorio.',
-            'id_block.required' => 'El campo block es obligatorio.',
+            'id_block.required' => 'No se ha seleccionado ningun bloque.',
             'numero_puesto.required' => 'El campo numero de puesto es obligatorio.',
             'area.required' => 'El campo area es obligatorio.',
+            'id_gironegocio.required' => 'No se ha seleccionado ningun giro de negocio.',
             'fecha_registro.required' => 'El campo fecha de registro es obligatorio.',
         ]);
 
@@ -78,6 +76,18 @@ class PuestoController extends Controller
 
     public function asignar(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'id_puesto' => 'required',
+            'id_socio' => 'required',
+        ], [
+            'id_puesto.required' => 'No se ha seleccionado ningun puesto.',
+            'id_socio.required' => 'No se ha seleccionado ningun socio.',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()->first()], 400);
+        }
+
         $puesto = Puesto::where('id_puesto', $request->input('id_puesto'))->first();
         $puesto->id_socio = $request->input('id_socio');
         $puesto->estado = '2';
@@ -107,17 +117,17 @@ class PuestoController extends Controller
     {
         // $validated = $request->validate([
         $validator = Validator::make($request->all(), [
-            'area' => 'required|max:255',
-            'fecha_registro' => 'required',
             'id_block' => 'required',
-            'id_gironegocio' => 'required',
             'numero_puesto' => 'required|max:30',
+            'area' => 'required|max:255',
+            'id_gironegocio' => 'required',
+            'fecha_registro' => 'required',
         ], [
-            'area.required' => 'El campo area es obligatorio.',
-            'fecha_registro.required' => 'El campo fecha de registro es obligatorio.',
-            'id_block.required' => 'El campo block es obligatorio.',
-            'id_gironegocio.required' => 'El campo giro de negocio es obligatorio.',
+            'id_block.required' => 'No se ha seleccionado ningun bloque.',
             'numero_puesto.required' => 'El campo numero de puesto es obligatorio.',
+            'area.required' => 'El campo area es obligatorio.',
+            'id_gironegocio.required' => 'No se ha seleccionado ningun giro de negocio.',
+            'fecha_registro.required' => 'El campo fecha de registro es obligatorio.',
         ]);
 
         if ($validator->fails()) {

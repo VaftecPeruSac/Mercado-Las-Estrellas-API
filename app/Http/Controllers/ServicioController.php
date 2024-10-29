@@ -30,17 +30,17 @@ class ServicioController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'costo_unitario' => 'required',
             'descripcion' => 'required',
-            'estado' => 'required',
-            'fecha_registro' => 'required',
             'tipo_servicio' => 'required',
+            'costo_unitario' => 'required',
+            'fecha_registro' => 'required',
+            'estado' => 'required',
         ], [
-            'costo_unitario.required' => 'El costo unitario es requerido.',
-            'descripcion.required' => 'La descripción es requerida.',
-            'estado.required' => 'El estado es requerido.',
-            'fecha_registro.required' => 'La fecha de registro es requerida.',
+            'descripcion.required' => 'El nombre del servicio es requerido.',
             'tipo_servicio.required' => 'El tipo de servicio es requerido.',
+            'costo_unitario.required' => 'El costo unitario es requerido.',
+            'fecha_registro.required' => 'La fecha de registro es requerida.',
+            'estado.required' => 'El estado es requerido.',
         ]);
 
         if ($validator->fails()) {
@@ -73,17 +73,17 @@ class ServicioController extends Controller
     {
         // $validated = $request->validate([
         $validator = Validator::make($request->all(), [
-            'costo_unitario' => 'required',
             'descripcion' => 'required',
-            'estado' => 'required',
-            'fecha_registro' => 'required',
             'tipo_servicio' => 'required',
+            'costo_unitario' => 'required',
+            'fecha_registro' => 'required',
+            'estado' => 'required',
         ], [
-            'costo_unitario.required' => 'El costo unitario es requerido.',
-            'descripcion.required' => 'La descripción es requerida.',
-            'estado.required' => 'El estado es requerido.',
-            'fecha_registro.required' => 'La fecha de registro es requerida.',
+            'descripcion.required' => 'El nombre del servicio es requerido.',
             'tipo_servicio.required' => 'El tipo de servicio es requerido.',
+            'costo_unitario.required' => 'El costo unitario es requerido.',
+            'fecha_registro.required' => 'La fecha de registro es requerida.',
+            'estado.required' => 'El estado es requerido.',
         ]);
 
         if ($validator->fails()) {
