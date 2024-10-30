@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PDF\SociosPDFExport;
 use App\Exports\SociosExport;
 use App\Filters\SociosFilter;
 use App\Models\Socio;
@@ -123,6 +124,12 @@ class SocioController extends Controller
     public function export()
     {
         return Excel::download(new SociosExport(), 'socios.xlsx');
+    }
+
+    public function exportPDF()
+    {
+        $export = new SociosPDFExport();
+        return $export->generatePDF();
     }
 
     public function show(Socio $socio)

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PDF\PuestosPDFExport;
 use App\Exports\PuestosExport;
 use App\Models\Puesto;
 use App\Http\Resources\PuestoCollection;
@@ -105,6 +106,12 @@ class PuestoController extends Controller
     public function export()
     {
         return Excel::download(new PuestosExport(), 'puestos.xlsx');
+    }
+
+    public function exportPDF()
+    {
+        $export = new PuestosPDFExport();
+        return $export->generatePDF();
     }
 
     public function show(Puesto $puesto)

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PDF\ServicioPDFExport;
 use App\Exports\ServicioExport;
 use App\Models\Servicio;
 use App\Http\Resources\ServicioCollection;
@@ -61,6 +62,12 @@ class ServicioController extends Controller
     public function export()
     {
         return Excel::download(new ServicioExport(), 'servicios.xlsx');
+    }
+
+    public function exportPDF()
+    {
+        $export = new ServicioPDFExport();
+        return $export->generatePDF();
     }
 
     public function show(Servicio $servicio)

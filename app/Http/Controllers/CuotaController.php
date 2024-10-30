@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\CuotaExport;
+use App\Exports\PDF\CuotaPDFexport;
 use App\Models\Cuota;
 use App\Models\Deuda;
 use App\Models\Socio;
@@ -95,10 +96,18 @@ class CuotaController extends Controller
 
         return response()->json(["data"=>[],"message"=>"Cuota Registrada correctamente"]);
     }
+
     public function export()
     {
         return Excel::download(new CuotaExport(), 'cuotas.xlsx');
     }
+
+    public function exportPDF()
+    {
+        $export = new CuotaPDFexport();
+        return $export->generatePDF();
+    }
+
     /**
      * Display the specified resource.
      */

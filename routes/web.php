@@ -40,15 +40,18 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::apiResource('personas', PersonaController::class);
     Route::apiResource('usuarios', UsuarioController::class);
     Route::get('socios/exportar', [SocioController::class, 'export']);
+    Route::get('socios/exportar-pdf', [SocioController::class, 'exportPDF']);
     Route::apiResource('socios', SocioController::class);
     Route::apiResource('inquilinos', InquilinoController::class);
     Route::get('puestos/libre', [PuestoController::class, 'indexLibre']);
     Route::get('puestos/select', [PuestoController::class, 'select']); //1
     Route::get('puestos/exportar', [PuestoController::class, 'export']);
+    Route::get('puestos/exportar-pdf', [PuestoController::class, 'exportPDF']);
     Route::apiResource('puestos', PuestoController::class); //2
     Route::post('puestos/asignar', [PuestoController::class, 'asignar']); //3
     Route::get('cuotas/pendientes', [CuotaController::class, 'deudaPendientes']);
     Route::get('cuotas/exportar', [CuotaController::class, 'export']);
+    Route::get('cuotas/exportar-pdf', [CuotaController::class, 'exportPDF']);
     Route::apiResource('cuotas', CuotaController::class);
     Route::get('block/select', [BlockController::class, 'select']);
     Route::get('deudacuota/{id_puesto}', [PagoController::class,'ListaDeudaCuotas']);
@@ -57,8 +60,10 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::apiResource('documentos', DocumentoController::class);
     Route::apiResource('deudas', DeudaController::class);
     Route::get('servicios/exportar', [ServicioController::class, 'export']);
+    Route::get('servicios/exportar-pdf', [ServicioController::class, 'exportPDF']);
     Route::apiResource('servicios', ServicioController::class);
     Route::get('pagos/exportar', [PagoController::class, 'export']);
+    Route::get('pagos/exportar-pdf', [PagoController::class, 'exportPDF']);
     Route::apiResource('pagos', PagoController::class);
     Route::apiResource('deudas', DeudaController::class);
     Route::apiResource('pago_detalle', PagoDetalleController::class);
