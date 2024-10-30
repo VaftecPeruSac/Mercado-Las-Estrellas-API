@@ -3,15 +3,12 @@
 namespace App\Exports;
 
 use App\Models\Puesto;
-use Maatwebsite\Excel\Concerns\WithColumnFormatting;
-use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class PuestosExport implements FromCollection, WithHeadings, WithColumnWidths,WithColumnFormatting, WithStyles
+class PuestosExport implements FromCollection, WithHeadings, WithStyles
 {    /**
      * @return \Illuminate\Support\Collection
      */
@@ -31,8 +28,8 @@ class PuestosExport implements FromCollection, WithHeadings, WithColumnWidths,Wi
                 'giro' => $puesto->gironegocio->nombre ?? '------', 
                 'socio' => $puesto->socio->usuario->nombre_usuario ?? '------', 
                 'inquilino' => $puesto->inquilino->nombre_completo ?? '------', 
-                'estado' => $puesto->estado ?? '------', 
-                'fecha_registro' => $fecha_registro ?? '------', 
+                'estado' => $puesto->estado === '1' ?  'Libre' : 'Ocupado',
+                'fecha_registro' => $fecha_registro ?? '------',
             ];
         });
     }
@@ -46,37 +43,21 @@ class PuestosExport implements FromCollection, WithHeadings, WithColumnWidths,Wi
             'Giro Negocio',
             'Socio',
             'Inquilino',
-            'estado',
+            'Estado',
             'Fecha registro',
         ];
     }
-    public function columnWidths(): array
-    {
-        // Define el ancho de las columnas. Ajusta los valores según necesites.
-        return [
-            'A' => 20,
-            'B' => 15,
-            'C' => 13,
-            'D' => 15,
-            'E' => 25,
-            'F' => 13,
-            'G' => 25,
-            'H' => 25,
-        ];
-    }
+
     public function styles(Worksheet $sheet)
     {
-        return [
-            // Aplica negrita a la primera fila (encabezados)
-            1 => ['font' => ['bold' => true]],
-        ];
+        // Aplicar negrita a la primera fila (encabezados)
+        $sheet->getStyle(1)->getFont()->setBold(true);
+
+        // Ajustar automáticamente el ancho de las columnas
+        foreach (range('A', 'H') as $column) {
+            $sheet->getColumnDimension($column)->setAutoSize(true);
+        }
     }
-    public function columnFormats(): array
-    {
-        // Si deseas un formato específico para las columnas, por ejemplo, fechas
-        return [
-            // 'E' => NumberFormat::FORMAT_DATE_DATETIME,
-        ];
-    }
+
 }
 
