@@ -5,7 +5,7 @@ namespace App\Exports\PDF;
 use App\Models\Cuota;
 use Barryvdh\DomPDF\PDF;
 
-class CuotaPDFexport {
+class CuotaPDFExport {
 
   public function generatePDF() {
   

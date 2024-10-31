@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\CuotaExport;
-use App\Exports\PDF\CuotaPDFexport;
+use App\Exports\PDF\CuotaPDFExport;
 use App\Models\Cuota;
 use App\Models\Deuda;
 use App\Models\Socio;
@@ -104,7 +104,7 @@ class CuotaController extends Controller
 
     public function exportPDF()
     {
-        $export = new CuotaPDFexport();
+        $export = new CuotaPDFExport();
         return $export->generatePDF();
     }
 

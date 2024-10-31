@@ -22,7 +22,7 @@ class PuestosPDFExport {
         'giro' => $puesto->gironegocio->nombre ?? '------', 
         'socio' => $puesto->socio->usuario->nombre_usuario ?? '------', 
         'inquilino' => $puesto->inquilino->nombre_completo ?? '------', 
-        'estado' => $puesto->estado ?? '------', 
+        'estado' => $puesto->estado === '1' ?  'Libre' : 'Ocupado',
         'fecha_registro' => $fecha_registro ?? '------', 
       ];
     });

@@ -180,7 +180,7 @@ class PagoController extends Controller
         $pago->save();
         DB::commit();
         // DB::rollback();
-        return response()->json(['data' => $pago, 'message' => 'Deudas actualizadas correctamente'.'('.$no_validos.')'], 200);
+        return response()->json(['data' => $pago, 'message' => 'El pago fue registrado con exito'], 200);
     }
 
 
