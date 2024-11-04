@@ -50,10 +50,20 @@ class ServicioController extends Controller
 
         $servicio = new Servicio();
         $servicio->descripcion = $request->input('descripcion');
-        $servicio->costo_unitario = $request->input('costo_unitario');
         $servicio->tipo_servicio = $request->input('tipo_servicio');
         $servicio->estado = $request->input('estado');
         $servicio->fecha_registro = $request->input('fecha_registro');
+
+        // Verificamos que el tipo de servicio sea 3 y realizamos el calculo del costo unitario
+        if ($request->input('tipo_servicio') == 3) {
+            $puestoController = new PuestoController();
+            $areaTotal = $puestoController->obtenerAreaTotal()->getData()->data;
+            $costoUnitario = $request->input('costo_unitario');
+            $servicio->costo_unitario = $areaTotal > 0 ? number_format($costoUnitario / $areaTotal, 2, '.', '') : 0;
+        } else {
+            $servicio->costo_unitario = $request->input('costo_unitario');
+        }
+
         $servicio->save();
 
         return response()->json(["data"=>$servicio,"message"=>"Servicio Registrado correctamente"]);

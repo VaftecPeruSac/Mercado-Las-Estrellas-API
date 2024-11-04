@@ -41,9 +41,6 @@ class PuestoController extends Controller
         return new PuestoCollection($paginate->paginate($per_page));
     }
 
-    public function create()
-    {}
-
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -101,6 +98,18 @@ class PuestoController extends Controller
     {
         $puestos = Puesto::all(['id_puesto','id_block', 'numero_puesto']);
         return response()->json($puestos);
+    }
+
+    public function obtenerTotalPuestos()
+    {
+        $total_puestos = Puesto::count();
+        return response()->json(["data"=>$total_puestos]);
+    }
+
+    public function obtenerAreaTotal()
+    {
+        $area_total = Puesto::sum('area');
+        return response()->json(["data"=>$area_total]);
     }
 
     public function export()

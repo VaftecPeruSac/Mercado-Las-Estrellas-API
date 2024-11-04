@@ -41,12 +41,7 @@ class CuotaController extends Controller
      */
     public function store(Request $request)
     {
-        // $validated = $request->validate([
         $validator = Validator::make($request->all(), [
-            // 'id_socio' => 'required',
-            // 'deudas' => 'required|array|min:1',
-            // 'deudas.*.id_deuda' => 'required',
-            // 'deudas.*.importe' => 'required|numeric|min:0|not_in:0',
             'fecha_registro' => 'required',
             'fecha_vencimiento' => 'required',
             'servicios' => 'required|array|min:1',
@@ -69,12 +64,17 @@ class CuotaController extends Controller
         $listado = Socio::select('socios.*','puestos.id_puesto')
             ->join('puestos','puestos.id_socio','socios.id_socio')
             ->where('socios.estado',1)
-            ->where('puestos.estado',1)
+            ->where('puestos.estado',2)
             ->get();
+
         if(count($listado) == 0){
             return response()->json(['error' => 'No se encontrarón socios con puestos.'], 400);
         }
+
         foreach($request->input('servicios') as $value){
+
+            $servicio = Servicio::find($value);
+
             $cuota = new Cuota();
             $cuota->importe = $request->input('importe');
             $cuota->id_servicio = $value;
@@ -82,16 +82,25 @@ class CuotaController extends Controller
             $cuota->fecha_vencimiento = $request->input('fecha_vencimiento');
             $cuota->save();
 
-            foreach($listado as $valu){
+            foreach($listado as $socio){
+
                 $deuda = new Deuda();
-                $deuda->id_socio = $valu->id_socio;
+                $deuda->id_socio = $socio->id_socio;
                 $deuda->id_cuota = $cuota->id;
-                $deuda->id_puesto = $valu->id_puesto;
+                $deuda->id_puesto = $socio->id_puesto;
                 $deuda->id_servicio = $value;
-                $deuda->total_deuda = $request->input('importe');
                 $deuda->fecha_registro = $request->input('fecha_registro');
+                
+                if ($servicio->tipo_servicio == 3){
+                    $montoCalculado = $servicio->costo_unitario * $socio->Puesto->area;
+                    $deuda->total_deuda = $montoCalculado;
+                } else {
+                    $deuda->total_deuda = $request->input('importe');
+                }
+
                 $deuda->save();
             }
+
         }
 
         return response()->json(["data"=>[],"message"=>"Cuota Registrada correctamente"]);

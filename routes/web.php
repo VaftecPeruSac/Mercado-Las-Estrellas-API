@@ -45,6 +45,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::apiResource('inquilinos', InquilinoController::class);
     Route::get('puestos/libre', [PuestoController::class, 'indexLibre']);
     Route::get('puestos/select', [PuestoController::class, 'select']); //1
+    Route::get('puestos/areaTotal', [PuestoController::class, 'obtenerAreaTotal']);
     Route::get('puestos/exportar', [PuestoController::class, 'export']);
     Route::get('puestos/exportar-pdf', [PuestoController::class, 'exportPDF']);
     Route::apiResource('puestos', PuestoController::class); //2
