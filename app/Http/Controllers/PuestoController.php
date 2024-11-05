@@ -45,13 +45,14 @@ class PuestoController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'id_block' => 'required',
-            'numero_puesto' => 'required',
+            'numero_puesto' => 'required|unique:puestos,numero_puesto',
             'area' => 'required',
             'id_gironegocio' => 'required',
             'fecha_registro' => 'required',
         ], [
             'id_block.required' => 'No se ha seleccionado ningun bloque.',
             'numero_puesto.required' => 'El campo numero de puesto es obligatorio.',
+            'numero_puesto.unique' => 'El numero de puesto ya existe.',
             'area.required' => 'El campo area es obligatorio.',
             'id_gironegocio.required' => 'No se ha seleccionado ningun giro de negocio.',
             'fecha_registro.required' => 'El campo fecha de registro es obligatorio.',
@@ -134,13 +135,14 @@ class PuestoController extends Controller
         // $validated = $request->validate([
         $validator = Validator::make($request->all(), [
             'id_block' => 'required',
-            'numero_puesto' => 'required|max:30',
-            'area' => 'required|max:255',
+            'numero_puesto' => 'required|unique:puestos,numero_puesto',
+            'area' => 'required',
             'id_gironegocio' => 'required',
             'fecha_registro' => 'required',
         ], [
             'id_block.required' => 'No se ha seleccionado ningun bloque.',
             'numero_puesto.required' => 'El campo numero de puesto es obligatorio.',
+            'numero_puesto.unique' => 'El numero de puesto ya existe.',
             'area.required' => 'El campo area es obligatorio.',
             'id_gironegocio.required' => 'No se ha seleccionado ningun giro de negocio.',
             'fecha_registro.required' => 'El campo fecha de registro es obligatorio.',
