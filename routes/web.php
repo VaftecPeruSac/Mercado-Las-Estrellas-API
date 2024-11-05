@@ -26,9 +26,6 @@ Route::get('/', function () {
 });
 
 
-// Route::post('v1/personas', [PersonaController::class, 'store']);
-// Route::post('v1/usuarios', [UsuarioController::class, 'store']);
-
 Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function () {
     Route::post('login', [LoginController::class, 'login']);
     Route::post('logout', [LoginController::class, 'logout']);
@@ -36,6 +33,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::get('validaciones', [LoginController::class, 'validaciones']);
     Route::get('ventanas', [LoginController::class, 'ventanas']);
 });
+
 Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function () {
     Route::apiResource('personas', PersonaController::class);
     Route::apiResource('usuarios', UsuarioController::class);
@@ -45,6 +43,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::apiResource('inquilinos', InquilinoController::class);
     Route::get('puestos/libre', [PuestoController::class, 'indexLibre']);
     Route::get('puestos/select', [PuestoController::class, 'select']); //1
+    Route::get('puestos/totalPuestos', [PuestoController::class, 'obtenerTotalPuestos']);
     Route::get('puestos/areaTotal', [PuestoController::class, 'obtenerAreaTotal']);
     Route::get('puestos/exportar', [PuestoController::class, 'export']);
     Route::get('puestos/exportar-pdf', [PuestoController::class, 'exportPDF']);
@@ -75,6 +74,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::get('reportes/dashboard', [ReporteController::class, 'dashboard']);
     Route::get('reportes/resumen-por-puestos', [ReporteController::class, 'resumenPorPuestos']);
 });
+
 Route::get('/csrf-token', function () {
     return response()->json([
         'token' => csrf_token()

@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Inquilino;
-use App\Http\Requests\StoreInquilinoRequest;
-use App\Http\Requests\UpdateInquilinoRequest;
 use App\Http\Resources\InquilinoCollection;
 use App\Models\Puesto;
 use Illuminate\Http\Request;
@@ -64,6 +62,7 @@ class InquilinoController extends Controller
         $inquilino->dni = $request->input('dni');
         $inquilino->telefono = $request->input('telefono');// fecha registro
         $inquilino->save();
+
         $puesto = Puesto::where('id_puesto', $request->input('id_puesto'))->first();
         $puesto->id_inquilino = $inquilino->id_inquilino;
         $puesto->update();
@@ -96,9 +95,43 @@ class InquilinoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateInquilinoRequest $request, Inquilino $inquilino)
+    public function update(Request $request, $id_inquilino)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'nombre' => 'required|string|max:255',
+            'apellido_paterno' => 'required|string|max:255',
+            'apellido_materno' => 'required|string|max:255',
+            'dni' => 'required|string|digits:8',
+            'telefono' => 'required|string|digits:9',
+            'id_puesto' => 'required',
+        ], [
+            'nombre.required' => 'El nombre es requerido.',
+            'apellido_paterno.required' => 'El apellido paterno es requerido.',
+            'apellido_materno.required' => 'El apellido materno es requerido.',
+            'dni.required' => 'El DNI es requerido.',
+            'dni.digits' => 'El DNI debe tener 8 dígitos.',
+            'telefono.required' => 'El teléfono es requerido.',
+            'telefono.digits' => 'El teléfono debe tener 9 dígitos.',
+            'id_puesto.required' => 'El puesto es requerido.',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(["error" => $validator->errors()->first()], 400);
+        }
+
+        $inquilino = Inquilino::findOrFail($id_inquilino);
+        $inquilino->nombre_completo = $request->input('nombre');
+        $inquilino->apellido_paterno = $request->input('apellido_paterno');
+        $inquilino->apellido_materno = $request->input('apellido_materno');
+        $inquilino->dni = $request->input('dni');
+        $inquilino->telefono = $request->input('telefono');// fecha registro
+        $inquilino->save();
+
+        $puesto = Puesto::where('id_puesto', $request->input('id_puesto'))->first();
+        $puesto->id_inquilino = $inquilino->id_inquilino;
+        $puesto->update();
+
+        return response()->json(["data"=>$inquilino,"message"=>"Los datos del inquilino fueron actualizados correctamente"]);
     }
 
     /**
