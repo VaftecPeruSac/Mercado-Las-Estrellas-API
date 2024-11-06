@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ReporteCuotasMetradoExport;
+use App\Exports\ReporteCuotasPuestoExport;
+use App\Exports\ReporteDeudasExport;
+use App\Exports\ReportePagosExport;
+use App\Exports\ReporteResumenExport;
 use App\Models\Pago;
 use App\Models\DetallePagos;
 use App\Models\Deuda;
@@ -12,6 +17,7 @@ use App\Http\Resources\ReporteCuotaPorPuestoCollection;
 use App\Http\Resources\ReporteResumenPorPuestoCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReporteController extends Controller
 {
@@ -27,6 +33,11 @@ class ReporteController extends Controller
         return new ReportePagoCollection($paginate);
     }
 
+    public function exportReportePagos(Request $request)
+    {
+        return Excel::download(new ReportePagosExport($request->id_socio), 'reporte_pagos.xlsx');
+    }
+
     public function deudas(Request $request)
     {
         $per_page = 15;
@@ -37,6 +48,11 @@ class ReporteController extends Controller
             ->paginate($per_page);
 
         return new ReporteDeudaCollection($paginate);
+    }
+
+    public function exportReporteDeudas(Request $request)
+    {
+        return Excel::download(new ReporteDeudasExport($request->id_puesto), 'reporte_deudas.xlsx');
     }
 
     public function cuotaPorMetros(Request $request)
@@ -51,6 +67,11 @@ class ReporteController extends Controller
         return new ReporteCuotaPorMetroCollection($paginate);
     }
 
+    public function exportReporteCuotasMetrado(Request $request)
+    {
+        return Excel::download(new ReporteCuotasMetradoExport($request->id_cuota), 'reporte_cuotas_metrado.xlsx');
+    }
+
     public function cuotaPorPuestos(Request $request)
     {
         $per_page = 15;
@@ -61,6 +82,11 @@ class ReporteController extends Controller
             ->paginate($per_page);
 
         return new ReporteCuotaPorPuestoCollection($paginate);
+    }
+
+    public function exportReporteCuotasPuesto(Request $request)
+    {
+        return Excel::download(new ReporteCuotasPuestoExport($request->id_puesto), 'reporte_cuotas_puesto.xlsx');
     }
 
     public function dashboard(Request $request)
@@ -95,5 +121,10 @@ class ReporteController extends Controller
             ->paginate($per_page);
 
         return new ReporteResumenPorPuestoCollection($paginate);
+    }
+
+    public function exportReporteResumenPorPuesto(Request $request)
+    {
+        return Excel::download(new ReporteResumenExport($request->id_puesto), 'reporte_resumen_puesto.xlsx');
     }
 }

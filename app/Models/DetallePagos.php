@@ -25,4 +25,9 @@ class DetallePagos extends Model
     {
        return $this->belongsTo(Pago::class,'id_pago','id_pago');
     }
+
+    public function Deuda()
+    {
+       return $this->belongsTo(Deuda::class,'id_deuda','id_deuda');
+    }
 }

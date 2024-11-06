@@ -68,11 +68,16 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::apiResource('deudas', DeudaController::class);
     Route::apiResource('pago_detalle', PagoDetalleController::class);
     Route::get('reportes/pagos', [ReporteController::class, 'pagos']);
+    Route::get('reportes/pagos/exportar', [ReporteController::class, 'exportReportePagos']);
     Route::get('reportes/deudas', [ReporteController::class, 'deudas']);
+    Route::get('reportes/deudas/exportar', [ReporteController::class, 'exportReporteDeudas']);
     Route::get('reportes/cuota-por-metros', [ReporteController::class, 'cuotaPorMetros']);
+    Route::get('reportes/cuota-por-metros/exportar', [ReporteController::class, 'exportReporteCuotasMetrado']);
     Route::get('reportes/cuota-por-puestos', [ReporteController::class, 'cuotaPorPuestos']);
+    Route::get('reportes/cuota-por-puestos/exportar', [ReporteController::class, 'exportReporteCuotasPuesto']);
     Route::get('reportes/dashboard', [ReporteController::class, 'dashboard']);
     Route::get('reportes/resumen-por-puestos', [ReporteController::class, 'resumenPorPuestos']);
+    Route::get('reportes/resumen-por-puestos/exportar', [ReporteController::class, 'exportReporteResumenPorPuesto']);
 });
 
 Route::get('/csrf-token', function () {

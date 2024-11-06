@@ -29,4 +29,9 @@ class Pago extends Model
     {//belongsTo es para la tabla que tiene la fk
        return $this->belongsTo(Documento::class,'id_documento','id_documento');
     }
+
+    public function DetallePagos()
+    {
+        return $this->hasMany(DetallePagos::class,'id_pago','id_pago');
+    }
 }

@@ -42,9 +42,9 @@ class ReporteDeudaCollection extends ResourceCollection
                             break;
                         case '10': $mes = 'Septiembre';
                             break;
-                        case '11': $mes = 'Nobiembre';
+                        case '11': $mes = 'Noviembre';
                             break;
-                        case '12': $mes = 'diciembre';
+                        case '12': $mes = 'Diciembre';
                             break;
                     }
 
