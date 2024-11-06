@@ -25,18 +25,23 @@ class SocioController extends Controller
         if (isset($request->per_page)) {
             $per_page = $request->per_page;
         }
-        if (isset($request->buscar_texto)) {
-            $texto = strtr(utf8_decode($request->buscar_texto), utf8_decode('àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
+
+        $listado = Socio::select('socios.*');
+
+        if (isset($request->nombre_socio)) {
+            $texto = strtr(utf8_decode($request->nombre_socio), utf8_decode('àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
             $texto = strtr(utf8_decode($texto), utf8_decode('àáâãäçèéêëìíîïññòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiin?ooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
             $texto = str_replace(' ', '%', $texto);
-            $paginate = Socio::select('socios.*')
-                ->join('personas','socios.id_socio','personas.id_persona')
-                ->whereRaw("concat(upper(nombre_completo),dni,correo,telefono) LIKE upper( ? )", ['%'.$texto.'%'])
-                ->paginate($per_page);
-            return new SocioCollection($paginate);
-        } else {
-            return new SocioCollection(Socio::paginate($per_page));
+            $listado->join('personas','socios.id_socio','personas.id_persona')
+                    ->whereRaw("concat(upper(nombre_completo),dni,correo,telefono) LIKE upper( ? )", ['%'.$texto.'%']);
         }
+
+        if (isset($request->numero_puesto)) {
+            $listado->join('puestos','socios.id_socio','puestos.id_socio')
+                    ->whereRaw("upper(numero_puesto) LIKE upper( ? )", ['%'.$request->numero_puesto.'%']);
+        }
+        
+        return new SocioCollection($listado->paginate($per_page));
     }
 
     /**
