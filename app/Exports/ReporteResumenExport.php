@@ -40,13 +40,13 @@ class ReporteResumenExport implements FromCollection, WithHeadings, WithStyles
   public function headings(): array
   {
     return [
-      'Serie y Número',
-      'Importe Ingreso',
-      'Importe Gastos Administrativo',
-      'Importe Multas Inasistencia',
-      'Importe Pagos Transferencia',
-      'Importe Cuotas Extraordinarias',
-      'Importe Total',
+      'Nro. Pago',
+      'Imp. Ingreso',
+      'Imp. Gastos Administrativo',
+      'Imp. Multas Inasistencia',
+      'Imp. Pagos Transferencia',
+      'Imp. Cuotas Extraordinarias',
+      'Imp. Total',
     ];
   }
 
