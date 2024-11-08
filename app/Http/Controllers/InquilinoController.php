@@ -137,8 +137,20 @@ class InquilinoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Inquilino $inquilino)
+    public function destroy($id_inquilino)
     {
-        //
+        $inquilino = Inquilino::find($id_inquilino);
+
+        if (!$inquilino) {
+            return response()->json(["error" => "El puesto no cuenta con inquilinos"], 400);
+        }
+
+        $puesto = Puesto::where('id_inquilino', $id_inquilino)->first();
+        $puesto->id_inquilino = null;
+        $puesto->update();
+
+        $inquilino->delete();
+
+        return response()->json(["data" => $inquilino, "message" => "Inquilino eliminado correctamente"]);
     }
 }

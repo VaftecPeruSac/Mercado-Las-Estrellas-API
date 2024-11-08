@@ -183,14 +183,25 @@ class PagoController extends Controller
         return response()->json(['data' => $pago, 'message' => 'El pago fue registrado con exito'], 200);
     }
 
-
-
-    public function ListaDeudaCuotas($id_puesto)
+    /*public function ListaDeudaCuotas($id_puesto)
     {
         // Obtener las deudas cuotas asociadas al id_puesto
         $deuda_cuota = DeudaCuota::select('deuda_cuotas.id_deuda_cuota', 'deuda_cuotas.a_cuenta', 'cuotas.fecha_registro', 'cuotas.importe')
             ->join('cuotas', 'deuda_cuotas.id_cuota', '=', 'cuotas.id_cuota')
             ->join('puesto_cuotas', 'cuotas.id_cuota', '=', 'puesto_cuotas.id_cuota') // Tabla pivote
+            ->where('puesto_cuotas.id_puesto', $id_puesto)
+            ->get();
+
+        return response()->json($deuda_cuota);
+    }*/
+    
+    public function ListaDeudaCuotas($id_puesto)
+    {
+        // Obtener las deudas cuotas asociadas al id_puesto
+        $deuda_cuota = DeudaCuota::select('deuda_cuotas.a_cuenta', 'cuotas.fecha_registro', 'servicios.descripcion as servicio', 'cuotas.importe')
+            ->join('cuotas', 'deuda_cuotas.id_cuota', '=', 'cuotas.id_cuota')
+            ->join('puesto_cuotas', 'cuotas.id_cuota', '=', 'puesto_cuotas.id_cuota')
+            ->join('servicios', 'cuotas.id_servicio', '=', 'servicios.id_servicio')
             ->where('puesto_cuotas.id_puesto', $id_puesto)
             ->get();
 
