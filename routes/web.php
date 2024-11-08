@@ -49,41 +49,43 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::apiResource('inquilinos', InquilinoController::class);
 
     // Puestos
-    Route::apiResource('puestos', PuestoController::class); //2
+    Route::get('puestos/select', [PuestoController::class, 'select']);
     Route::get('puestos/libre', [PuestoController::class, 'indexLibre']);
-    Route::get('puestos/select', [PuestoController::class, 'select']); //1
     Route::get('puestos/totalPuestos', [PuestoController::class, 'obtenerTotalPuestos']);
     Route::get('puestos/areaTotal', [PuestoController::class, 'obtenerAreaTotal']);
     Route::get('puestos/exportar', [PuestoController::class, 'export']);
     Route::get('puestos/exportar-pdf', [PuestoController::class, 'exportPDF']);
-    Route::post('puestos/asignar', [PuestoController::class, 'asignar']); //3
+    Route::post('puestos/asignar', [PuestoController::class, 'asignar']);
+    Route::apiResource('puestos', PuestoController::class);
 
     // Bloques
-    Route::apiResource('blocks', BlockController::class);
     Route::get('block/select', [BlockController::class, 'select']);
+    Route::apiResource('blocks', BlockController::class);
 
     // Giros de negocio
     Route::apiResource('giro-negocios', GiroNegocioController::class);
 
     // Servicios
-    Route::apiResource('servicios', ServicioController::class);
     Route::get('servicios/exportar', [ServicioController::class, 'export']);
     Route::get('servicios/exportar-pdf', [ServicioController::class, 'exportPDF']);
+    Route::apiResource('servicios', ServicioController::class);
 
     // Cuotas
-    Route::apiResource('cuotas', CuotaController::class);
     Route::get('cuotas/pendientes', [CuotaController::class, 'deudaPendientes']);
     Route::get('cuotas/exportar', [CuotaController::class, 'export']);
     Route::get('cuotas/exportar-pdf', [CuotaController::class, 'exportPDF']);
+    Route::apiResource('cuotas', CuotaController::class);
 
     // Deudas
-    Route::apiResource('deudas', DeudaController::class);
     Route::get('deudacuota/{id_puesto}', [PagoController::class,'ListaDeudaCuotas']);
+    Route::get('consultarImporteMultaInasistencia', [DeudaController::class, 'consultarImporteMultaInasistencia']);
+    Route::post('registrarMultaInasistencia', [DeudaController::class, 'registrarMultaInasistencia']);
+    Route::apiResource('deudas', DeudaController::class);
 
     // Pagos
-    Route::apiResource('pagos', PagoController::class);
     Route::get('pagos/exportar', [PagoController::class, 'export']);
     Route::get('pagos/exportar-pdf', [PagoController::class, 'exportPDF']);
+    Route::apiResource('pagos', PagoController::class);
 
     // Detalle de pagos
     Route::apiResource('pago_detalle', PagoDetalleController::class);
