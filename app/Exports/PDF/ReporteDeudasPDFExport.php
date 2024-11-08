@@ -59,7 +59,6 @@ class ReporteDeudasPDFExport {
       $importe_por_pagar = $deuda->total_deuda;
 
       return [
-        'id_cuota' => $deuda->id_cuota,
         'anio' => (new Carbon($deuda->fecha_registro))->format('Y'),
         'mes' => $mes,
         'servicio_descripcion' => $deuda->servicio->descripcion ?? '-----',

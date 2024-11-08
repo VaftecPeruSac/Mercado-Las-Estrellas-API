@@ -58,7 +58,6 @@
   <table>
     <thead>
       <tr>
-        <th>ID Cuota</th>
         <th>Año</th>
         <th>Mes</th>
         <th>Servicio</th>
@@ -70,7 +69,6 @@
     <tbody>
       @foreach($deudas as $deuda)
         <tr>
-          <td>{{ $deuda['id_cuota'] }}</td>
           <td>{{ $deuda['anio'] }}</td>
           <td>{{ $deuda['mes'] }}</td>
           <td>{{ $deuda['servicio_descripcion'] }}</td>
