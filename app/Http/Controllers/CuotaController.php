@@ -86,7 +86,7 @@ class CuotaController extends Controller
 
                 $deuda = new Deuda();
                 $deuda->id_socio = $socio->id_socio;
-                $deuda->id_cuota = $cuota->id;
+                $deuda->id_cuota = $cuota->id_cuota;
                 $deuda->id_puesto = $socio->id_puesto;
                 $deuda->id_servicio = $value;
                 $deuda->fecha_registro = $request->input('fecha_registro');
