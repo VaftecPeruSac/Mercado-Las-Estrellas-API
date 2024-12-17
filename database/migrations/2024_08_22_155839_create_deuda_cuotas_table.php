@@ -17,12 +17,9 @@ return new class extends Migration
             $table->unsignedBigInteger('id_cuota');
             $table->string('estado');
             $table->string('a_cuenta');
-            $table->foreign('id_deuda')
-            ->references('id_deuda')
-            ->on('deudas');
-            $table->foreign('id_cuota')
-            ->references('id_cuota')
-            ->on('cuotas');
+
+            $table->foreign('id_deuda')->references('id_deuda')->on('deudas');
+            $table->foreign('id_cuota')->references('id_cuota')->on('cuotas');
         });
     }
 

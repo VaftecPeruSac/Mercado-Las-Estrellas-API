@@ -13,10 +13,9 @@ return new class extends Migration
     {
         Schema::create('cuotas', function (Blueprint $table) {
             $table->id('id_cuota');
-            $table->string('importe');
+            $table->dateTime('fecha_emision');
             $table->dateTime('fecha_vencimiento');
-            $table->dateTime('fecha_registro');
-            //$table->timestamps();
+            $table->string('importe');
         });
     }
 

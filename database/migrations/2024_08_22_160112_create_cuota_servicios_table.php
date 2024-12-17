@@ -15,12 +15,10 @@ return new class extends Migration
             $table->id('id_cuota_servicio');
             $table->unsignedBigInteger('id_cuota');
             $table->unsignedBigInteger('id_servicio');
-            $table->foreign('id_cuota')
-            ->references('id_cuota')
-            ->on('cuotas');
-            $table->foreign('id_servicio')
-            ->references('id_servicio')
-            ->on('servicios');
+
+            // Relaciones
+            $table->foreign('id_cuota')->references('id_cuota')->on('cuotas');
+            $table->foreign('id_servicio')->references('id_servicio')->on('servicios');
         });
     }
 

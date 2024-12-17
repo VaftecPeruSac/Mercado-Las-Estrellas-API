@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Puesto extends Model
 {
-    //se declara la pk en el model con el nombre que tiene en la bd porque laravel define el id de una tabla como "id"
-    protected $primaryKey = 'id_puesto'; 
     use HasFactory;
-    protected $fillable = [    
+
+    protected $table = 'puestos';
+    protected $primaryKey = 'id_puesto';
+    public $timestamps = false;
+
+    protected $fillable = [
         'id_socio',
         'id_gironegocio',
         'id_block',
@@ -19,25 +22,25 @@ class Puesto extends Model
         'id_inquilino',
         'estado',
         'fecha_registro',
-      ];
-    //para no usar los timestamps en el migrate, de lo contrario requiere ello y no permite hacer registros
-    public $timestamps = false;
+    ];
+
     public function Socio()
-    {//belongsTo es para la tabla que tiene la fk
-       return $this->belongsTo(Socio::class,'id_socio','id_socio');
+    {
+        return $this->belongsTo(Socio::class, 'id_socio', 'id_socio');
     }
+
     public function Block()
     {
-        return $this->hasOne(Block::class,'id_block','id_block');
+        return $this->hasOne(Block::class, 'id_block', 'id_block');
     }
-    
+
     public function Gironegocio()
     {
-        return $this->hasOne(GiroNegocio::class,'id_gironegocio','id_gironegocio');
+        return $this->hasOne(GiroNegocio::class, 'id_gironegocio', 'id_gironegocio');
     }
-    
+
     public function Inquilino()
     {
-        return $this->belongsTo(Inquilino::class,'id_inquilino','id_inquilino');
+        return $this->belongsTo(Inquilino::class, 'id_inquilino', 'id_inquilino');
     }
 }

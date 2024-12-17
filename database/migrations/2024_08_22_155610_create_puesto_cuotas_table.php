@@ -16,12 +16,10 @@ return new class extends Migration
             $table->unsignedBigInteger('id_puesto');
             $table->unsignedBigInteger('id_cuota');
             $table->string('estado');
-            $table->foreign('id_puesto')
-            ->references('id_puesto')
-            ->on('puestos');
-            $table->foreign('id_cuota')
-            ->references('id_cuota')
-            ->on('cuotas');
+
+            // Relaciones
+            $table->foreign('id_puesto')->references('id_puesto')->on('puestos');
+            $table->foreign('id_cuota')->references('id_cuota')->on('cuotas');
         });
     }
 

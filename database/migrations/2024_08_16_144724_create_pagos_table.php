@@ -18,15 +18,11 @@ return new class extends Migration
             $table->integer('numero_pago');
             $table->integer('serie');
             $table->integer('total_pago');
-            $table->dateTime('fecha_registro');
-            //relaciones
-            $table->foreign('id_socio')
-            ->references('id_socio')
-            ->on('socios');
-            $table->foreign('id_documento')
-            ->references('id_documento')
-            ->on('documentos');
-            //$table->timestamps();
+            $table->dateTime('fecha_registro')->useCurrent();
+            
+            // Relaciones
+            $table->foreign('id_socio')->references('id_socio')->on('socios');
+            $table->foreign('id_documento')->references('id_documento')->on('documentos');
         });
     }
 

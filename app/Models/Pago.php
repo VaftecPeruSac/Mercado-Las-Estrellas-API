@@ -8,10 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Pago extends Model
 {
     use HasFactory;
+
+    protected $table = 'pagos';
     protected $primaryKey = 'id_pago';
     public $timestamps = false;
-    protected $fillable = [    
-        'id_pago',
+
+    protected $fillable = [
         'id_socio',
         'id_documento',
         'numero_pago',
@@ -21,17 +23,17 @@ class Pago extends Model
     ];
 
     public function Socio()
-    {//belongsTo es para la tabla que tiene la fk
-       return $this->belongsTo(Socio::class,'id_socio','id_socio');
+    {
+        return $this->belongsTo(Socio::class, 'id_socio', 'id_socio');
     }
 
     public function Documento()
-    {//belongsTo es para la tabla que tiene la fk
-       return $this->belongsTo(Documento::class,'id_documento','id_documento');
+    {
+        return $this->belongsTo(Documento::class, 'id_documento', 'id_documento');
     }
 
     public function DetallePagos()
     {
-        return $this->hasMany(DetallePagos::class,'id_pago','id_pago');
+        return $this->hasMany(DetallePagos::class, 'id_pago', 'id_pago');
     }
 }

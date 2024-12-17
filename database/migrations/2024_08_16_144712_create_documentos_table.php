@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('serie');
             $table->string('estado');
             $table->dateTime('fecha_registro');
-            //$table->timestamps();
         });
     }
 

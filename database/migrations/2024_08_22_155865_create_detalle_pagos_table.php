@@ -14,22 +14,16 @@ return new class extends Migration
         Schema::create('detalle_pagos', function (Blueprint $table) {
             $table->id('id_detallepago');
             $table->unsignedBigInteger('id_pago');
-            $table->unsignedBigInteger('id_deuda_cuota');
+            $table->unsignedBigInteger('id_cuota');
+            $table->unsignedBigInteger('id_deuda');
             $table->unsignedBigInteger('id_puesto');
             $table->integer('importe');
-            $table->dateTime('fecha_registro');
-            //relaciones
-            $table->foreign('id_pago')
-            ->references('id_pago')
-            ->on('pagos');
-            $table->foreign('id_deuda_cuota')
-            ->references('id_deuda_cuota')
-            ->on('deuda_cuotas');
-            $table->foreign('id_puesto')
-            ->references('id_puesto')
-            ->on('puestos');
-            //$table->timestamps();
-           
+
+            // Relaciones
+            $table->foreign('id_pago')->references('id_pago')->on('pagos');
+            $table->foreign('id_cuota')->references('id_cuota')->on('cuotas');
+            $table->foreign('id_deuda')->references('id_deuda')->on('deudas');
+            $table->foreign('id_puesto')->references('id_puesto')->on('puestos');
         });
     }
 

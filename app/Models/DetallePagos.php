@@ -2,32 +2,42 @@
 
 namespace App\Models;
 
-// use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class DetallePagos extends Model
 {
-    // use HasFactory;
+    use HasFactory;
+
     protected $table = 'detalle_pagos';
     protected $primaryKey = 'id_detallepago';
     public $timestamps = false;
+
     protected $fillable = [
-        'id_detallepago',
         'id_pago',
         'id_cuota',
-        'id_puesto',
         'id_deuda',
+        'id_puesto',
         'importe',
-        'fecha_registro',
     ];
 
     public function Pago()
     {
-       return $this->belongsTo(Pago::class,'id_pago','id_pago');
+        return $this->belongsTo(Pago::class,'id_pago');
+    }
+
+    public function Cuota()
+    {
+        return $this->belongsTo(Cuota::class,'id_cuota');
     }
 
     public function Deuda()
     {
-       return $this->belongsTo(Deuda::class,'id_deuda','id_deuda');
+        return $this->belongsTo(Deuda::class,'id_deuda');
+    }
+
+    public function Puesto()
+    {
+        return $this->belongsTo(Puesto::class,'id_puesto');
     }
 }

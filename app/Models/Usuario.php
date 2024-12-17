@@ -8,28 +8,22 @@ use Illuminate\Database\Eloquent\Model;
 class Usuario extends Model
 {
     use HasFactory;
+
+    protected $table = 'usuarios';
     protected $primaryKey = 'id_usuario';
-    public $incrementing = false;
-    protected $fillable = [
-      // 'id_persona',
-      'nombre_usuario',
-      'contrasenia',
-      'rol',
-      'estado',
-      'fecha_registro',
-      'token',
-    ];
-    //para no usar los timestamps en el migrate, de lo contrario requiere ello y no permite hacer registros
     public $timestamps = false;
 
-    //antes tenia relacion con socio y puesto
-     public function Persona()
-     {//belongsTo es para la tabla que tiene la fk
-        return $this->belongsTo(Persona::class,'id_usuario','id_persona');
-     }
+    protected $fillable = [
+        'rol',
+        'nombre_usuario',
+        'contrasenia',
+        'estado',
+        'token',
+        'fecha_registro',
+    ];
 
-     public function Socio()
-     {//hasOne es para la tabla que no tiene la fk
-        return $this->hasOne(Socio::class,'id_usuario','id_usuario');
-     }
+    public function Socio()
+    {
+        return $this->hasOne(Socio::class, 'id_usuario', 'id_usuario');
+    }
 }
