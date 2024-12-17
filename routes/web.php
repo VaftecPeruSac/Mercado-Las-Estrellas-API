@@ -34,16 +34,13 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::get('validaciones', [LoginController::class, 'validaciones']);
     Route::get('ventanas', [LoginController::class, 'ventanas']);
 
-    // Personas
-    Route::apiResource('personas', PersonaController::class);
-
     // Usuarios
     Route::apiResource('usuarios', UsuarioController::class);
 
     // Socios
-    Route::apiResource('socios', SocioController::class);
     Route::get('socios/exportar', [SocioController::class, 'export']);
     Route::get('socios/exportar-pdf', [SocioController::class, 'exportPDF']);
+    Route::apiResource('socios', SocioController::class);
 
     // Inquilinos
     Route::apiResource('inquilinos', InquilinoController::class);
