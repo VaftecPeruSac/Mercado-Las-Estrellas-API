@@ -24,14 +24,15 @@ class SocioController extends Controller
             $per_page = $request->per_page;
         }
 
-        $listado = Socio::select('socios.*');
+        $listado = Socio::select('socios.*')
+            ->join('usuarios','socios.id_usuario','usuarios.id_usuario')
+            ->where('usuarios.estado', '1');
 
         if (isset($request->nombre_socio)) {
             $texto = strtr(utf8_decode($request->nombre_socio), utf8_decode('àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
             $texto = strtr(utf8_decode($texto), utf8_decode('àáâãäçèéêëìíîïññòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiin?ooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
             $texto = str_replace(' ', '%', $texto);
-            $listado->join("usuarios","socios.id_usuario","usuarios.id_usuario")
-                    ->whereRaw("concat(upper(nombre_usuario),dni,correo,telefono) LIKE upper( ? )", ['%'.$texto.'%']);
+            $listado->whereRaw("upper(concat(nombres, ' ', apellido_paterno, ' ', apellido_materno)) LIKE upper( ? )", ['%'.$texto.'%']);
         }
 
         if (isset($request->numero_puesto)) {
@@ -40,6 +41,24 @@ class SocioController extends Controller
         }
         
         return new SocioCollection($listado->paginate($per_page));
+    }
+
+    public function listarPuestos(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id_socio' => 'required',
+        ], [
+            'id_socio.required' => 'El campo id_socio es obligatorio',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(["error" => $validator->errors()->first()], 400);
+        }
+
+        $puestos = Puesto::where('id_socio', $request->input('id_socio'))
+            ->get(['id_puesto', 'numero_puesto']);
+
+        return response()->json(["data"=>$puestos]);
     }
 
     public function store(Request $request)
@@ -185,29 +204,13 @@ class SocioController extends Controller
             $puesto->update();
         }
 
-        // Eliminamos al socio desactivando su cuenta
+        // Eliminamos al socio y su usuario
+        $socio->delete();
+
         $usuario = Usuario::where('id_usuario', $socio->id_usuario)->first();
-        $usuario->estado = "0"; // Desactivado
-        $usuario->update();
+        $usuario->delete();
 
-        return response()->json(["data"=>[],"message"=>"El socio se elimino correctamente"]);
-    }
-
-    public function consinPuestos(Request $request)
-    {
-        $filter = new SociosFilter();
-        $queryItems = $filter->transform($request);
-        if (count($queryItems) == 0) {
-            return new SocioConSinPuestos(
-                Socio::select('socios.*')
-                    ->leftJoin('puestos','puestos.id_socio','socios.id_socio')
-                    ->paginate());
-        } else {
-            $socios = Socio::select('socios.*')
-                ->leftJoin('puestos','puestos.id_socio','socios.id_socio')
-                ->where($queryItems)->paginate();
-            return new SocioConSinPuestos($socios->appends($request->query()));
-        }
+        return response()->json(["message"=>"El socio fue eliminado correctamente"]);
     }
 
     public function export()

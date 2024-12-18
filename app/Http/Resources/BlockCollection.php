@@ -16,7 +16,6 @@ class BlockCollection extends ResourceCollection
     {
             return [
                 'data' => $this->collection->transform(function ($block) {
-                    
                     return [
                         'id_block' => $block->id_block,
                         'nombre' => $block->nombre,

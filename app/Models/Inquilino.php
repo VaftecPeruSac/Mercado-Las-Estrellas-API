@@ -11,7 +11,7 @@ class Inquilino extends Model
     protected $primaryKey = 'id_inquilino';
     public $timestamps = false;
     protected $fillable = [    
-        'nombre_completo',
+        'nombre',
         'apellido_paterno',
         'apellido_materno',
         'dni',

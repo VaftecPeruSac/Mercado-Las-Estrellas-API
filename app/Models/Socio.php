@@ -36,9 +36,9 @@ class Socio extends Model
         return $this->hasOne(Deuda::class, 'id_socio', 'id_socio');
     }
 
-    public function Puesto()
+    public function Puestos()
     {
-        return $this->hasOne(Puesto::class, 'id_socio', 'id_socio');
+        return $this->hasMany(Puesto::class, 'id_socio', 'id_socio');
     }
 
     public function Pago()

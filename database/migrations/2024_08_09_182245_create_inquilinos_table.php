@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('inquilinos', function (Blueprint $table) {
             $table->id('id_inquilino');
-            $table->string('nombre_completo');
+            $table->string('nombre');
             $table->string('apellido_materno');
             $table->string('apellido_paterno');
             $table->string('dni');

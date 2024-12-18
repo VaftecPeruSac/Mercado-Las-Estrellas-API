@@ -9,30 +9,50 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class SociosExport implements FromCollection, WithHeadings, WithStyles
-{    /**
+{
+    private $rowCount = 1; // Contador de filas para aplicar estilos dinámicos
+
+    /**
      * @return \Illuminate\Support\Collection
      */
-    
+
     public function collection()
     {
-        return Socio::with([
-            'usuario.persona', // Carga la relación usuario y, dentro de usuario, la relación persona
-            'puesto.block',    // Carga la relación puesto y, dentro de puesto, la relación block
-            'puesto.gironegocio',     // Carga la relación puesto y, dentro de puesto, la relación giro
-            'puesto.inquilino' // Carga la relación puesto y, dentro de puesto, la relación inquilino
-        ])->get()->map(function($socio) {
-            return [
-                'nombre_usuario' => $socio->usuario->nombre_usuario ?? '------', 
-                'dni' => $socio->usuario->persona->dni ?? '------', 
-                'bloque' => $socio->puesto->block->nombre ?? '------', 
-                'puesto' => $socio->puesto->numero_puesto ?? '------', 
-                'giro' => $socio->puesto->gironegocio->nombre ?? '------', 
-                'telefono' => $socio->usuario->persona->telefono ?? '------', 
-                'correo' => $socio->usuario->persona->correo ?? '------', 
-                'inquilino' => $socio->puesto->inquilino->nombre_completo ?? '------', 
-                'fecha_registro' => $socio->fecha_registro ?? '------', 
+        $data = collect();
+
+        Socio::with(['puestos.block', 'puestos.gironegocio', 'puestos.inquilino'])->get()->each(function ($socio) use ($data) {
+            $socioData = [
+                'nombre' => $socio->nombres . ' ' . $socio->apellido_paterno . ' ' . $socio->apellido_materno ?? '------',
+                'dni' => $socio->dni ?? '------',
+                'telefono' => $socio->telefono ?? '------',
+                'correo' => $socio->correo ?? '------',
+                'fecha_registro' => $socio->fecha_registro ?? '------',
             ];
+
+            $rowStart = $this->rowCount + 1; // Guardamos el inicio de las filas para fusionar
+
+            // Añadir una fila por cada puesto
+            foreach ($socio->puestos as $puesto) {
+                $data->push([
+                    $socioData['nombre'], // Se llenará solo en la primera fila
+                    $socioData['dni'],
+                    $socioData['telefono'],
+                    $socioData['correo'],
+                    $puesto->block->nombre ?? '------',
+                    $puesto->numero_puesto ?? '------',
+                    $puesto->gironegocio->nombre ?? '------',
+                    $puesto->inquilino->nombre_completo ?? '------',
+                    $socioData['fecha_registro'],
+                ]);
+
+                // Vaciar datos para las subfilas
+                $socioData = array_fill_keys(array_keys($socioData), '');
+            }
+
+            $this->rowCount = $rowStart + count($socio->puestos) - 1; // Actualizamos el contador
         });
+
+        return $data;
     }
 
     public function headings(): array
@@ -40,11 +60,11 @@ class SociosExport implements FromCollection, WithHeadings, WithStyles
         return [
             'Nombre Completo',
             'DNI',
+            'Telefono',
+            'Correo',
             'Block',
             'Puesto',
             'Giro Negocio',
-            'Telefono',
-            'Correo',
             'Inquilino',
             'Fecha registro',
         ];
@@ -52,13 +72,35 @@ class SociosExport implements FromCollection, WithHeadings, WithStyles
 
     public function styles(Worksheet $sheet)
     {
-        // Aplicar negrita a la primera fila (encabezados)
-        $sheet->getStyle(1)->getFont()->setBold(true);
+        $row = 2; // Comenzar después de los encabezados
 
-        // Ajustar automáticamente el ancho de las columnas
-        foreach (range('A', 'J') as $column) {
-            $sheet->getColumnDimension($column)->setAutoSize(true);
+        foreach (Socio::withCount('puestos')->get() as $socio) {
+            $rowStart = $row;
+            $rowEnd = $rowStart + $socio->puestos_count - 1;
+
+            if ($socio->puestos_count > 1) {
+                // Fusionar celdas de las columnas principales
+                $sheet->mergeCells("A{$rowStart}:A{$rowEnd}");
+                $sheet->mergeCells("B{$rowStart}:B{$rowEnd}");
+                $sheet->mergeCells("C{$rowStart}:C{$rowEnd}");
+                $sheet->mergeCells("D{$rowStart}:D{$rowEnd}");
+                $sheet->mergeCells("I{$rowStart}:I{$rowEnd}");
+
+                // Centramos contenido vertical y horizontalmente
+                $sheet->getStyle("A{$rowStart}:A{$rowEnd}")->getAlignment()->setHorizontal('center')->setVertical('center');
+                $sheet->getStyle("B{$rowStart}:B{$rowEnd}")->getAlignment()->setHorizontal('center')->setVertical('center');
+                $sheet->getStyle("C{$rowStart}:C{$rowEnd}")->getAlignment()->setHorizontal('center')->setVertical('center');
+                $sheet->getStyle("D{$rowStart}:D{$rowEnd}")->getAlignment()->setHorizontal('center')->setVertical('center');
+                $sheet->getStyle("I{$rowStart}:I{$rowEnd}")->getAlignment()->setHorizontal('center')->setVertical('center');
+            }
+
+            $row += $socio->puestos_count; // Avanzar a la siguiente sección
+        }
+
+        // Aplicar estilos generales
+        $sheet->getStyle(1)->getFont()->setBold(true); // Encabezados en negrita
+        foreach (range('A', 'I') as $column) {
+            $sheet->getColumnDimension($column)->setAutoSize(true); // Ancho automático
         }
     }
-
 }

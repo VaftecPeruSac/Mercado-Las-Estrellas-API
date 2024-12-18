@@ -21,7 +21,6 @@ class UsuarioResource extends JsonResource
             'rol' => $this->rol,
             'estado' => $this->estado,
             'fecha_registro' => $this->fecha_registro,
-            'persona' => new PersonaResource($this->persona),//solo para el listar
         ];
     }
 }

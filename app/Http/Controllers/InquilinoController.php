@@ -15,17 +15,8 @@ class InquilinoController extends Controller
      */
     public function index()
     {
-        //
         $inquilinos = Inquilino::all();
         return new InquilinoCollection($inquilinos);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -68,28 +59,6 @@ class InquilinoController extends Controller
         $puesto->update();
 
         return response()->json(["data"=>$inquilino,"message"=>"Inquilino registrado correctamente"]);
-    }
-    // id_inquilino
-    // nombre_completo
-    // apellido_materno
-    // apellido_paterno
-    // dni
-    // telefono
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Inquilino $inquilino)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Inquilino $inquilino)
-    {
-        //
     }
 
     /**
@@ -145,6 +114,7 @@ class InquilinoController extends Controller
             return response()->json(["error" => "El puesto no cuenta con inquilinos"], 400);
         }
 
+        // Eliminar inquilino del puesto
         $puesto = Puesto::where('id_inquilino', $id_inquilino)->first();
         $puesto->id_inquilino = null;
         $puesto->update();

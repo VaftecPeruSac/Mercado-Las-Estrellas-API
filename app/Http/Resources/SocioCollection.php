@@ -37,12 +37,15 @@ class SocioCollection extends ResourceCollection
                     'direccion' => $socio->direccion ? $socio->direccion : 'No',
                     'telefono' => $socio->telefono ? $socio->telefono : 'No',
                     'correo' => $socio->correo ? $socio->correo : 'No',
-                    'id_puesto' => $socio->puesto ? $socio->puesto->id_puesto : '',
-                    'numero_puesto' => $socio->puesto ? $socio->puesto->numero_puesto : 'No asignado',
-                    'id_block' => $socio->puesto ? $socio->puesto->block->id_block : '',
-                    'block_nombre' => $socio->puesto ? $socio->puesto->block->nombre : 'No asignado',
-                    'gironegocio_nombre' => $socio->puesto && $socio->puesto->gironegocio ? $socio->puesto->gironegocio->nombre : 'No asignado',
-                    'nombre_inquilino' =>$socio->puesto && $socio->puesto->inquilino ? $socio->puesto->inquilino->nombre_completo : 'No asignado',
+                    'puestos' => $socio->puestos->map(function ($puesto) {
+                        return [
+                            'id_puesto' => $puesto->id_puesto,
+                            'numero_puesto' => $puesto->numero_puesto,
+                            'block' => $puesto->block,
+                            'gironegocio' => $puesto->gironegocio,
+                            'nombre_inquilino' => $puesto->inquilino ? $puesto->inquilino->nombre.' '.$puesto->inquilino->apellido_paterno.' '.$puesto->inquilino->apellido_materno : 'No',
+                        ];
+                    }),
                     'estado' =>  $socio->usuario->estado,
                     'fecha_registro' => $socio->fecha_registro ? $socio->fecha_registro : null,
                     'deuda' =>$deuda,

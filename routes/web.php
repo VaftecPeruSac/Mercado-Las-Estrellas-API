@@ -12,11 +12,9 @@ use App\Http\Controllers\GiroNegocioController;
 use App\Http\Controllers\InquilinoController;
 use App\Http\Controllers\PagoController;
 use App\Http\Controllers\PagoDetalleController;
-use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\PuestoController;
 use App\Http\Controllers\ServicioController;
 use App\Http\Controllers\SocioController;
-use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
@@ -32,10 +30,8 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::post('logout', [LoginController::class, 'logout']);
     Route::get('validaciones', [LoginController::class, 'validaciones']);
 
-    // Usuarios
-    Route::apiResource('usuarios', UsuarioController::class);
-
     // Socios
+    Route::get('socios/ver-puestos', [SocioController::class, 'listarPuestos']);
     Route::get('socios/exportar', [SocioController::class, 'export']);
     Route::get('socios/exportar-pdf', [SocioController::class, 'exportPDF']);
     Route::apiResource('socios', SocioController::class);
@@ -44,17 +40,17 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::apiResource('inquilinos', InquilinoController::class);
 
     // Puestos
-    Route::get('puestos/select', [PuestoController::class, 'select']);
-    Route::get('puestos/libre', [PuestoController::class, 'indexLibre']);
-    Route::get('puestos/totalPuestos', [PuestoController::class, 'obtenerTotalPuestos']);
-    Route::get('puestos/areaTotal', [PuestoController::class, 'obtenerAreaTotal']);
+    Route::get('puestos/sin-socio', [PuestoController::class, 'puestosSinSocio']);
+    Route::get('puestos/sin-inquilino', [PuestoController::class, 'puestosSinInquilino']);
+    Route::get('puestos/seleccionar', [PuestoController::class, 'seleccionarPuesto']);
+    Route::get('puestos/total', [PuestoController::class, 'obtenerTotalPuestos']);
+    Route::get('puestos/area-total', [PuestoController::class, 'obtenerAreaTotal']);
     Route::get('puestos/exportar', [PuestoController::class, 'export']);
     Route::get('puestos/exportar-pdf', [PuestoController::class, 'exportPDF']);
     Route::post('puestos/asignar', [PuestoController::class, 'asignar']);
     Route::apiResource('puestos', PuestoController::class);
 
     // Bloques
-    Route::get('block/select', [BlockController::class, 'select']);
     Route::apiResource('blocks', BlockController::class);
 
     // Giros de negocio

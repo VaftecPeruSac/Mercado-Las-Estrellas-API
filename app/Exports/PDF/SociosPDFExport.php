@@ -9,21 +9,21 @@ class SociosPDFExport {
 
   public function generatePDF() {
 
-    $socios = Socio::with([
-      'usuario.persona',
-      'puesto.block',
-      'puesto.gironegocio',
-      'puesto.inquilino',
-    ])->get()->map(function ($socio) {
+    $socios = Socio::with([])->get()->map(function ($socio) {
       return [
-        'nombre_usuario' => $socio->usuario->nombre_usuario ?? '------',
-        'dni' => $socio->usuario->persona->dni ?? '------',
-        'bloque' => $socio->puesto->block->nombre ?? '------',
-        'puesto' => $socio->puesto->numero_puesto ?? '------',
-        'giro' => $socio->puesto->gironegocio->nombre ?? '------',
-        'telefono' => $socio->usuario->persona->telefono ?? '------',
-        'correo' => $socio->usuario->persona->correo ?? '------',
-        'inquilino' => $socio->puesto->inquilino->nombre_completo ?? '------',
+        'nombre' => $socio->nombres.' '.$socio->apellido_paterno.' '.$socio->apellido_materno ?? '------', 
+        'dni' => $socio->dni ?? '------', 
+        'telefono' => $socio->telefono ?? '------', 
+        'correo' => $socio->correo ?? '------', 
+        'puestos' => $socio->puestos->map(function ($puesto) {
+          return [
+            'block' => $puesto->block->nombre,
+            'giro' => $puesto->gironegocio->nombre,
+            'numero' => $puesto->numero_puesto,
+            'inquilino' => $puesto->inquilino->nombre_completo ?? '------',
+          ];
+        }),
+        'inquilino' => $socio->puesto->inquilino->nombre_completo ?? '------', 
         'fecha_registro' => $socio->fecha_registro ?? '------',
       ];
     });
