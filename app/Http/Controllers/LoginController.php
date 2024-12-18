@@ -12,7 +12,6 @@ class LoginController extends Controller
 {
     public function login(Request $request)
     {
-        // $validated = $request->validate([
         $validator = Validator::make($request->all(), [
             'usuario' => 'required',
             'password' => 'required',
@@ -25,88 +24,74 @@ class LoginController extends Controller
             return response()->json(['error' => $validator->errors()->first()], 400);
         }
 
-        // $usuario = Usuario::where('nombre_usuario', $validated['usuario'])->first();
+        // Buscamos al usuario por su nombre de usuario
         $usuario = Usuario::where('nombre_usuario', $request->input('usuario'))->first();
-        if (!$usuario){
-            return response()->json(['message' => 'No se pudo validar el acceso.'], 400);
+
+        // Si no existe el usuario o la contraseña no coincide
+        if (!$usuario || !password_verify($request->input('password'), $usuario->contrasenia)){
+            return response()->json(['message' => 'Nombre de usuario y/o contraseña incorrectos.'], 400);
         }
 
-        // if(password_verify($validated['password'],$usuario->contrasenia)){
-        if(password_verify($request->input('password'), $usuario->contrasenia)){
-            $usuario = Usuario::find($usuario->id_usuario);
-            $usuario->token = $this->apiToken();
-            $usuario->save();
+        $usuario = Usuario::find($usuario->id_usuario);
+        $usuario->token = $this->apiToken();
+        $usuario->save();
 
-            $response = [
-                "token" => $usuario->token,
-                'message' => 'Se logueo correctamente.',
-            ];
-            return response()->json($response,200);
-        } else {
-            return response()->json(['message' => 'No se pudo validar el acceso'], 400);
-        }
+        return response()->json([
+            "token" => $usuario->token,
+            "message" => 'Se logueo correctamente.',
+        ],200);
     }
 
     public function logout(Request $request)
     {
-        $usuario = Usuario::where('nombre_usuario',$request->input('usuario'))->first();
-        if (!$usuario){
-            return response()->json(['message' => 'No se pudo validar el acceso.'], 400);
-        }
-
-        $usuario = Usuario::find($usuario->id_usuario);
-        $usuario->token = null;
-        $usuario->save();
-
-        $response = [
-            'message' => 'Salio del sistema correctamente.',
-        ];
-        return response()->json($response,200);
-    }
-
-    public function changePassword(Request $request)
-    {
-        // $validated = $request->validate([
         $validator = Validator::make($request->all(), [
             'usuario' => 'required',
-            'password' => 'required',
         ], [
             'usuario.required' => 'El usuario es requerido.',
-            'password.required' => 'La contraseña es requerida.',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()->first()], 400);
         }
 
-        // $usuario = Usuario::where('nombre_usuario',$validated['usuario'])->first();
+        // Buscamos al usuario por su nombre de usuario
         $usuario = Usuario::where('nombre_usuario', $request->input('usuario'))->first();
-        if ($usuario) {
-            // $usuario->contrasenia = Hash::make($validated['password']);
-            $usuario->contrasenia = Hash::make($request->input('password'));
-            $usuario->save();
+
+        // Si no existe el usuario
+        if (!$usuario){
+            return response()->json(['message' => 'Ocurrio un error al cerrar sesión.'], 400);
         }
+
+        // Eliminamos el token
+        $usuario = Usuario::find($usuario->id_usuario);
+        $usuario->token = null;
+        $usuario->save();
+
+        return response()->json(['message' => 'Salio del sistema correctamente.'], 200);
     }
 
     public function validaciones(Request $request)
     {
-        $usuario = Usuario::select(
-                "personas.nombre_completo"
-            )
-            ->join('personas','usuarios.id_usuario','personas.id_persona')
+        $validator = Validator::make($request->all(), [
+            'token' => 'required',
+        ], [
+            'token.required' => 'El token es requerido.',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()->first()], 400);
+        }
+
+        // Buscamos al usuario por su token y retornamos su id, nombre y rol
+        $usuario = Usuario::select("id_usuario", "nombre_usuario", "rol")
             ->where('usuarios.token',$request->input('token'))->first();
+
+        // Si no existe el usuario
         if (!$usuario){
             return response()->json(['message' => 'No se pudo validar el acceso.'], 400);
         }
 
-        return response()->json($usuario,200);
-    }
-
-    public function ventanas(Request $request)
-    {
-        $response = [];
-
-        return response()->json($response,200);
+        return response()->json($usuario, 200);
     }
 
     private function apiToken() {

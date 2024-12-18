@@ -11,6 +11,7 @@ use App\Http\Resources\SocioConSinPuestos;
 use App\Models\Puesto;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -76,11 +77,11 @@ class SocioController extends Controller
         // Registro de usuario
         $usuario = new Usuario();
         $usuario->nombre_usuario = $request->input('nombre').' '.$request->input('apellido_paterno').' '.$request->input('apellido_materno');
-        $usuario->rol = 'socio';
+        $usuario->rol = 'Socio';
 
         // La contraseña por defecto es el dni encriptado
         $contrasenia = $request->input('dni');
-        $usuario->contrasenia = bcrypt($contrasenia);
+        $usuario->contrasenia = Hash::make($contrasenia);
 
         $usuario->estado = $request->input('estado');
         $usuario->fecha_registro = $request->input('fecha_registro');

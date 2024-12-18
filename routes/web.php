@@ -30,9 +30,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     // Autenticación
     Route::post('login', [LoginController::class, 'login']);
     Route::post('logout', [LoginController::class, 'logout']);
-    Route::post('change-password', [LoginController::class, 'changePassword']);
     Route::get('validaciones', [LoginController::class, 'validaciones']);
-    Route::get('ventanas', [LoginController::class, 'ventanas']);
 
     // Usuarios
     Route::apiResource('usuarios', UsuarioController::class);
