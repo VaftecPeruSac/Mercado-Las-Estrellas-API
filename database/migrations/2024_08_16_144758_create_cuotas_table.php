@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('id_cuota');
             $table->dateTime('fecha_emision');
             $table->dateTime('fecha_vencimiento');
-            $table->string('importe');
+            $table->decimal('importe', 10, 2);
         });
     }
 

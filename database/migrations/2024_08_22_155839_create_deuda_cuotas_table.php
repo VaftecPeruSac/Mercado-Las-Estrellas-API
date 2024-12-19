@@ -14,12 +14,13 @@ return new class extends Migration
         Schema::create('deuda_cuotas', function (Blueprint $table) {
             $table->id('id_deuda_cuota');
             $table->unsignedBigInteger('id_deuda');
-            $table->unsignedBigInteger('id_cuota');
+            $table->unsignedBigInteger('id_cuota_servicio');
+            $table->decimal('monto', 10, 2);
+            $table->decimal('a_cuenta', 10, 2)->default(0);
             $table->string('estado');
-            $table->string('a_cuenta');
 
             $table->foreign('id_deuda')->references('id_deuda')->on('deudas');
-            $table->foreign('id_cuota')->references('id_cuota')->on('cuotas');
+            $table->foreign('id_cuota_servicio')->references('id_cuota_servicio')->on('cuota_servicios');
         });
     }
 

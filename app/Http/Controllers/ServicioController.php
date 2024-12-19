@@ -25,23 +25,18 @@ class ServicioController extends Controller
         return new ServicioCollection($paginate->paginate());
     }
 
-    public function create()
-    {}
-
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'descripcion' => 'required',
+            'nombre' => 'required',
             'tipo_servicio' => 'required',
             'costo_unitario' => 'required',
             'fecha_registro' => 'required',
-            'estado' => 'required',
         ], [
-            'descripcion.required' => 'El nombre del servicio es requerido.',
+            'nombre.required' => 'El nombre del servicio es requerido.',
             'tipo_servicio.required' => 'El tipo de servicio es requerido.',
             'costo_unitario.required' => 'El costo unitario es requerido.',
-            'fecha_registro.required' => 'La fecha de registro es requerida.',
-            'estado.required' => 'El estado es requerido.',
+            'fecha_registro.required' => 'La fecha de registro es requerida.'
         ]);
 
         if ($validator->fails()) {
@@ -49,9 +44,8 @@ class ServicioController extends Controller
         }
 
         $servicio = new Servicio();
-        $servicio->descripcion = $request->input('descripcion');
+        $servicio->nombre = $request->input('nombre');
         $servicio->tipo_servicio = $request->input('tipo_servicio');
-        $servicio->estado = $request->input('estado');
         $servicio->fecha_registro = $request->input('fecha_registro');
 
         // Verificamos que el tipo de servicio sea 3 y realizamos el calculo del costo unitario
@@ -69,38 +63,19 @@ class ServicioController extends Controller
         return response()->json(["data"=>$servicio,"message"=>"Servicio Registrado correctamente"]);
     }
 
-    public function export()
-    {
-        return Excel::download(new ServicioExport(), 'servicios.xlsx');
-    }
-
-    public function exportPDF()
-    {
-        $export = new ServicioPDFExport();
-        return $export->generatePDF();
-    }
-
-    public function show(Servicio $servicio)
-    {}
-
-    public function edit(Servicio $servicio)
-    {}
-
     public function update(Request $request,$id_servicio)
     {
         // $validated = $request->validate([
         $validator = Validator::make($request->all(), [
-            'descripcion' => 'required',
+            'nombre' => 'required',
             'tipo_servicio' => 'required',
             'costo_unitario' => 'required',
             'fecha_registro' => 'required',
-            'estado' => 'required',
         ], [
-            'descripcion.required' => 'El nombre del servicio es requerido.',
+            'nombre.required' => 'El nombre del servicio es requerido.',
             'tipo_servicio.required' => 'El tipo de servicio es requerido.',
             'costo_unitario.required' => 'El costo unitario es requerido.',
             'fecha_registro.required' => 'La fecha de registro es requerida.',
-            'estado.required' => 'El estado es requerido.',
         ]);
 
         if ($validator->fails()) {
@@ -108,10 +83,9 @@ class ServicioController extends Controller
         }
 
         $servicio = Servicio::findOrFail($id_servicio);
-        $servicio->descripcion = $request->input('descripcion');
+        $servicio->nombre = $request->input('nombre');
         $servicio->costo_unitario = $request->input('costo_unitario');
         $servicio->tipo_servicio = $request->input('tipo_servicio');
-        $servicio->estado = $request->input('estado');
         $servicio->fecha_registro = $request->input('fecha_registro');
         $servicio->save();
 
@@ -121,10 +95,25 @@ class ServicioController extends Controller
     public function destroy($id_servicio)
     {
         $servicio = Servicio::find($id_servicio);
+
         if(!$servicio){
             return response()->json(['error' => 'El servicio no existe.'], 400);
         }
+
+        // Eliminamos el servicio
         $servicio->delete();
-        return response()->json(["data"=>[],"message"=>"El servicio se elimino correctamente"]);
+
+        return response()->json(["message"=>"El servicio se elimino correctamente"]);
+    }
+
+    public function export()
+    {
+        return Excel::download(new ServicioExport(), 'servicios.xlsx');
+    }
+
+    public function exportPDF()
+    {
+        $export = new ServicioPDFExport();
+        return $export->generatePDF();
     }
 }

@@ -7,11 +7,11 @@ use App\Exports\PDF\CuotaPDFExport;
 use App\Models\Cuota;
 use App\Models\Deuda;
 use App\Models\Socio;
-use App\Http\Requests\StoreCuotaRequest;
-use App\Http\Requests\UpdateCuotaRequest;
-use App\Http\Resources\CuotaCollection;
 use App\Http\Resources\DeudaAndCuotaCollection;
+use App\Models\CuotaServicios;
+use App\Models\DeudaCuota;
 use App\Models\Servicio;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
@@ -29,81 +29,110 @@ class CuotaController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'fecha_registro' => 'required',
+            'fecha_emision' => 'required',
             'fecha_vencimiento' => 'required',
-            'servicios' => 'required|array|min:1',
-            'importe' => 'required|numeric|min:0|not_in:0',
+            'servicios' => 'required|array|min:1'
         ], [
-            'fecha_registro.required' => 'La fecha de emision es requerida.',
+            'fecha_emision.required' => 'La fecha de emision es requerida.',
             'fecha_vencimiento.required' => 'La fecha de vencimiento es requerida.',
-            'servicios.required' => 'No se han seleccionado servicios.',
-            'importe.required' => 'El importe es requerido.',
-            'importe.not_in' => 'El importe no puede ser 0.',
+            'servicios.required' => 'No se han seleccionado servicios.'
         ]);
-        // fecha_registro
-        // fecha_vencimiento
-        // importe
 
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()->first()], 400);
         }
 
-        $listado = Socio::select('socios.*','puestos.id_puesto')
+        $listado = Socio::select('socios.id_socio','puestos.id_puesto','puestos.area')
+            ->join('usuarios','usuarios.id_usuario','socios.id_usuario')
             ->join('puestos','puestos.id_socio','socios.id_socio')
-            ->where('socios.estado',1)
-            ->where('puestos.estado',2)
+            ->where('usuarios.estado', '1')
+            ->where('puestos.estado', 2)
             ->get();
 
         if(count($listado) == 0){
             return response()->json(['error' => 'No se encontrarón socios con puestos.'], 400);
         }
 
-        foreach($request->input('servicios') as $value){
+        $servicios = Servicio::whereIn('id_servicio', $request->input('servicios'))->get();
 
-            $servicio = Servicio::find($value);
-
-            $cuota = new Cuota();
-            $cuota->importe = $request->input('importe');
-            $cuota->id_servicio = $value;
-            $cuota->fecha_registro = $request->input('fecha_registro');
-            $cuota->fecha_vencimiento = $request->input('fecha_vencimiento');
-            $cuota->save();
-
-            foreach($listado as $socio){
-
-                $deuda = new Deuda();
-                $deuda->id_socio = $socio->id_socio;
-                $deuda->id_cuota = $cuota->id_cuota;
-                $deuda->id_puesto = $socio->id_puesto;
-                $deuda->id_servicio = $value;
-                $deuda->fecha_registro = $request->input('fecha_registro');
-                
-                if ($servicio->tipo_servicio == 3){
-                    $montoCalculado = $servicio->costo_unitario * $socio->Puesto->area;
-                    $deuda->total_deuda = $montoCalculado;
-                } else {
-                    $deuda->total_deuda = $request->input('importe');
-                }
-
-                $deuda->save();
-            }
-
+        if(count($servicios) == 0){
+            return response()->json(['error' => 'No se encontraron los servicios seleccionados.'], 400);
         }
 
-        return response()->json(["data"=>[],"message"=>"Cuota Registrada correctamente"]);
+        $importe_cuota = 0;
+
+        $cuota = new Cuota();
+        $cuota->fecha_emision = $request->input('fecha_emision');
+        $cuota->fecha_vencimiento = $request->input('fecha_vencimiento');
+
+        // Se calcula el importe de la cuota
+        foreach($servicios as $servicio){
+
+            $costo_servicio = 0;
+
+            // Si el tipo de servicio es 3, se calcula el costo del servicio por el area del puesto
+            if ($servicio->tipo_servicio == 3){
+
+                foreach($listado as $socio){
+                    $costo_servicio += $servicio->costo_unitario * $socio->area;
+                }
+
+            } else {
+                $costo_servicio = $servicio->costo_unitario;
+            }
+
+            // Se suma el costo del servicio al importe de la cuota
+            $importe_cuota += $costo_servicio;
+        }
+
+        $cuota->importe = $importe_cuota;
+        $cuota->save();
+
+        // Se registran los servicios de la cuota
+        foreach ($request->input('servicios') as $value) {
+
+            // Se obtiene el servicio
+            $servicio = Servicio::find($value);
+
+            // Crear la relación entre cuota y servicio
+            $cuota_servicios = new CuotaServicios();
+            $cuota_servicios->id_cuota = $cuota->id_cuota;
+            $cuota_servicios->id_servicio = $value;
+            $cuota_servicios->save();
+
+            foreach ($listado as $socio) {
+
+                // Crear la deuda si no existe
+                $deuda = Deuda::firstOrCreate(
+                    ['id_socio' => $socio->id_socio, 'id_puesto' => $socio->id_puesto],
+                    ['total_deuda' => 0]
+                );
+
+                // Calcular el costo del servicio
+                $costo_servicio = ($servicio->tipo_servicio == 3)
+                    ? $servicio->costo_unitario * $socio->area
+                    : $servicio->costo_unitario;
+
+                // Incrementar el total de la deuda
+                $deuda->increment('total_deuda', $costo_servicio);
+
+                // Registrar la cuota de la deuda
+                $deuda_cuota = new DeudaCuota();
+                $deuda_cuota->id_deuda = $deuda->id_deuda;
+                $deuda_cuota->id_cuota_servicio = $cuota_servicios->id_cuota_servicio;
+                $deuda_cuota->monto = $costo_servicio;
+                $deuda_cuota->estado = "Pendiente";
+                $deuda_cuota->a_cuenta = 0;
+                $deuda_cuota->save();
+            }
+        }
+
+        return response()->json(["data" => $cuota , "message" => "La cuota fue registrada correctamente"]);
     }
 
     public function export()
@@ -115,76 +144,5 @@ class CuotaController extends Controller
     {
         $export = new CuotaPDFExport();
         return $export->generatePDF();
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Cuota $cuota)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Cuota $cuota)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateCuotaRequest $request, Cuota $cuota)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Cuota $cuota)
-    {
-        //
-    }
-
-    public function deudaPendientes(Request $request)
-    {
-        if(!isset($request->id_socio)){
-            return response()->json(['error' => 'No se encontro el socio.'], 400);
-        }
-        if(!isset($request->id_puesto)){
-            return response()->json(['error' => 'No se encontro el puesto.'], 400);
-        }
-
-        $paginate = Deuda::leftJoin('detalle_pagos','deudas.id_deuda','detalle_pagos.id_deuda')
-        ->leftJoin('servicios', 'deudas.id_servicio', 'servicios.id_servicio')
-        ->select(
-            'deudas.id_deuda',
-            'deudas.total_deuda as total',
-            'servicios.descripcion as servicio_descripcion',
-            DB::raw("max(year(deudas.fecha_registro)) as anio"),
-            DB::raw("max(CASE WHEN MONTH(deudas.fecha_registro) = 1 THEN 'Enero'
-                WHEN MONTH(deudas.fecha_registro) = 2 THEN 'Febrero'
-                WHEN MONTH(deudas.fecha_registro) = 3 THEN 'Marzo'
-                WHEN MONTH(deudas.fecha_registro) = 4 THEN 'Abril'
-                WHEN MONTH(deudas.fecha_registro) = 5 THEN 'Mayo'
-                WHEN MONTH(deudas.fecha_registro) = 6 THEN 'Junio'
-                WHEN MONTH(deudas.fecha_registro) = 7 THEN 'Julio'
-                WHEN MONTH(deudas.fecha_registro) = 8 THEN 'Agosto'
-                WHEN MONTH(deudas.fecha_registro) = 9 THEN 'Septiembre'
-                WHEN MONTH(deudas.fecha_registro) = 10 THEN 'Octubre'
-                WHEN MONTH(deudas.fecha_registro) = 11 THEN 'Noviembre'
-                WHEN MONTH(deudas.fecha_registro) = 12 THEN 'Diciembre'
-                ELSE '-' END) AS mes")
-        )
-        ->selectRaw('coalesce(sum(detalle_pagos.importe),0) as a_cuenta, (deudas.total_deuda - coalesce(sum(detalle_pagos.importe),0)) as deuda')
-        ->where('deudas.id_socio', $request->id_socio)
-        ->where('deudas.id_puesto', $request->id_puesto)
-        ->groupBy('deudas.id_deuda', 'deudas.total_deuda', 'servicios.descripcion')
-        ->havingRaw("deudas.total_deuda - coalesce(sum(detalle_pagos.importe),0) > 0")
-        ->paginate();
-        return $paginate;
     }
 }

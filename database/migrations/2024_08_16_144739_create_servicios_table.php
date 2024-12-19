@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('servicios', function (Blueprint $table) {
             $table->id('id_servicio');
             $table->string('nombre');
-            $table->integer('costo_unitario');
+            $table->decimal('costo_unitario', 10, 2);
             $table->integer('tipo_servicio');
             $table->dateTime('fecha_registro')->useCurrent();
         });

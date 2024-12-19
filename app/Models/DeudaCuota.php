@@ -15,18 +15,19 @@ class DeudaCuota extends Model
 
     protected $fillable = [
         'id_deuda',
-        'id_cuota',
+        'id_cuota_servicio',
+        'monto',
         'a_cuenta',
         'estado',
     ];
 
-    public function Cuota()
-    {
-        return $this->belongsTo(Cuota::class, 'id_cuota');
-    }
-
     public function Deuda()
     {
         return $this->belongsTo(Deuda::class, 'id_deuda');
+    }
+
+    public function CuotaServicio()
+    {
+        return $this->belongsTo(CuotaServicios::class, 'id_cuota_servicio');
     }
 }

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_cuota');
             $table->unsignedBigInteger('id_deuda');
             $table->unsignedBigInteger('id_puesto');
-            $table->integer('importe');
+            $table->decimal('importe', 10, 2);
 
             // Relaciones
             $table->foreign('id_pago')->references('id_pago')->on('pagos');

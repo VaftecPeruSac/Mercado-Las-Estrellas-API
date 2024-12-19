@@ -19,10 +19,9 @@ class ServicioCollection extends ResourceCollection
 
                 return [
                     'id_servicio' => $servicio->id_servicio,
-                    'descripcion' => $servicio->descripcion,
+                    'nombre' => $servicio->nombre,
                     'costo_unitario' => $servicio->costo_unitario,
                     'tipo_servicio' => $servicio->tipo_servicio,
-                    'estado' => $servicio->estado,
                     'fecha_registro' => $servicio->fecha_registro,
                 ];
             }),

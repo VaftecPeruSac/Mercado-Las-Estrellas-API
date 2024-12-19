@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_documento');
             $table->integer('numero_pago');
             $table->integer('serie');
-            $table->integer('total_pago');
+            $table->decimal('total_pago', 10, 2);
             $table->dateTime('fecha_registro')->useCurrent();
             
             // Relaciones

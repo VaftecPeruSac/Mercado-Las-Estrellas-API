@@ -14,7 +14,6 @@ class ServicioResource extends JsonResource
             'descripcion'=>$this->descripcion,
             'costo_unitario' => $this->costo_unitario, 
             'tipo_servicio' => $this->tipo_servicio, 
-            'estado' => $this->estado, 
             'fecha_registro'=>$this->fecha_registro,
         ];
     }

@@ -47,7 +47,7 @@ class InquilinoController extends Controller
         }
 
         $inquilino = new Inquilino();
-        $inquilino->nombre_completo = $request->input('nombre');
+        $inquilino->nombre = $request->input('nombre');
         $inquilino->apellido_paterno = $request->input('apellido_paterno');
         $inquilino->apellido_materno = $request->input('apellido_materno');
         $inquilino->dni = $request->input('dni');
@@ -89,7 +89,7 @@ class InquilinoController extends Controller
         }
 
         $inquilino = Inquilino::findOrFail($id_inquilino);
-        $inquilino->nombre_completo = $request->input('nombre');
+        $inquilino->nombre = $request->input('nombre');
         $inquilino->apellido_paterno = $request->input('apellido_paterno');
         $inquilino->apellido_materno = $request->input('apellido_materno');
         $inquilino->dni = $request->input('dni');
