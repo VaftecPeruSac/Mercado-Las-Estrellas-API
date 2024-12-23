@@ -25,6 +25,17 @@ class ServicioController extends Controller
         return new ServicioCollection($paginate->paginate());
     }
 
+    public function consultarImporteMultaInasistencia()
+    {
+        $servicio = Servicio::where('descripcion', 'Multa por inasistencia')->first();
+
+        if (!$servicio) {
+            return response()->json(["data" => ["importe" => 0], "message" => "Importe de multa por inasistencia"]);
+        }
+
+        return response()->json(["data" => ["importe" => $servicio->costo_unitario], "message" => "Importe de multa por inasistencia"]);
+    }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [

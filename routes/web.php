@@ -59,18 +59,18 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     // Servicios
     Route::get('servicios/exportar', [ServicioController::class, 'export']);
     Route::get('servicios/exportar-pdf', [ServicioController::class, 'exportPDF']);
+    Route::get('servicios/consultar-importe-multa-inasistencia', [ServicioController::class, 'consultarImporteMultaInasistencia']);
     Route::apiResource('servicios', ServicioController::class);
 
     // Cuotas
-    Route::get('cuotas/pendientes', [CuotaController::class, 'deudaPendientes']);
     Route::get('cuotas/exportar', [CuotaController::class, 'export']);
     Route::get('cuotas/exportar-pdf', [CuotaController::class, 'exportPDF']);
     Route::apiResource('cuotas', CuotaController::class);
-
+    
     // Deudas
+    Route::get('deudas/pendientes', [DeudaController::class, 'deudaPendientes']);
     Route::get('deudacuota/{id_puesto}', [PagoController::class,'ListaDeudaCuotas']);
-    Route::get('consultarImporteMultaInasistencia', [DeudaController::class, 'consultarImporteMultaInasistencia']);
-    Route::post('registrarMultaInasistencia', [DeudaController::class, 'registrarMultaInasistencia']);
+    Route::post('deudas/registrar-multa-inasistencia', [DeudaController::class, 'registrarMultaInasistencia']);
     Route::apiResource('deudas', DeudaController::class);
 
     // Pagos

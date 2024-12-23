@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Filters\DeudaFilter;
 use App\Models\Deuda;
-use App\Http\Requests\UpdateDeudaRequest;
 use App\Http\Resources\DeudaCollection;
+use App\Models\Cuota;
+use App\Models\CuotaServicios;
+use App\Models\DeudaCuota;
 use App\Models\Servicio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -33,12 +35,11 @@ class DeudaController extends Controller
             return response()->json(['error' => 'No se encontro el puesto.'], 400);
         }
 
-        $paginate = Deuda::leftJoin('detalle_pagos','deudas.id_deuda','detalle_pagos.id_deuda')
-        ->leftJoin('servicios', 'deudas.id_servicio', 'servicios.id_servicio')
+        $paginate = DeudaCuota::join('deudas', 'deuda_cuotas.id_deuda', 'deudas.id_deuda')
+        ->join('cuota_servicios', 'deuda_cuotas.id_cuota_servicio', 'cuota_servicios.id_cuota_servicio')
+        ->join('servicios', 'cuota_servicios.id_servicio', 'servicios.id_servicio')
         ->select(
-            'deudas.id_deuda',
-            'deudas.total_deuda as total',
-            'servicios.nombre as servicio_nombre',
+            'deuda_cuotas.id_deuda_cuota',
             DB::raw("max(year(deudas.fecha_registro)) as anio"),
             DB::raw("max(CASE WHEN MONTH(deudas.fecha_registro) = 1 THEN 'Enero'
                 WHEN MONTH(deudas.fecha_registro) = 2 THEN 'Febrero'
@@ -52,15 +53,18 @@ class DeudaController extends Controller
                 WHEN MONTH(deudas.fecha_registro) = 10 THEN 'Octubre'
                 WHEN MONTH(deudas.fecha_registro) = 11 THEN 'Noviembre'
                 WHEN MONTH(deudas.fecha_registro) = 12 THEN 'Diciembre'
-                ELSE '-' END) AS mes")
+                ELSE '-' END) AS mes"),
+            'servicios.nombre as nombre_servicio',
+            'deuda_cuotas.monto as por_pagar',
+            'deuda_cuotas.a_cuenta',
+            'deuda_cuotas.estado'
         )
-        ->selectRaw('coalesce(sum(detalle_pagos.importe),0) as a_cuenta, (deudas.total_deuda - coalesce(sum(detalle_pagos.importe),0)) as deuda')
+        ->groupBy('deuda_cuotas.id_deuda_cuota', 'servicios.nombre', 'deuda_cuotas.monto', 'deuda_cuotas.a_cuenta', 'deuda_cuotas.estado')
         ->where('deudas.id_socio', $request->id_socio)
         ->where('deudas.id_puesto', $request->id_puesto)
-        ->groupBy('deudas.id_deuda', 'deudas.total_deuda', 'servicios.nombre')
-        ->havingRaw("deudas.total_deuda - coalesce(sum(detalle_pagos.importe),0) > 0")
-        ->paginate();
-        return $paginate;
+        ->get();
+
+        return response()->json(["data" => $paginate]);
     }
 
     public function registrarMultaInasistencia(Request $request)
@@ -81,15 +85,14 @@ class DeudaController extends Controller
         }
 
         // Verificar si existe el servicio
-        $servicio = Servicio::where('descripcion','Multa por inasistencia')->first();
+        $servicio = Servicio::where('nombre','Multa por inasistencia')->first();
 
         if (!$servicio) {
             // Crear el servicio
             $servicio = new Servicio();
-            $servicio->descripcion = 'Multa por inasistencia';
+            $servicio->nombre = 'Multa por inasistencia';
             $servicio->tipo_servicio = 2;
             $servicio->costo_unitario = $request->input('importe');
-            $servicio->estado = 1;
             $servicio->fecha_registro = date('Y-m-d');
             $servicio->save();
         } else {
@@ -100,57 +103,45 @@ class DeudaController extends Controller
             }
         }
 
-        $deuda = new Deuda();
-        $deuda->id_socio = $request->input('id_socio');
-        $deuda->id_puesto = $request->input('id_puesto');
-        $deuda->id_servicio = $servicio->id_servicio;
-        $deuda->fecha_registro = date('Y-m-d');
-        $deuda->total_deuda = $servicio->costo_unitario;
-        $deuda->save();
+        $cuota = new Cuota();
+        $cuota->fecha_emision = date('Y-m-d');
+        // Establecemos la fecha de vencimiento 30 días después de la fecha de emisión
+        $cuota->fecha_vencimiento = date('Y-m-d', strtotime($cuota->fecha_emision . ' + 30 days'));
+        $cuota->importe = $request->input('importe');
+        $cuota->save();
 
-        return response()->json(["data"=>[],"message"=>"Multa por inasistencia registrada correctamente"]);
-    }
+        $cuota_servicio = new CuotaServicios();
+        $cuota_servicio->id_cuota = $cuota->id_cuota;
+        $cuota_servicio->id_servicio = $servicio->id_servicio;
+        $cuota_servicio->save();
 
-    public function consultarImporteMultaInasistencia()
-    {
-        $servicio = Servicio::where('descripcion','Multa por inasistencia')->first();
-
-        if (!$servicio) {
-            return response()->json(["data"=>["importe"=>0],"message"=>"Importe de multa por inasistencia"]);
+        // Buscamos la deuda del socio
+        $deuda = Deuda::where('id_socio', $request->input('id_socio'))
+            ->where('id_puesto', $request->input('id_puesto'))
+            ->first();
+        
+        // Si no existe la deuda, la creamos
+        if (!$deuda) {
+            $deuda = new Deuda();
+            $deuda->id_socio = $request->input('id_socio');
+            $deuda->id_puesto = $request->input('id_puesto');
+            $deuda->total_deuda = $request->input('importe');
+            $deuda->save();
+        } else {
+            // Si existe la deuda, actualizamos el total de la deuda
+            $deuda->total_deuda += $request->input('importe');
+            $deuda->save();
         }
 
-        return response()->json(["data"=>["importe"=>$servicio->costo_unitario],"message"=>"Importe de multa por inasistencia"]);
-    }
+        // Registramos la deuda de la cuota
+        $deuda_cuota = new DeudaCuota();
+        $deuda_cuota->id_deuda = $deuda->id_deuda;
+        $deuda_cuota->id_cuota_servicio = $cuota_servicio->id_cuota_servicio;
+        $deuda_cuota->monto = $request->input('importe');
+        $deuda_cuota->a_cuenta = 0;
+        $deuda_cuota->estado = "Pendiente";
+        $deuda_cuota->save();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Deuda $deuda)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Deuda $deuda)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateDeudaRequest $request, Deuda $deuda)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Deuda $deuda)
-    {
-        //
+        return response()->json(["message"=>"Multa por inasistencia registrada correctamente"]);
     }
 }
