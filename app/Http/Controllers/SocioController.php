@@ -4,13 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Exports\PDF\SociosPDFExport;
 use App\Exports\SociosExport;
-use App\Filters\SociosFilter;
 use App\Models\Socio;
 use App\Http\Resources\SocioCollection;
-use App\Http\Resources\SocioConSinPuestos;
 use App\Models\Puesto;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
@@ -41,6 +40,17 @@ class SocioController extends Controller
         }
         
         return new SocioCollection($listado->paginate($per_page));
+    }
+
+    public function seleccionarSocio()
+    {
+        $socios = Socio::join('usuarios', 'socios.id_usuario', 'usuarios.id_usuario')
+            ->where('usuarios.estado', '1')
+            ->select('socios.id_socio', 
+                    DB::raw("CONCAT(socios.nombres, ' ', socios.apellido_paterno, ' ', socios.apellido_materno) as nombre_completo"))
+            ->get();
+        
+        return response()->json(["data" => $socios]);
     }
 
     public function listarPuestos(Request $request)
@@ -95,8 +105,8 @@ class SocioController extends Controller
 
         // Registro de usuario
         $usuario = new Usuario();
-        $usuario->nombre_usuario = $request->input('nombre').' '.$request->input('apellido_paterno').' '.$request->input('apellido_materno');
         $usuario->rol = 'Socio';
+        $usuario->nombre_usuario = $request->input('nombre').' '.$request->input('apellido_paterno').' '.$request->input('apellido_materno');
 
         // La contraseña por defecto es el dni encriptado
         $contrasenia = $request->input('dni');
@@ -204,11 +214,10 @@ class SocioController extends Controller
             $puesto->update();
         }
 
-        // Eliminamos al socio y su usuario
-        $socio->delete();
-
+        // Desactivamos al usuario
         $usuario = Usuario::where('id_usuario', $socio->id_usuario)->first();
-        $usuario->delete();
+        $usuario->estado = 0;
+        $usuario->update();
 
         return response()->json(["message"=>"El socio fue eliminado correctamente"]);
     }

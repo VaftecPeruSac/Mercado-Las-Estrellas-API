@@ -28,7 +28,7 @@ class SocioCollection extends ResourceCollection
                 $deuda = $deuda_total - $pago_total;
                 return [
                     'id_socio' => $socio->id_socio,
-                    'nombre_completo' => $socio->usuario->nombre_usuario,
+                    'nombre_completo' => $socio->nombres.' '.$socio->apellido_paterno.' '.$socio->apellido_materno,
                     'nombre_socio' => $socio->nombres,
                     'apellido_paterno' => $socio->apellido_paterno,
                     'apellido_materno' => $socio->apellido_materno,
@@ -43,7 +43,7 @@ class SocioCollection extends ResourceCollection
                             'numero_puesto' => $puesto->numero_puesto,
                             'block' => $puesto->block,
                             'gironegocio' => $puesto->gironegocio,
-                            'nombre_inquilino' => $puesto->inquilino ? $puesto->inquilino->nombre.' '.$puesto->inquilino->apellido_paterno.' '.$puesto->inquilino->apellido_materno : 'No',
+                            'nombre_inquilino' => $puesto->inquilino ? $puesto->inquilino->nombre.' '.$puesto->inquilino->apellido_paterno.' '.$puesto->inquilino->apellido_materno : 'No asignado',
                         ];
                     }),
                     'estado' =>  $socio->usuario->estado,

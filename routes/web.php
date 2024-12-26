@@ -1,8 +1,8 @@
 <?php
 
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Authorization,Origin, Content-Type, X-Auth-Token, X-XSRF-TOKEN');
+// header('Access-Control-Allow-Origin: *');
+// header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
+// header('Access-Control-Allow-Headers: Authorization,Origin, Content-Type, X-Auth-Token, X-XSRF-TOKEN');
 
 use App\Http\Controllers\BlockController;
 use App\Http\Controllers\CuotaController;
@@ -31,6 +31,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::get('validaciones', [LoginController::class, 'validaciones']);
 
     // Socios
+    Route::get('socios/seleccionar', [SocioController::class, 'seleccionarSocio']);
     Route::get('socios/ver-puestos', [SocioController::class, 'listarPuestos']);
     Route::get('socios/exportar', [SocioController::class, 'export']);
     Route::get('socios/exportar-pdf', [SocioController::class, 'exportPDF']);
