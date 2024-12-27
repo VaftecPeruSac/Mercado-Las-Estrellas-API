@@ -14,7 +14,8 @@ class ServicioController extends Controller
 {
     public function index(Request $request)
     {
-        $paginate = Servicio::select('servicios.*');
+        $paginate = Servicio::select('servicios.*')->where('servicios.activo', true);
+
         if (isset($request->buscar_texto)) {
             $texto = strtr(utf8_decode($request->buscar_texto), utf8_decode('àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
             $texto = strtr(utf8_decode($texto), utf8_decode('àáâãäçèéêëìíîïññòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiin?ooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
@@ -27,7 +28,7 @@ class ServicioController extends Controller
 
     public function consultarImporteMultaInasistencia()
     {
-        $servicio = Servicio::where('descripcion', 'Multa por inasistencia')->first();
+        $servicio = Servicio::where('nombre', 'Multa por inasistencia')->first();
 
         if (!$servicio) {
             return response()->json(["data" => ["importe" => 0], "message" => "Importe de multa por inasistencia"]);
@@ -112,9 +113,10 @@ class ServicioController extends Controller
         }
 
         // Eliminamos el servicio
-        $servicio->delete();
+        $servicio->activo = false;
+        $servicio->update();
 
-        return response()->json(["message"=>"El servicio se elimino correctamente"]);
+        return response()->json(["message" => "El servicio se elimino correctamente"]);
     }
 
     public function export()

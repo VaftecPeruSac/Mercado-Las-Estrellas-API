@@ -18,6 +18,7 @@ class Servicio extends Model
         'costo_unitario',
         'tipo_servicio',
         'fecha_registro',
+        'activo'
     ];
 
     public function Cuotas()

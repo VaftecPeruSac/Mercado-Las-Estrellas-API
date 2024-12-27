@@ -20,7 +20,7 @@ class PuestosExport implements FromCollection, WithHeadings, WithStyles
             'block',
             'gironegocio',
             'inquilino' 
-        ])->get()->map(function($puesto) {
+        ])->where('activo', true)->get()->map(function($puesto) {
             return [
                 'bloque' => $puesto->block->nombre ?? '------', 
                 'puesto' => $puesto->numero_puesto ?? '------', 

@@ -14,14 +14,14 @@ class PuestosPDFExport {
       'block',
       'gironegocio',
       'inquilino' 
-    ])->get()->map(function($puesto) {
+    ])->where('activo', true)->get()->map(function($puesto) {
       return [
         'bloque' => $puesto->block->nombre ?? '------', 
         'puesto' => $puesto->numero_puesto ?? '------', 
         'area' => $puesto->area ?? '------', 
         'giro' => $puesto->gironegocio->nombre ?? '------', 
-        'socio' => $puesto->socio->usuario->nombre_usuario ?? '------', 
-        'inquilino' => $puesto->inquilino->nombre_completo ?? '------', 
+        'socio' => $puesto->socio->nombres.' '.$puesto->socio->apellido_paterno.' '.$puesto->socio->apellido_materno ?? '------', 
+        'inquilino' => $puesto->inquilino->nombre.' '.$puesto->inquilino->apellido_paterno.' '.$puesto->inquilino->apellido_maaterno ?? '------', 
         'estado' => $puesto->estado === '1' ?  'Libre' : 'Ocupado',
         'fecha_registro' => $fecha_registro ?? '------', 
       ];

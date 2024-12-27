@@ -41,7 +41,7 @@ class SociosExport implements FromCollection, WithHeadings, WithStyles
                     $puesto->block->nombre ?? '------',
                     $puesto->numero_puesto ?? '------',
                     $puesto->gironegocio->nombre ?? '------',
-                    $puesto->inquilino->nombre_completo ?? '------',
+                    $puesto->inquilino->nombre.' '.$puesto->inquilino->apellido_paterno.' '.$puesto->inquilino->apellido_materno ?? '------',
                     $socioData['fecha_registro'],
                 ]);
 

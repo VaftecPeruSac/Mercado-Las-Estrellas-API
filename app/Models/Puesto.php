@@ -21,6 +21,7 @@ class Puesto extends Model
         'area',
         'id_inquilino',
         'estado',
+        'activo',
         'fecha_registro',
     ];
 

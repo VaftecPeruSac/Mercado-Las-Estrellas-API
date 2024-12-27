@@ -9,11 +9,10 @@ class ServicioPDFExport {
 
   public function generatePDF() {
 
-    $servicios = Servicio::with([
-    ])->get()->map(function($servicio) {
+    $servicios = Servicio::where('activo', true)->get()->map(function($servicio) {
       return [
         'id' => $servicio->id_servicio ?? '------', 
-        'descripcion' => $servicio->descripcion?? '------', 
+        'nombre' => $servicio->nombre ?? '------', 
         'costo_unitario' => $servicio->costo_unitario ?? '------', 
         'tipo_servicio' => $servicio->tipo_servicio === 3 ? 'Servicio por metros cuadrados' : ($servicio->tipo_servicio === 2 ? 'Extraordinario' : 'Ordinario'),
         'fecha_registro' => $servicio->fecha_registro ?? '------', 

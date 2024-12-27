@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('area');
             $table->unsignedBigInteger('id_inquilino')->nullable();
             $table->integer('estado')->default(1); // 1: Disponible, 2: Ocupado
+            $table->boolean('activo')->default(1); // 0: Inactivo, 1: Activo
             $table->dateTime('fecha_registro')->useCurrent();
 
             // Relaciones

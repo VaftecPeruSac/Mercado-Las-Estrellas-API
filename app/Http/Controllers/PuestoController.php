@@ -15,10 +15,13 @@ class PuestoController extends Controller
     public function index(Request $request)
     {
         $per_page = 15;
+
         if (isset($request->per_page)) {
             $per_page = $request->per_page;
         }
-        $paginate = Puesto::select('puestos.*');
+
+        $paginate = Puesto::select('puestos.*')->where('puestos.activo', true);
+
         if (isset($request->id_gironegocio)) {
             $paginate->where('id_gironegocio',$request->id_gironegocio);
         }
@@ -135,7 +138,6 @@ class PuestoController extends Controller
 
     public function update(Request $request,$id_puesto)
     {
-        // $validated = $request->validate([
         $validator = Validator::make($request->all(), [
             'id_block' => 'required',
             'numero_puesto' => 'required|unique:puestos,numero_puesto',
@@ -175,9 +177,10 @@ class PuestoController extends Controller
         }
 
         // Eliminar el puesto
-        $puesto->delete();
+        $puesto->activo = 0;
+        $puesto->update();
 
-        return response()->json(["message"=>"El puesto se elimino correctamente"]);
+        return response()->json(["message" => "El puesto se elimino correctamente"]);
     }
 
     public function export()

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->decimal('costo_unitario', 10, 2);
             $table->integer('tipo_servicio');
+            $table->boolean('activo')->default(1); // 0: Inactivo, 1: Activo
             $table->dateTime('fecha_registro')->useCurrent();
         });
     }

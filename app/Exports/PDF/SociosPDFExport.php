@@ -9,7 +9,7 @@ class SociosPDFExport {
 
   public function generatePDF() {
 
-    $socios = Socio::with([])->get()->map(function ($socio) {
+    $socios = Socio::with(['usuarios'])->where('usuarios.estado', '0')->get()->map(function ($socio) {
       return [
         'nombre' => $socio->nombres.' '.$socio->apellido_paterno.' '.$socio->apellido_materno ?? '------', 
         'dni' => $socio->dni ?? '------', 
