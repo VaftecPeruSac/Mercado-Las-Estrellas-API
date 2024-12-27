@@ -16,6 +16,7 @@ return new class extends Migration
             $table->dateTime('fecha_emision');
             $table->dateTime('fecha_vencimiento');
             $table->decimal('importe', 10, 2);
+            $table->boolean('global');
         });
     }
 

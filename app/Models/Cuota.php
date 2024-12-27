@@ -17,6 +17,7 @@ class Cuota extends Model
         'importe',
         'fecha_vencimiento',
         'fecha_registro',
+        'global',
     ];
 
     public function deudas()
@@ -24,8 +25,13 @@ class Cuota extends Model
         return $this->belongsToMany(Deuda::class, 'deuda_cuotas', 'id_cuota', 'id_deuda');
     }
 
-    public function servicios()
+    public function cuotaServicios()
     {
-        return $this->belongsToMany(Servicio::class, 'cuota_servicios', 'id_servicio', 'id_cuota');
+        return $this->hasMany(CuotaServicios::class, 'id_cuota');
+    }
+
+    public function puestosCuota()
+    {
+        return $this->hasMany(PuestoCuota::class, 'id_cuota');
     }
 }

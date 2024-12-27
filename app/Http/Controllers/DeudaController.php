@@ -8,6 +8,7 @@ use App\Http\Resources\DeudaCollection;
 use App\Models\Cuota;
 use App\Models\CuotaServicios;
 use App\Models\DeudaCuota;
+use App\Models\PuestoCuota;
 use App\Models\Servicio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -108,7 +109,14 @@ class DeudaController extends Controller
         // Establecemos la fecha de vencimiento 30 días después de la fecha de emisión
         $cuota->fecha_vencimiento = date('Y-m-d', strtotime($cuota->fecha_emision . ' + 30 days'));
         $cuota->importe = $request->input('importe');
+        $cuota->global = false;
         $cuota->save();
+
+        $puesto_cuota = new PuestoCuota();
+        $puesto_cuota->id_puesto = $request->input('id_puesto');
+        $puesto_cuota->id_cuota = $cuota->id_cuota;
+        $puesto_cuota->estado = "Pendiente";
+        $puesto_cuota->save();
 
         $cuota_servicio = new CuotaServicios();
         $cuota_servicio->id_cuota = $cuota->id_cuota;

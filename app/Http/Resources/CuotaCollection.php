@@ -20,8 +20,23 @@ class CuotaCollection extends ResourceCollection
                     return [
                         'id_cuota' => $cuota->id_cuota,
                         'importe' => $cuota->importe,
+                        'fecha_emision' => $cuota->fecha_emision,
                         'fecha_vencimiento' => $cuota->fecha_vencimiento,
-                        'fecha_registro' => $cuota->fecha_registro,
+                        'global' => $cuota->global ? 'Sí' : 'No',
+                        // Si la cuota es global, no se mostrarán los puestos asignados
+                        'puestos_asignados' => $cuota->global ? null : $cuota->puestosCuota->map(function ($puesto) {
+                            return [
+                                'id_puesto' => $puesto->puesto->id_puesto,
+                                'numero' => $puesto->puesto->numero_puesto,
+                            ];
+                        }),
+                        'servicios' => $cuota->cuotaServicios->map(function ($servicio) {
+                            return [
+                                'id_servicio' => $servicio->servicio->id_servicio,
+                                'nombre' => $servicio->servicio->nombre,
+                                'costo_unitario' => $servicio->servicio->costo_unitario,
+                            ];
+                        }),
                     ];
                 }),
                 'links' => [

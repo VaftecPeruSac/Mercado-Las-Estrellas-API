@@ -4,17 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Exports\CuotaExport;
 use App\Exports\PDF\CuotaPDFExport;
+use App\Http\Resources\CuotaCollection;
 use App\Models\Cuota;
 use App\Models\Deuda;
 use App\Models\Socio;
-use App\Http\Resources\DeudaAndCuotaCollection;
 use App\Models\CuotaServicios;
 use App\Models\DeudaCuota;
+use App\Models\PuestoCuota;
 use App\Models\Servicio;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class CuotaController extends Controller
@@ -24,8 +23,8 @@ class CuotaController extends Controller
      */
     public function index()
     {
-        $paginate = Deuda::paginate();
-        return new DeudaAndCuotaCollection($paginate);
+        $paginate = Cuota::paginate();
+        return new CuotaCollection($paginate);
     }
 
     /**
@@ -69,6 +68,7 @@ class CuotaController extends Controller
         $cuota = new Cuota();
         $cuota->fecha_emision = $request->input('fecha_emision');
         $cuota->fecha_vencimiento = $request->input('fecha_vencimiento');
+        $cuota->global = true;
 
         // Se calcula el importe de la cuota
         foreach($servicios as $servicio){
@@ -130,6 +130,14 @@ class CuotaController extends Controller
                 $deuda_cuota->a_cuenta = 0;
                 $deuda_cuota->save();
             }
+        }
+
+        foreach ($listado as $socio) {
+            $puestoCuota = new PuestoCuota();
+            $puestoCuota->id_cuota = $cuota->id_cuota;
+            $puestoCuota->id_puesto = $socio->id_puesto;
+            $puestoCuota->estado = 'Pendiente';
+            $puestoCuota->save();
         }
 
         return response()->json(["data" => $cuota , "message" => "La cuota fue registrada correctamente"]);

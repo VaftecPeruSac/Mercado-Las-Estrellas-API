@@ -21,8 +21,8 @@ class Servicio extends Model
         'activo'
     ];
 
-    public function Cuotas()
+    public function cuotaServicios()
     {
-        return $this->belongsToMany(Cuota::class, 'cuota_servicios', 'id_servicio', 'id_cuota');
+        return $this->hasMany(CuotaServicios::class, 'id_servicio');
     }
 }
