@@ -165,11 +165,11 @@ class PagoController extends Controller
             // if($resto_de_deuda >= $deuda_value['importe']){
                 $detallePagos = new DetallePagos();
                 $detallePagos->id_pago = $pago->id_pago;
-                $detallePagos->id_cuota = $deuda->id_cuota;
+                // $detallePagos->id_cuota = $deuda->id_cuota;
                 $detallePagos->id_deuda = $deuda->id_deuda;
                 $detallePagos->id_puesto = $deuda->id_puesto;
                 $detallePagos->importe = $deuda_value['importe'];
-                $detallePagos->fecha_registro = null;
+                // $detallePagos->fecha_registro = null;
                 $detallePagos->save();
             // } else {
             //     $no_validos .= "no valido #".$deuda_value['id_deuda']." ".$deuda_value['importe']." ";
