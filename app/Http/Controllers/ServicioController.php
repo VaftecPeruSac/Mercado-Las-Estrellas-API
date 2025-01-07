@@ -23,7 +23,12 @@ class ServicioController extends Controller
             $paginate->whereRaw("upper(descripcion) LIKE upper( ? )", ['%'.$texto.'%']);
         }
 
-        return new ServicioCollection($paginate->paginate());
+        $per_page = 15;
+        if (isset($request->per_page)) {
+            $per_page = $request->per_page;
+        }
+
+        return new ServicioCollection($paginate->paginate($per_page));
     }
 
     public function consultarImporteMultaInasistencia()
