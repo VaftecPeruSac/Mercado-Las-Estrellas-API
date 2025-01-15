@@ -16,6 +16,7 @@ class CuotaServicios extends Model
     protected $fillable = [
         'id_cuota',
         'id_servicio',
+        'importe',
     ];
 
     public function cuota()

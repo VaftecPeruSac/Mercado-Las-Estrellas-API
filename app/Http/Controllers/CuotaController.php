@@ -10,26 +10,32 @@ use App\Models\Deuda;
 use App\Models\Socio;
 use App\Models\CuotaServicios;
 use App\Models\DeudaCuota;
+use App\Models\Puesto;
 use App\Models\PuestoCuota;
 use App\Models\Servicio;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
+use App\Util\Util;
 
 class CuotaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        $paginate = Cuota::paginate();
-        return new CuotaCollection($paginate);
+        $per_page = 15;
+        if (isset($request->per_page)) {
+            $per_page = $request->per_page;
+        }
+        $paginate = Cuota::select("*");
+        if (isset($request->anio)) {
+            $paginate->whereRaw(Util::compareDateYear('fecha_emision',$request->anio));
+        }
+        if (isset($request->mes)) {
+            $paginate->whereRaw(Util::compareDateMonth('fecha_emision',$request->mes));
+        }
+        return new CuotaCollection($paginate->paginate($per_page));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -57,7 +63,8 @@ class CuotaController extends Controller
             return response()->json(['error' => 'No se encontrarón socios con puestos.'], 400);
         }
 
-        $servicios = Servicio::whereIn('id_servicio', $request->input('servicios'))->get();
+        $servicios = Servicio::whereIn('id_servicio', $request->input('servicios'))
+            ->where('activo', '1')->get();
 
         if(count($servicios) == 0){
             return response()->json(['error' => 'No se encontraron los servicios seleccionados.'], 400);
@@ -132,12 +139,99 @@ class CuotaController extends Controller
             }
         }
 
-        foreach ($listado as $socio) {
-            $puestoCuota = new PuestoCuota();
-            $puestoCuota->id_cuota = $cuota->id_cuota;
-            $puestoCuota->id_puesto = $socio->id_puesto;
-            $puestoCuota->estado = 'Pendiente';
-            $puestoCuota->save();
+        // foreach ($listado as $socio) {
+        //     $puestoCuota = new PuestoCuota();
+        //     $puestoCuota->id_cuota = $cuota->id_cuota;
+        //     $puestoCuota->id_puesto = $socio->id_puesto;
+        //     $puestoCuota->estado = 'Pendiente';
+        //     $puestoCuota->save();
+        // }
+
+        return response()->json(["data" => $cuota , "message" => "La cuota fue registrada correctamente"]);
+    }
+
+    public function storePorPuesto(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'fecha_emision' => 'required',
+            'fecha_vencimiento' => 'required',
+            'id_puesto' => 'required',
+            'servicios' => 'required|array|min:1'
+        ], [
+            'fecha_emision.required' => 'La fecha de emision es requerida.',
+            'fecha_vencimiento.required' => 'La fecha de vencimiento es requerida.',
+            'id_puesto.required' => 'El puesto es requerido.',
+            'servicios.required' => 'No se han seleccionado servicios.'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()->first()], 400);
+        }
+
+        $puesto = Puesto::find($request->input('id_puesto'));
+        if(!$puesto){
+            return response()->json(['error' => 'No se encontro el puesto seleccionado.'], 400);
+        }
+        if($puesto->estado == '0'){
+            return response()->json(['error' => 'El puesto esta desabilitado.'], 400);
+        }
+        if(!$puesto->id_socio){
+            return response()->json(['error' => 'El puesto no esta asignado a un socio.'], 400);
+        }
+
+        $socio = Socio::find($puesto->id_socio);
+        if(!$socio){
+            return response()->json(['error' => 'No se encontro el socio seleccionado.'], 400);
+        }
+
+        $servicios = Servicio::whereIn('id_servicio', $request->input('servicios'))
+            ->where('activo', '1')->get();
+        if(count($servicios) == 0){
+            return response()->json(['error' => 'No se encontraron los servicios seleccionados.'], 400);
+        }
+
+        // Crear la cuota
+        $cuota = new Cuota();
+        $cuota->fecha_emision = $request->input('fecha_emision');
+        $cuota->fecha_vencimiento = $request->input('fecha_vencimiento');
+        $cuota->global = false;
+        $cuota->importe = 0;
+        $cuota->save();
+
+        // Crear la deuda
+        $deuda = Deuda::firstOrCreate(
+            ['id_socio' => $puesto->id_socio, 'id_puesto' => $puesto->id_puesto],
+            ['total_deuda' => 0]
+        );
+
+        // Se registran los servicios de la cuota
+        foreach ($servicios as $servicio) {
+            // Crear la relación entre cuota y servicio
+            $cuota_servicios = new CuotaServicios();
+            $cuota_servicios->id_cuota = $cuota->id_cuota;
+            $cuota_servicios->id_servicio = $servicio->id_servicio;
+            $cuota_servicios->importe = $servicio->costo_unitario;
+            $cuota_servicios->save();
+
+            // Incrementar el total de la cuota
+            $cuota->increment('importe', $servicio->costo_unitario);
+
+            // Calcular el costo del servicio
+            $costo_servicio = ($servicio->tipo_servicio == 3)
+                ? $servicio->costo_unitario * $socio->area
+                : $servicio->costo_unitario;
+
+            // Incrementar el total de la deuda
+            $deuda->increment('total_deuda', $costo_servicio);
+
+            // Registrar la cuota de la deuda
+            $deuda_cuota = new DeudaCuota();
+            $deuda_cuota->id_deuda = $deuda->id_deuda;
+            $deuda_cuota->id_cuota_servicio = $cuota_servicios->id_cuota_servicio;
+            $deuda_cuota->monto = $costo_servicio;
+            $deuda_cuota->estado = "Pendiente";
+            $deuda_cuota->a_cuenta = 0;
+            $deuda_cuota->save();
         }
 
         return response()->json(["data" => $cuota , "message" => "La cuota fue registrada correctamente"]);

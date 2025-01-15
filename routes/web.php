@@ -66,6 +66,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     // Cuotas
     Route::get('cuotas/exportar', [CuotaController::class, 'export']);
     Route::get('cuotas/exportar-pdf', [CuotaController::class, 'exportPDF']);
+    Route::post('cuotas/por-puestos', [CuotaController::class, 'storePorPuesto']);
     Route::apiResource('cuotas', CuotaController::class);
     
     // Deudas
