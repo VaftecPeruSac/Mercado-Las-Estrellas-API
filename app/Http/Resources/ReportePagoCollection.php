@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use App\Models\DetallePagos;
+use Illuminate\Support\Facades\DB;
 
 class ReportePagoCollection extends ResourceCollection
 {
@@ -26,9 +27,9 @@ class ReportePagoCollection extends ResourceCollection
                         'aporte' => $pago->total_pago,
                         'total' => $pago->total_pago,
                         'fecha' => $pago->fecha_registro,
-                        'detalle_pagos' => DetallePagos::join('deudas','detalle_pagos.id_deuda','deudas.id_deuda')
-                            ->join('servicios','deudas.id_servicio','servicios.id_servicio')
-                            ->select('servicios.descripcion','detalle_pagos.importe')->where('detalle_pagos.id_pago',$pago->id_pago)->get(),
+                        'detalle_pagos' => DetallePagos::join('servicios','detalle_pagos.id_servicio','servicios.id_servicio')
+                            ->select('detalle_pagos.importe',DB::raw("servicios.nombre as descripcion"))
+                            ->where('detalle_pagos.id_pago',$pago->id_pago)->get(),
                     ];
                 }),
                 'links' => [

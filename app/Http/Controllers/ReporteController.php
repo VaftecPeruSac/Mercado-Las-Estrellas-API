@@ -78,7 +78,16 @@ class ReporteController extends Controller
         if (isset($request->per_page)) {
             $per_page = $request->per_page;
         }
-        $paginate = Deuda::where('id_cuota', $request->id_cuota)
+        $id_cuota = 0;
+        if (isset($request->id_cuota)) {
+            $id_cuota = $request->id_cuota;
+        }
+        $paginate = Deuda::whereIn('id_deuda', function($query) use($id_cuota) {
+                $query->select('a.id_deuda')
+                ->from('deuda_cuotas as a')
+                ->join('cuota_servicios as b','a.id_cuota_servicio','b.id_cuota_servicio')
+                ->where('b.id_cuota', $id_cuota);
+            })
             ->paginate($per_page);
 
         return new ReporteCuotaPorMetroCollection($paginate);
@@ -124,12 +133,24 @@ class ReporteController extends Controller
         if (isset($request->per_page)) {
             $per_page = $request->per_page;
         }
-        $paginate = DetallePagos::select('detalle_pagos.*')
-            ->join('pagos','detalle_pagos.id_pago','pagos.id_pago')
-            ->where('detalle_pagos.id_puesto', $request->id_puesto)
-            ->paginate($per_page);
 
-        return new ReporteResumenPorPuestoCollection($paginate);
+        $paginate = DetallePagos::select(
+                'b.serie',
+                'b.numero_pago',
+                DB::raw("concat(b.serie, '-', b.numero_pago) as serie_numero"),
+                DB::raw("b.total_pago as importe_ingreso"),
+                DB::raw("sum(case when c.tipo_servicio = 1 then detalle_pagos.importe else 0 end) as importe_gastos_administrativo"),
+                DB::raw("0 as importe_multas_inasistencia"),
+                DB::raw("0 as importe_pagos_transferencia"),
+                DB::raw("sum(case when c.tipo_servicio = 2 then detalle_pagos.importe else 0 end) as importe_cuotas_extraordinarias"),
+                DB::raw("b.total_pago as importe_total")
+            )
+            ->join('pagos as b','detalle_pagos.id_pago','b.id_pago')
+            ->join('servicios as c','detalle_pagos.id_servicio','c.id_servicio')
+            ->where('detalle_pagos.id_puesto', $request->id_puesto)
+            ->groupBy('b.total_pago', 'b.serie', 'b.numero_pago');
+
+        return $paginate->paginate($per_page);
     }
 
     public function exportReporteResumenPorPuesto(Request $request)

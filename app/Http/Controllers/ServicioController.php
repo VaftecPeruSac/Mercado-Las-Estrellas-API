@@ -20,7 +20,7 @@ class ServicioController extends Controller
             $texto = strtr(utf8_decode($request->buscar_texto), utf8_decode('àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
             $texto = strtr(utf8_decode($texto), utf8_decode('àáâãäçèéêëìíîïññòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiin?ooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
             $texto = str_replace(' ', '%', $texto);
-            $paginate->whereRaw("upper(descripcion) LIKE upper( ? )", ['%'.$texto.'%']);
+            $paginate->whereRaw("upper(nombre) LIKE upper( ? )", ['%'.$texto.'%']);
         }
 
         $per_page = 15;
@@ -47,7 +47,7 @@ class ServicioController extends Controller
         $validator = Validator::make($request->all(), [
             'nombre' => 'required',
             'tipo_servicio' => 'required',
-            'costo_unitario' => 'required',
+            'costo_unitario' => 'required|numeric|min:0|not_in:0',
             'fecha_registro' => 'required',
         ], [
             'nombre.required' => 'El nombre del servicio es requerido.',
@@ -82,16 +82,18 @@ class ServicioController extends Controller
 
     public function update(Request $request,$id_servicio)
     {
-        // $validated = $request->validate([
         $validator = Validator::make($request->all(), [
             'nombre' => 'required',
             'tipo_servicio' => 'required',
-            'costo_unitario' => 'required',
+            'costo_unitario' => 'required|numeric|min:0|not_in:0',
             'fecha_registro' => 'required',
         ], [
             'nombre.required' => 'El nombre del servicio es requerido.',
             'tipo_servicio.required' => 'El tipo de servicio es requerido.',
             'costo_unitario.required' => 'El costo unitario es requerido.',
+            'costo_unitario.numeric' => 'El costo unitario debe ser numerico.',
+            'costo_unitario.not_in' => 'El costo unitario debe ser mayor a 0.',
+            'costo_unitario.min' => 'El costo unitario debe ser mayor a 0.',
             'fecha_registro.required' => 'La fecha de registro es requerida.',
         ]);
 

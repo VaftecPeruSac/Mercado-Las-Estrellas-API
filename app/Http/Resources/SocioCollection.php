@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\DB;
+use App\Models\Puesto;
 
 class SocioCollection extends ResourceCollection
 {
@@ -16,28 +17,34 @@ class SocioCollection extends ResourceCollection
     {
         return [
             'data' => $this->collection->transform(function ($socio) {
-                $query = DB::select("select sum(b.total_deuda) deuda from puestos a
-                    left join deudas b on a.id_puesto = b.id_puesto
-                    where a.id_socio = ".$socio->id_socio);
-                $deuda = collect($query)->first();
-                $deuda_total = $deuda->deuda ? $deuda->deuda : 0;
-                $query = DB::select("select sum(importe) pago from puestos a left join detalle_pagos b on a.id_puesto = b.id_puesto
-                    where a.id_socio = ".$socio->id_socio);
-                $pago = collect($query)->first();
-                $pago_total = $pago->pago ? $pago->pago : 0;
-                $deuda = $deuda_total - $pago_total;
+                $puestos = Puesto::where('id_puesto',$socio->id_puesto)->get();
+
+                $deuda = 0;
+                if($socio->id_puesto) {
+                    $query = DB::select("select sum(total_deuda) deuda
+                        from deudas where id_puesto = ".$socio->id_puesto);
+                    $deuda = collect($query)->first();
+                    $deuda_total = $deuda->deuda ? $deuda->deuda : 0;
+
+                    $query = DB::select("select sum(importe) pago from detalle_pagos
+                        where id_puesto = ".$socio->id_puesto);
+                    $pago = collect($query)->first();
+                    $pago_total = $pago->pago ? $pago->pago : 0;
+                    $deuda = $deuda_total - $pago_total;
+                }
+
                 return [
                     'id_socio' => $socio->id_socio,
-                    'nombre_completo' => $socio->nombres.' '.$socio->apellido_paterno.' '.$socio->apellido_materno,
-                    'nombre_socio' => $socio->nombres,
-                    'apellido_paterno' => $socio->apellido_paterno,
-                    'apellido_materno' => $socio->apellido_materno,
-                    'dni' => $socio->dni ? $socio->dni : 'No',
-                    'sexo' => $socio->sexo,
-                    'direccion' => $socio->direccion ? $socio->direccion : 'No',
-                    'telefono' => $socio->telefono ? $socio->telefono : 'No',
-                    'correo' => $socio->correo ? $socio->correo : 'No',
-                    'puestos' => $socio->puestos->map(function ($puesto) {
+                    'nombre_completo' => $socio->persona ? $socio->persona->nombre_completo : 'no',
+                    'nombre_socio' => $socio->persona ? $socio->persona->nombre : 'no',
+                    'apellido_paterno' => $socio->persona ? $socio->persona->apellido_paterno : 'no',
+                    'apellido_materno' => $socio->persona ? $socio->persona->apellido_materno : 'no',
+                    'dni' => $socio->persona ? $socio->persona->dni : 'No',
+                    'sexo' => $socio->persona ? $socio->persona->sexo : 'No',
+                    'direccion' => $socio->persona ? $socio->persona->direccion : 'No',
+                    'telefono' => $socio->persona ? $socio->persona->telefono : 'No',
+                    'correo' => $socio->persona ? $socio->persona->correo : 'No',
+                    'puestos' => $puestos->map(function ($puesto) {
                         return [
                             'id_puesto' => $puesto->id_puesto,
                             'numero_puesto' => $puesto->numero_puesto,
@@ -48,7 +55,7 @@ class SocioCollection extends ResourceCollection
                     }),
                     'estado' =>  $socio->usuario ? $socio->usuario->estado : '0',
                     'fecha_registro' => $socio->fecha_registro ? $socio->fecha_registro : null,
-                    'deuda' =>$deuda,
+                    'deuda' => $deuda,
                 ];
             }),
             'links' => [

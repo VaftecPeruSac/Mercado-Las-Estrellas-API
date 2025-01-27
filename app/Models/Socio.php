@@ -12,8 +12,10 @@ class Socio extends Model
     protected $table = 'socios';
     protected $primaryKey = 'id_socio';
     public $timestamps = false;
+    public $incrementing = false;
 
     protected $fillable = [
+        'id_socio',
         'id_usuario',
         'nombres',
         'apellido_paterno',
@@ -44,5 +46,10 @@ class Socio extends Model
     public function Pago()
     {
         return $this->hasOne(Pago::class, 'id_socio', 'id_socio');
+    }
+
+    public function Persona()
+    {
+        return $this->belongsTo(Persona::class, 'id_socio', 'id_persona');
     }
 }

@@ -8,11 +8,13 @@ use App\Models\Socio;
 use App\Http\Resources\SocioCollection;
 use App\Models\Puesto;
 use App\Models\Usuario;
+use App\Models\Persona;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
+use Carbon\Carbon;
 
 class SocioController extends Controller
 {
@@ -23,31 +25,34 @@ class SocioController extends Controller
             $per_page = $request->per_page;
         }
 
-        $listado = Socio::select('socios.*')
-            ->join('usuarios','socios.id_usuario','usuarios.id_usuario')
-            ->where('usuarios.estado', '1');
+        $listado = Socio::select('socios.*','d.numero_puesto','d.id_puesto')
+            ->join('usuarios as b','socios.id_socio','b.id_usuario')
+            ->join('personas as c','socios.id_socio','c.id_persona')
+            ->leftJoin('puestos as d','socios.id_socio','d.id_socio')
+            ->where('b.estado', '1');
 
         if (isset($request->nombre_socio)) {
             $texto = strtr(utf8_decode($request->nombre_socio), utf8_decode('àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
             $texto = strtr(utf8_decode($texto), utf8_decode('àáâãäçèéêëìíîïññòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiin?ooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
             $texto = str_replace(' ', '%', $texto);
-            $listado->whereRaw("upper(concat(nombres, ' ', apellido_paterno, ' ', apellido_materno)) LIKE upper( ? )", ['%'.$texto.'%']);
+            $listado->whereRaw("upper(concat(c.nombre, ' ', c.apellido_paterno, ' ', c.apellido_materno)) LIKE upper( ? )", ['%'.$texto.'%']);
         }
 
         if (isset($request->numero_puesto)) {
-            $listado->join('puestos','socios.id_socio','puestos.id_socio')
-                    ->whereRaw("upper(numero_puesto) LIKE upper( ? )", ['%'.$request->numero_puesto.'%']);
+            $listado->whereRaw("upper(d.numero_puesto) LIKE upper( ? )", ['%'.$request->numero_puesto.'%']);
         }
-        
+
+        $listado->orderBy('numero_puesto', 'asc');
+
         return new SocioCollection($listado->paginate($per_page));
     }
 
     public function seleccionarSocio()
     {
-        $socios = Socio::join('usuarios', 'socios.id_usuario', 'usuarios.id_usuario')
+        $socios = Socio::join('usuarios', 'socios.id_socio', 'usuarios.id_usuario')
+            ->join('personas as c','socios.id_socio','c.id_persona')
             ->where('usuarios.estado', '1')
-            ->select('socios.id_socio', 
-                    DB::raw("CONCAT(socios.nombres, ' ', socios.apellido_paterno, ' ', socios.apellido_materno) as nombre_completo"))
+            ->select('socios.id_socio', 'c.nombre_completo')
             ->get();
         
         return response()->json(["data" => $socios]);
@@ -103,10 +108,35 @@ class SocioController extends Controller
             return response()->json(["error" => $validator->errors()->first()], 400);
         }
 
+        $persona = Persona::where('dni', $request->input('dni'))->first();
+        if ($persona) {
+            return response()->json(["error" => "El dni ya esta registrado. ".$persona->nombre_completo], 400);
+        }
+
+        $nombre_completo = $request->input('nombre').' '.$request->input('apellido_paterno').' '.$request->input('apellido_materno');
+        // Registro de Persona
+        $persona = new Persona();
+        // $persona->id_socio = $usuario->id_usuario;
+        // $persona->id_usuario = $usuario->id_usuario;
+        $persona->nombre = $request->input('nombre');
+        $persona->apellido_paterno = $request->input('apellido_paterno');
+        $persona->apellido_materno = $request->input('apellido_materno');
+        $persona->dni = $request->input('dni');
+        $persona->correo = $request->input('correo');
+        $persona->telefono = $request->input('telefono');
+        $persona->direccion = $request->input('direccion');
+        $persona->sexo = $request->input('sexo');
+        $persona->estado = $request->input('estado');
+        // $persona->fecha_registro = Carbon::now();
+        $persona->fecha_registro = $request->input('fecha_registro');
+        $persona->nombre_completo = $nombre_completo;
+        $persona->save();
+
         // Registro de usuario
         $usuario = new Usuario();
+        $usuario->id_usuario = $persona->id_persona;
         $usuario->rol = 'Socio';
-        $usuario->nombre_usuario = $request->input('nombre').' '.$request->input('apellido_paterno').' '.$request->input('apellido_materno');
+        $usuario->nombre_usuario = $nombre_completo;
 
         // La contraseña por defecto es el dni encriptado
         $contrasenia = $request->input('dni');
@@ -118,7 +148,8 @@ class SocioController extends Controller
 
         // Registro de socio
         $socio = new Socio();
-        $socio->id_usuario = $usuario->id_usuario;
+        $socio->id_socio = $persona->id_persona;
+        $socio->id_usuario = $persona->id_persona;
         $socio->nombres = $request->input('nombre');
         $socio->apellido_paterno = $request->input('apellido_paterno');
         $socio->apellido_materno = $request->input('apellido_materno');
@@ -174,6 +205,29 @@ class SocioController extends Controller
             return response()->json(["error" => $validator->errors()->first()], 400);
         }
 
+        $persona = Persona::where('dni', $request->input('dni'))
+            ->where('id_persona', '!=', $id_socio)->first();
+        if ($persona) {
+            return response()->json(["error" => "El dni ya esta registrado. ".$persona->nombre_completo], 400);
+        }
+
+        $nombre_completo = $request->input('nombre').' '.$request->input('apellido_paterno').' '.$request->input('apellido_materno');
+        // Actualizar de Persona
+        $persona = Persona::find($id_socio);
+        $persona->nombre = $request->input('nombre');
+        $persona->apellido_paterno = $request->input('apellido_paterno');
+        $persona->apellido_materno = $request->input('apellido_materno');
+        $persona->dni = $request->input('dni');
+        $persona->correo = $request->input('correo');
+        $persona->telefono = $request->input('telefono');
+        $persona->direccion = $request->input('direccion');
+        $persona->sexo = $request->input('sexo');
+        $persona->estado = $request->input('estado');
+        // $persona->fecha_registro = Carbon::now();
+        $persona->fecha_registro = $request->input('fecha_registro');
+        $persona->nombre_completo = $nombre_completo;
+        $persona->update();
+
         // Actualizar datos del socio
         $socio = Socio::where('id_socio', $id_socio)->first();
         $socio->nombres = $request->input('nombre');
@@ -189,7 +243,7 @@ class SocioController extends Controller
 
         // Actualizar datos de usuario
         $usuario = Usuario::where('id_usuario', $socio->id_usuario)->first();
-        $usuario->nombre_usuario = $request->input('nombre').' '.$request->input('apellido_paterno').' '.$request->input('apellido_materno');
+        $usuario->nombre_usuario = $nombre_completo;
         $usuario->estado = $request->input('estado');
         $usuario->update();
 

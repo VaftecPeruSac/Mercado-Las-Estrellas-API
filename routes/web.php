@@ -17,6 +17,7 @@ use App\Http\Controllers\ServicioController;
 use App\Http\Controllers\SocioController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\SetupController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -78,6 +79,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     // Pagos
     Route::get('pagos/exportar', [PagoController::class, 'export']);
     Route::get('pagos/exportar-pdf', [PagoController::class, 'exportPDF']);
+    Route::post('pagos/por-bancos', [PagoController::class, 'storePagoPorBanco']);
     Route::apiResource('pagos', PagoController::class);
 
     // Detalle de pagos
@@ -114,6 +116,11 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     // Dashboard
     Route::get('reportes/dashboard', [ReporteController::class, 'dashboard']);
 
+    // Setup
+    Route::get('setup/anios', [SetupController::class, 'indexAnio']);
+    Route::get('setup/meses', [SetupController::class, 'indexMes']);
+    Route::get('setup/bancos', [SetupController::class, 'indexBanco']);
+    Route::get('setup/banco-cuentas', [SetupController::class, 'indexBancoCuenta']);
 });
 
 Route::get('/csrf-token', function () {

@@ -16,7 +16,9 @@ use App\Models\Servicio;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use App\Util\Util;
+use Carbon\Carbon;
 
 class CuotaController extends Controller
 {
@@ -70,6 +72,8 @@ class CuotaController extends Controller
             return response()->json(['error' => 'No se encontraron los servicios seleccionados.'], 400);
         }
 
+        DB::beginTransaction();
+
         $importe_cuota = 0;
 
         $cuota = new Cuota();
@@ -111,14 +115,22 @@ class CuotaController extends Controller
             $cuota_servicios->id_cuota = $cuota->id_cuota;
             $cuota_servicios->id_servicio = $value;
             $cuota_servicios->save();
+        }
 
-            foreach ($listado as $socio) {
+        // Se registran las deudas
+        foreach ($listado as $socio) {
 
-                // Crear la deuda si no existe
-                $deuda = Deuda::firstOrCreate(
-                    ['id_socio' => $socio->id_socio, 'id_puesto' => $socio->id_puesto],
-                    ['total_deuda' => 0]
-                );
+            // Crear la deuda si no existe
+            $deuda = new Deuda();
+            $deuda->id_socio = $socio->id_socio;
+            $deuda->id_puesto = $socio->id_puesto;
+            $deuda->total_deuda = 0;
+            $deuda->fecha_registro = Carbon::now();
+            $deuda->save();
+
+            $cuota_servicios = CuotaServicios::where('id_cuota', $cuota->id_cuota)->get();
+            foreach ($cuota_servicios as $cuota_servicio) {
+                $servicio = Servicio::find($cuota_servicio->id_servicio);
 
                 // Calcular el costo del servicio
                 $costo_servicio = ($servicio->tipo_servicio == 3)
@@ -131,7 +143,7 @@ class CuotaController extends Controller
                 // Registrar la cuota de la deuda
                 $deuda_cuota = new DeudaCuota();
                 $deuda_cuota->id_deuda = $deuda->id_deuda;
-                $deuda_cuota->id_cuota_servicio = $cuota_servicios->id_cuota_servicio;
+                $deuda_cuota->id_cuota_servicio = $cuota_servicio->id_cuota_servicio;
                 $deuda_cuota->monto = $costo_servicio;
                 $deuda_cuota->estado = "Pendiente";
                 $deuda_cuota->a_cuenta = 0;
@@ -139,13 +151,7 @@ class CuotaController extends Controller
             }
         }
 
-        // foreach ($listado as $socio) {
-        //     $puestoCuota = new PuestoCuota();
-        //     $puestoCuota->id_cuota = $cuota->id_cuota;
-        //     $puestoCuota->id_puesto = $socio->id_puesto;
-        //     $puestoCuota->estado = 'Pendiente';
-        //     $puestoCuota->save();
-        // }
+        DB::commit();
 
         return response()->json(["data" => $cuota , "message" => "La cuota fue registrada correctamente"]);
     }
@@ -199,10 +205,12 @@ class CuotaController extends Controller
         $cuota->save();
 
         // Crear la deuda
-        $deuda = Deuda::firstOrCreate(
-            ['id_socio' => $puesto->id_socio, 'id_puesto' => $puesto->id_puesto],
-            ['total_deuda' => 0]
-        );
+        $deuda = new Deuda();
+        $deuda->id_socio = $puesto->id_socio;
+        $deuda->id_puesto = $puesto->id_puesto;
+        $deuda->total_deuda = 0;
+        $deuda->fecha_registro = Carbon::now();
+        $deuda->save();
 
         // Se registran los servicios de la cuota
         foreach ($servicios as $servicio) {

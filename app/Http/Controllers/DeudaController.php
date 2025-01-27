@@ -36,64 +36,23 @@ class DeudaController extends Controller
             return response()->json(['error' => 'No se encontro el puesto.'], 400);
         }
 
-        // $paginate = DeudaCuota::join('deudas', 'deuda_cuotas.id_deuda', 'deudas.id_deuda')
-        // ->join('cuota_servicios', 'deuda_cuotas.id_cuota_servicio', 'cuota_servicios.id_cuota_servicio')
-        // ->join('servicios', 'cuota_servicios.id_servicio', 'servicios.id_servicio')
-        // ->select(
-        //     'deuda_cuotas.id_deuda_cuota',
-        //     DB::raw("max(year(deudas.fecha_registro)) as anio"),
-        //     DB::raw("max(CASE WHEN MONTH(deudas.fecha_registro) = 1 THEN 'Enero'
-        //         WHEN MONTH(deudas.fecha_registro) = 2 THEN 'Febrero'
-        //         WHEN MONTH(deudas.fecha_registro) = 3 THEN 'Marzo'
-        //         WHEN MONTH(deudas.fecha_registro) = 4 THEN 'Abril'
-        //         WHEN MONTH(deudas.fecha_registro) = 5 THEN 'Mayo'
-        //         WHEN MONTH(deudas.fecha_registro) = 6 THEN 'Junio'
-        //         WHEN MONTH(deudas.fecha_registro) = 7 THEN 'Julio'
-        //         WHEN MONTH(deudas.fecha_registro) = 8 THEN 'Agosto'
-        //         WHEN MONTH(deudas.fecha_registro) = 9 THEN 'Septiembre'
-        //         WHEN MONTH(deudas.fecha_registro) = 10 THEN 'Octubre'
-        //         WHEN MONTH(deudas.fecha_registro) = 11 THEN 'Noviembre'
-        //         WHEN MONTH(deudas.fecha_registro) = 12 THEN 'Diciembre'
-        //         ELSE '-' END) AS mes"),
-        //     'servicios.nombre as nombre_servicio',
-        //     'deuda_cuotas.monto as por_pagar',
-        //     'deuda_cuotas.a_cuenta',
-        //     'deuda_cuotas.estado'
-        // )
-        // ->groupBy('deuda_cuotas.id_deuda_cuota', 'servicios.nombre', 'deuda_cuotas.monto', 'deuda_cuotas.a_cuenta', 'deuda_cuotas.estado')
-        // ->where('deudas.id_socio', $request->id_socio)
-        // ->where('deudas.id_puesto', $request->id_puesto)
-        // ->get();
         $paginate = DeudaCuota::join('deudas', 'deuda_cuotas.id_deuda', 'deudas.id_deuda')
         ->join('cuota_servicios', 'deuda_cuotas.id_cuota_servicio', 'cuota_servicios.id_cuota_servicio')
         ->join('servicios', 'cuota_servicios.id_servicio', 'servicios.id_servicio')
-        ->leftJoin('detalle_pagos', 'detalle_pagos.id_cuota', DB::raw(" cuota_servicios.id_cuota and detalle_pagos.id_deuda = deudas.id_deuda and detalle_pagos.id_servicio = cuota_servicios.id_servicio"))
+        ->leftJoin('detalle_pagos', 'detalle_pagos.id_deuda', DB::raw(" deuda_cuotas.id_deuda and detalle_pagos.id_servicio = cuota_servicios.id_servicio"))
         ->select(
-            // 'deuda_cuotas.id_deuda_cuota',
+            'deuda_cuotas.id_deuda_cuota',
             'deuda_cuotas.id_deuda',
-            DB::raw("max(year(deudas.fecha_registro)) as anio"),
-            DB::raw("max(CASE WHEN MONTH(deudas.fecha_registro) = 1 THEN 'Enero'
-                WHEN MONTH(deudas.fecha_registro) = 2 THEN 'Febrero'
-                WHEN MONTH(deudas.fecha_registro) = 3 THEN 'Marzo'
-                WHEN MONTH(deudas.fecha_registro) = 4 THEN 'Abril'
-                WHEN MONTH(deudas.fecha_registro) = 5 THEN 'Mayo'
-                WHEN MONTH(deudas.fecha_registro) = 6 THEN 'Junio'
-                WHEN MONTH(deudas.fecha_registro) = 7 THEN 'Julio'
-                WHEN MONTH(deudas.fecha_registro) = 8 THEN 'Agosto'
-                WHEN MONTH(deudas.fecha_registro) = 9 THEN 'Septiembre'
-                WHEN MONTH(deudas.fecha_registro) = 10 THEN 'Octubre'
-                WHEN MONTH(deudas.fecha_registro) = 11 THEN 'Noviembre'
-                WHEN MONTH(deudas.fecha_registro) = 12 THEN 'Diciembre'
-                ELSE '-' END) AS mes"),
             'servicios.nombre as nombre_servicio',
-            // 'deuda_cuotas.monto as por_pagar',
-            DB::raw("sum(deuda_cuotas.monto) as por_pagar"),
-            DB::raw('sum(deuda_cuotas.a_cuenta) as a_cuenta'),
-            'deuda_cuotas.estado'
+            DB::raw("max(year(deudas.fecha_registro)) as anio"),
+            DB::raw("max((select nombre from setup_mes where setup_mes.id_mes = MONTH(deudas.fecha_registro))) AS mes"),
+            DB::raw("max(deuda_cuotas.monto) as total"),
+            DB::raw("max(deuda_cuotas.monto) - sum(coalesce(detalle_pagos.importe,0)) as por_pagar"),
+            DB::raw('coalesce(sum(detalle_pagos.importe),0) as a_cuenta')
         )
-        ->groupBy('deuda_cuotas.id_deuda', 'servicios.nombre', 'deuda_cuotas.monto', 'deuda_cuotas.a_cuenta', 'deuda_cuotas.estado')
-        ->where('deudas.id_socio', $request->id_socio)
         ->where('deudas.id_puesto', $request->id_puesto)
+        ->groupBy('deuda_cuotas.id_deuda_cuota', 'deuda_cuotas.id_deuda', 'servicios.nombre')
+        ->havingRaw("(max(deuda_cuotas.monto) - sum(coalesce(detalle_pagos.importe,0))) > 0")
         ->get();
 
         return response()->json(["data" => $paginate]);

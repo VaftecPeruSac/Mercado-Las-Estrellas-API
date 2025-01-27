@@ -19,7 +19,8 @@ class DetallePagos extends Model
         'id_deuda',
         'id_puesto',
         'importe',
-        'id_servicio'
+        'id_servicio',
+        'id_deuda_cuota'
     ];
 
     public function Pago()
