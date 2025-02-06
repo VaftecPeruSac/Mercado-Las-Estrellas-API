@@ -23,7 +23,7 @@ class PuestoCollection extends ResourceCollection
                     'area' => $puesto->area,
                     'estado' => $puesto->estado,
                     'fecha_registro' => $puesto->fecha_registro,
-                    'socio' => $puesto->socio ? $puesto->socio->nombres.' '.$puesto->socio->apellido_paterno.' '.$puesto->socio->apellido_materno : 'No asignado',
+                    'socio' => $puesto->socio && $puesto->socio->persona ? $puesto->socio->persona->nombre_completo : 'No asignado',
                     'giro_negocio' => $puesto->gironegocio ? $puesto->gironegocio : 'no',
                     'block' => $puesto->block ? $puesto->block : 'no',
                     'inquilino' => $puesto->inquilino ? $puesto->inquilino : 'No asignado',

@@ -15,20 +15,22 @@ class ReporteCuotasMetradoPDFExport {
     $fecha_emision = $cuota->fecha_registro;
     $fecha_vencimiento = $cuota->fecha_vencimiento;
 
-    $deudas = Deuda::with([
-      'persona',
-      'puesto',
-    ])
-    ->where('id_cuota', $id_cuota)
+    $deudas = Deuda::whereExists(function ($query) use ($id_cuota) {
+      $query->select("deuda_cuotas.id_deuda")
+        ->from('deuda_cuotas')
+        ->join('cuota_servicios','deuda_cuotas.id_cuota_servicio','cuota_servicios.id_cuota_servicio')
+        ->whereRaw('deudas.id_deuda = deuda_cuotas.id_deuda')
+        ->where('cuota_servicios.id_cuota', $id_cuota);
+    })
     ->get()
-    ->map(function ($deuda) {
+    ->map(function ($deuda) use ($id_cuota) {
 
       $importeSuma = DetallePagos::where('id_deuda',$deuda->id_deuda)->sum('importe');
       $importe_pagado = $importeSuma ? $importeSuma : 0;
 
       return [
-        'id_cuota' => $deuda->id_cuota,
-        'nombre_completo' => $deuda->persona ? $deuda->persona->nombre_completo : '',
+        'id_cuota' => $id_cuota,
+        'nombre_completo' => $deuda->socio && $deuda->socio->persona ? $deuda->socio->persona->nombre_completo : '',
         'numero_puesto' => $deuda->puesto ? $deuda->puesto->numero_puesto : '',
         'area' => $deuda->puesto ? $deuda->puesto->area : '',
         'total' => $deuda->total_deuda,

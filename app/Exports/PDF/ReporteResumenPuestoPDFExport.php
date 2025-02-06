@@ -11,11 +11,11 @@ class ReporteResumenPuestoPDFExport {
   public function generatePDF($id_puesto) {
 
     $puesto = Puesto::find($id_puesto);
-    $nombre_socio = $puesto->socio->usuario->nombre_usuario;
-    $nombre_bloque = $puesto->block->nombre;
+    $nombre_socio = $puesto->socio->persona->nombre_completo;
+    $nombre_bloque = $puesto->block ? $puesto->block->nombre : '-';
     $numero_puesto = $puesto->numero_puesto;
     $area = $puesto->area;
-    $giro_negocio = $puesto->gironegocio->nombre;
+    $giro_negocio = $puesto->gironegocio ? $puesto->gironegocio->nombre : '-';
 
     $pagos = DetallePagos::with(['pago'])
     ->where('id_puesto', $id_puesto)
