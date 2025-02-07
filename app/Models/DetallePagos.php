@@ -42,4 +42,9 @@ class DetallePagos extends Model
     {
         return $this->belongsTo(Puesto::class,'id_puesto');
     }
+
+    public function Servicio()
+    {
+        return $this->belongsTo(Servicio::class,'id_servicio');
+    }
 }
