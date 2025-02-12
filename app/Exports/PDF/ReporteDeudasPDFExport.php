@@ -40,18 +40,26 @@ class ReporteDeudasPDFExport {
 
                 $importeSuma = DetallePagos::where('id_deuda',$deuda->id_deuda)->sum('importe');
                 $importe_pagado = $importeSuma ?? 0;
-                $importe_por_pagar = $deuda->total_deuda;
+                $importe_por_pagar = $deuda->total_deuda - $importe_pagado;
 
                 return [
                     'anio' => $anio,
                     'mes' => $mes,
                     'servicio_descripcion' => $servicio_nombres,
-                    'total' => $deuda->total_deuda ?? 0,
-                    'importe_pagado' => $importe_pagado ?? 0,
-                    'importe_por_pagar' => $importe_por_pagar ?? 0,
+                    'total' => number_format($deuda->total_deuda, 2, '.', ''),
+                    'importe_pagado' => number_format($importe_pagado, 2, '.', ''),
+                    'importe_por_pagar' => number_format($importe_por_pagar, 2, '.', ''),
                 ];
 
             });
+
+        $deudasArray = json_decode(json_encode($deudas), true);
+        $total = array_sum(array_column($deudasArray, 'total'));
+        $total = number_format($total, 2, '.', '');
+        $importe_pagado = array_sum(array_column($deudasArray, 'importe_pagado'));
+        $total_importe_pagado = number_format($importe_pagado, 2, '.', '');
+        $importe_por_pagar = array_sum(array_column($deudasArray, 'importe_por_pagar'));
+        $total_importe_por_pagar = number_format($importe_por_pagar, 2, '.', '');
 
         $pdf = app(PDF::class)->loadView('exports.reporte_deudas', [
             'nombre_socio' => $nombre_socio,
@@ -60,6 +68,9 @@ class ReporteDeudasPDFExport {
             'area' => $area,
             'giro_negocio' => $giro_negocio,
             'deudas' => $deudas,
+            'total' => $total,
+            'total_importe_pagado' => $total_importe_pagado,
+            'total_importe_por_pagar' => $total_importe_por_pagar,
         ]);
 
         return $pdf->download('reporte_deudas.pdf');

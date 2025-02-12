@@ -25,12 +25,21 @@ class ReportePagosPDFExport {
                     'detalle_pagos' => $pago->detallePagos->map(function ($detalle) {
                             return $detalle->servicio->nombre . ': ' . $detalle->importe;
                         })->join('\n'), // Une los detalles en una sola cadena
+                    'detalles' => $pago->detallePagos->map(function ($detalle) {
+                            return [
+                                'servicio_nombre' => $detalle->servicio->nombre,
+                                'importe' => $detalle->importe,
+                            ];
+                        }),
                 ];
             });
 
+        $total = Pago::where('id_socio', $id_socio)->sum('total_pago');
+
         $pdf = app(PDF::class)->loadView('exports.reporte_pagos', [
             'nombre_socio' => $nombre_socio,
-            'pagos' => $pagos, 
+            'pagos' => $pagos,
+            'total' => $total,
         ]);
 
         return $pdf->download('reporte_pagos.pdf');

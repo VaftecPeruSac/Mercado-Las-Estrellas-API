@@ -35,7 +35,7 @@ class SocioController extends Controller
             $texto = strtr(utf8_decode($request->nombre_socio), utf8_decode('àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
             $texto = strtr(utf8_decode($texto), utf8_decode('àáâãäçèéêëìíîïññòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiin?ooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
             $texto = str_replace(' ', '%', $texto);
-            $listado->whereRaw("upper(concat(c.nombre, ' ', c.apellido_paterno, ' ', c.apellido_materno)) LIKE upper( ? )", ['%'.$texto.'%']);
+            $listado->whereRaw("upper(concat(c.nombre_completo)) LIKE upper( ? )", ['%'.$texto.'%']);
         }
 
         if (isset($request->numero_puesto)) {

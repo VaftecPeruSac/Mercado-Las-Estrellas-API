@@ -32,6 +32,8 @@
       text-align: center;
       margin-top: 20px;
     }
+
+    .right { text-align: right; }
   </style>
 </head>
 <body>
@@ -73,13 +75,22 @@
           <td>{{ $deuda['id_cuota'] }}</td>
           <td>{{ $deuda['anio'] }}</td>
           <td>{{ $deuda['servicio_descripcion'] }}</td>
-          <td>{{ $deuda['total_deuda'] }}</td>
-          <td>{{ $deuda['importe_pagado'] }}</td>
-          <td>{{ $deuda['importe_por_pagar'] }}</td>
+          <td class="right">{{ $deuda['total_deuda'] }}</td>
+          <td class="right">{{ $deuda['importe_pagado'] }}</td>
+          <td class="right">{{ $deuda['importe_por_pagar'] }}</td>
           <td>{{ $deuda['fecha_registro'] }}</td>
         </tr>
       @endforeach
     </tbody>
+    <tfoot>
+      <tr>
+        <th colspan="3">Total(S/.)</th>
+        <th class="right">{{ $total }}</th>
+        <th class="right">{{ $total_importe_pagado }}</th>
+        <th class="right">{{ $total_importe_por_pagar }}</th>
+        <th></th>
+      </tr>
+    </tfoot>
   </table>
 </body>
 </html>

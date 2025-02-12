@@ -32,6 +32,8 @@
       text-align: center;
       margin-top: 20px;
     }
+
+    .right { text-align: right; }
   </style>
 </head>
 <body>
@@ -70,16 +72,27 @@
     <tbody>
       @foreach($pagos as $pago)
         <tr>
-          <td>{{ $pago['numero_pago'] }}</td>
-          <td>{{ $pago['importe_ingreso'] }}</td>
-          <td>{{ $pago['importe_gastos_administrativo'] }}</td>
-          <td>{{ $pago['importe_multas_inasistencia'] }}</td>
-          <td>{{ $pago['importe_pagos_transferencia'] }}</td>
-          <td>{{ $pago['importe_cuotas_extraordinarias'] }}</td>
-          <td>{{ $pago['importe_total'] }}</td>
+          <td class="right">{{ $pago['numero_pago'] }}</td>
+          <td class="right">{{ $pago['importe_ingreso'] }}</td>
+          <td class="right">{{ $pago['importe_gastos_administrativo'] }}</td>
+          <td class="right">{{ $pago['importe_multas_inasistencia'] }}</td>
+          <td class="right">{{ $pago['importe_pagos_transferencia'] }}</td>
+          <td class="right">{{ $pago['importe_cuotas_extraordinarias'] }}</td>
+          <td class="right">{{ $pago['importe_total'] }}</td>
         </tr>
       @endforeach
     </tbody>
+    <tfoot>
+      <tr>
+        <th>Total(S/.)</th>
+        <th class="right">{{ $total_importe_ingreso }}</th>
+        <th class="right">{{ $total_importe_gastos_administrativo }}</th>
+        <th class="right">{{ $total_importe_multas_inasistencia }}</th>
+        <th class="right">{{ $total_importe_pagos_transferencia }}</th>
+        <th class="right">{{ $total_importe_cuotas_extraordinarias }}</th>
+        <th class="right">{{ $total_importe_total }}</th>
+      </tr>
+    </tfoot>
   </table>
 </body>
 </html>

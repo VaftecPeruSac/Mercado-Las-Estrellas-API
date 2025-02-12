@@ -32,6 +32,8 @@
       text-align: center;
       margin-top: 20px;
     }
+
+    .right { text-align: right; }
   </style>
 </head>
 <body>
@@ -50,21 +52,39 @@
         <th>Fecha de Pago</th>
         <th>Aporte(S/.)</th>
         <th>Total(S/.)</th>
-        <th>Detalle del Pago</th>
+        <th colspan="2">Detalle del Pago</th>
       </tr>
     </thead>
     <tbody>
       @foreach($pagos as $pago)
         <tr>
-          <td>{{ $pago['numero'] }}</td>
-          <td>{{ $pago['serie_numero'] }}</td>
-          <td>{{ $pago['fecha'] }}</td>
-          <td>{{ $pago['aporte'] }}</td>
-          <td>{{ $pago['total'] }}</td>
-          <td>{{ $pago['detalle_pagos'] }}</td>
+          <td rowspan="{{ count($pago['detalles']) }}">{{ $pago['numero'] }}</td>
+          <td rowspan="{{ count($pago['detalles']) }}">{{ $pago['serie_numero'] }}</td>
+          <td rowspan="{{ count($pago['detalles']) }}">{{ $pago['fecha'] }}</td>
+          <td rowspan="{{ count($pago['detalles']) }}" class="right">{{ $pago['aporte'] }}</td>
+          <td rowspan="{{ count($pago['detalles']) }}" class="right">{{ $pago['total'] }}</td>
+          <td>{{ $pago['detalles'][0]['servicio_nombre'] }}</td>
+          <td class="right">{{ $pago['detalles'][0]['importe'] }}</td>
         </tr>
+        @foreach($pago['detalles'] as $key => $detalle)
+          @if ($key != 0)
+            <tr>
+              <td>{{ $detalle['servicio_nombre'] }}</td>
+              <td class="right">{{ $detalle['importe'] }}</td>
+            </tr>
+          @endif
+        @endforeach
       @endforeach
     </tbody>
+    <tfoot>
+      <tr>
+        <th colspan="3">Total(S/.)</th>
+        <th class="right">{{ $total }}</th>
+        <th class="right">{{ $total }}</th>
+        <th></th>
+        <th class="right">{{ $total }}</th>
+      </tr>
+    </tfoot>
   </table>
 </body>
 </html>
