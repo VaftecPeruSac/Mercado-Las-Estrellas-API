@@ -23,14 +23,20 @@ class SocioCollection extends ResourceCollection
                 if($socio->id_puesto) {
                     $query = DB::select("select sum(total_deuda) deuda
                         from deudas where id_puesto = ".$socio->id_puesto);
-                    $deuda = collect($query)->first();
-                    $deuda_total = $deuda->deuda ? $deuda->deuda : 0;
+                    $deudaSum = collect($query)->first();
+                    $deuda_total = $deudaSum->deuda ? $deudaSum->deuda : 0;
 
                     $query = DB::select("select sum(importe) pago from detalle_pagos
                         where id_puesto = ".$socio->id_puesto);
                     $pago = collect($query)->first();
                     $pago_total = $pago->pago ? $pago->pago : 0;
-                    $deuda = $deuda_total - $pago_total;
+                    $deudaTotal = $deuda_total - $pago_total;
+
+                    if((float)$deudaTotal == 0) {
+                        $deuda = 0;
+                    } else {
+                        $deuda = number_format((float)$deudaTotal, 2, '.', "");
+                    }
                 }
 
                 return [

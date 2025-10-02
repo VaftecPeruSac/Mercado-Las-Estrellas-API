@@ -8,6 +8,7 @@ use App\Models\Puesto;
 use App\Http\Resources\PuestoCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
 class PuestoController extends Controller
@@ -20,7 +21,12 @@ class PuestoController extends Controller
             $per_page = $request->per_page;
         }
 
-        $paginate = Puesto::select('puestos.*')->where('puestos.activo', true);
+        $paginate = Puesto::select(
+                'puestos.*',
+                DB::raw("left(numero_puesto, 1) as npuesto_letra"),
+                DB::raw("lpad(substring_index(numero_puesto, '-', -1), 2, '0') as npuesto_numero")
+            )
+            ->where('puestos.activo', true);
 
         if (isset($request->id_gironegocio)) {
             $paginate->where('id_gironegocio',$request->id_gironegocio);
@@ -40,6 +46,8 @@ class PuestoController extends Controller
             $texto = str_replace(' ', '%', $texto);
             $paginate->whereRaw("upper(numero_puesto) LIKE upper( ? )", ['%'.$texto.'%']);
         }
+        $paginate->orderBy('npuesto_letra', 'asc');
+        $paginate->orderBy('npuesto_numero', 'asc');
 
         return new PuestoCollection($paginate->paginate($per_page));
     }
