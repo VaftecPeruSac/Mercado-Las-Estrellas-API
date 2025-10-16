@@ -14,6 +14,7 @@ class Modulo extends Model
         'id_modulo',
         'nombre',
         'url',
+        'url_foco',
         'url_activa',
         'icon',
         'estado',

@@ -61,31 +61,33 @@
     <thead>
       <tr>
         <th>Año</th>
-        <th>Mes</th>
+        <!-- <th>Mes</th> -->
         <th>Servicio</th>
-        <th>Total(S/.)</th>
+        <!-- <th>Total(S/.)</th> -->
         <th>Imp. Pagado(S/.)</th>
+        <!-- <th>Imp. Pagado(S/.)</th> -->
         <th>Imp. Por pagar(S/.)</th>
+        <!-- <th>Imp. Por pagar(S/.)</th> -->
       </tr>
     </thead>
     <tbody>
       @foreach($deudas as $deuda)
         <tr>
           <td>{{ $deuda['anio'] }}</td>
-          <td>{{ $deuda['mes'] }}</td>
+          <!-- <td>{{ $deuda['mes'] }}</td> -->
           <td>{{ $deuda['servicio_descripcion'] }}</td>
           <td class="right">{{ $deuda['total'] }}</td>
           <td class="right">{{ $deuda['importe_pagado'] }}</td>
-          <td class="right">{{ $deuda['importe_por_pagar'] }}</td>
+          <!-- <td class="right">{{ $deuda['importe_por_pagar'] }}</td> -->
         </tr>
       @endforeach
     </tbody>
     <tfoot>
       <tr>
-        <th colspan="3">Total(S/.)</th>
+        <th colspan="2">Total(S/.)</th>
         <th class="right">{{ $total }}</th>
         <th class="right">{{ $total }}</th>
-        <th class="right">{{ $total }}</th>
+        <!-- <th class="right">{{ $total }}</th> -->
       </tr>
     </tfoot>
   </table>

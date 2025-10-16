@@ -86,7 +86,8 @@ class SetupController extends Controller
                         "modulo.icon",
                         "modulo.estado",
                         "modulo.id_modulo_parent",
-                        "modulo.orden"
+                        "modulo.orden",
+                        "modulo.url_foco"
                     )
                     ->join("rol_modulo", "modulo.id_modulo", "rol_modulo.id_modulo")
                     ->where("modulo.estado", "1")
