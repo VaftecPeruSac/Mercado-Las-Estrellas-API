@@ -121,6 +121,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::get('setup/meses', [SetupController::class, 'indexMes']);
     Route::get('setup/bancos', [SetupController::class, 'indexBanco']);
     Route::get('setup/banco-cuentas', [SetupController::class, 'indexBancoCuenta']);
+    Route::get('setup/modulos/web', [SetupController::class, 'indexModuloWeb']);
 });
 
 Route::get('/csrf-token', function () {

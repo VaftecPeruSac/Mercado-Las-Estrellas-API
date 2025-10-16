@@ -40,6 +40,7 @@ class PagoController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'id_socio' => 'required',
+            'id_documento' => 'nullable',
             'deudas' => 'required|array|min:1',
             'deudas.*.id_deuda_cuota' => 'required',
             'deudas.*.importe' => 'required|numeric|min:0|not_in:0',
@@ -55,7 +56,7 @@ class PagoController extends Controller
             return response()->json(['error' => $validator->errors()->first()], 400);
         }
         
-        $documento = Documento::find(1);
+        $documento = Documento::find($request->id_documento ?? 1);
         if (!$documento) {
             return response()->json(['error' => 'No se encontro el documento.'], 400);
         }
@@ -88,7 +89,7 @@ class PagoController extends Controller
 
         $pago = new Pago();
         $pago->id_socio = $request->input('id_socio');
-        $pago->id_documento = 1;
+        $pago->id_documento = $documento->id_documento;
         $pago->numero_pago = $numero_pago_nueno;
         $pago->serie = $documento->serie;
         $pago->total_pago = 0;
@@ -123,6 +124,7 @@ class PagoController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'id_socio' => 'required',
+            'id_documento' => 'nullable',
             'id_banco' => 'required',
             'id_bancocuenta' => 'required',
             'numero_operacion' => 'required',
@@ -146,7 +148,7 @@ class PagoController extends Controller
             return response()->json(['error' => $validator->errors()->first()], 400);
         }
         
-        $documento = Documento::find(1);
+        $documento = Documento::find($request->id_documento);
         if (!$documento) {
             return response()->json(['error' => 'No se encontro el documento.'], 400);
         }
@@ -179,7 +181,7 @@ class PagoController extends Controller
 
         $pago = new Pago();
         $pago->id_socio = $request->input('id_socio');
-        $pago->id_documento = 1;
+        $pago->id_documento = $documento->id_documento;
         $pago->numero_pago = $numero_pago_nueno;
         $pago->serie = $documento->serie;
         $pago->total_pago = 0;

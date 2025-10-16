@@ -22,6 +22,7 @@ class Usuario extends Model
         'estado',
         'token',
         'fecha_registro',
+        'id_rol'
     ];
 
     public function Socio()
